@@ -1,0 +1,14 @@
+development:
+  - "jshint:development"
+  - "less:wysiwyg"
+  - "uglify:wysiwyg"
+
+production:
+  - "development"
+  - "less:bootstrap"
+  - "less:fontawesome"
+  - "uglify:bootstrap"
+  - "uglify:jquery"
+
+default:
+  - "production"

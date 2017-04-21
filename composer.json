@@ -1,0 +1,25 @@
+{
+    "name": "ddoe/wysiwyg-editor-module",
+    "description": "Summernote WYSIWYG Editor for OXID eShop.",
+    "type": "oxideshop-module",
+    "keywords": [ "oxid", "modules", "eShop", "WYSIWYG", "Summernote", "Editor" ],
+    "homepage": "https://www.oxid-esales.com/en/home.html",
+    "license": [
+        "GPL-3.0",
+        "proprietary"
+    ],
+    "authors": [
+        {
+            "name": "OXID eSales AG & digidesk - media solutions",
+            "email": "info@oxid-esales.com"
+        }
+    ],
+    "extra": {
+        "oxideshop": {
+            "target-directory": "ddoe/wysiwyg"
+        }
+    },
+    "require": {
+        "php": ">=5.6"
+    }
+}
