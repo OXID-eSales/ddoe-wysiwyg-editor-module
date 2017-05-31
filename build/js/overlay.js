@@ -104,7 +104,7 @@
 
     Overlay.prototype.onContentLoad = function( callback )
     {
-        if( typeof callback == 'function' )
+        if( typeof callback === 'function' )
         {
             callback.call( this );
         }
@@ -117,6 +117,7 @@
         if( window.editorControllerUrl )
         {
             $( '#overlayFrame', this.$overlay ).attr( 'src', window.editorControllerUrl );
+            $( '#overlayFrame', this.$overlay ).data( 'context', context );
         }
 
         this.$overlay.show();

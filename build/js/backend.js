@@ -8,6 +8,18 @@ $.noConflict();
 {
     'use strict';
 
+    var tooltipPlugin = $.fn.tooltip;
+
+    $.fn.tooltip = function( options )
+    {
+        if( typeof options !== 'undefined' )
+        {
+            options.container = '#ddoew';
+        }
+
+        return tooltipPlugin.call( this, options );
+    };
+
     $( function()
         {
             // Summernote WYSIWYG Editor

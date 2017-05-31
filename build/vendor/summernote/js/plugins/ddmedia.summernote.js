@@ -22,11 +22,21 @@
                             contents: '<i class="fa fa-file-image-o"></i>',
                             click: function ( e )
                             {
-                                MediaLibrary.open( /image\/.*/i, function( id, file, fullpath )
+                                if( typeof MediaLibrary === 'undefined' )
+                                {
+                                    if( top.basefrm && top.basefrm.OverlayInstance )
                                     {
-                                        context.invoke('editor.insertImage', fullpath, file);
+                                        top.basefrm.OverlayInstance.showOverlay( context );
                                     }
-                                );
+                                }
+                                else
+                                {
+                                    MediaLibrary.open( /image\/.*/i, function( id, file, fullpath )
+                                        {
+                                            context.invoke('editor.insertImage', fullpath, file);
+                                        }
+                                    );
+                                }
                             }
                         }
                     );

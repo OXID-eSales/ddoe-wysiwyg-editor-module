@@ -55,7 +55,7 @@
 
 [{oxscript add="MediaLibrary.setActionLink('`$sActionLink`');" priority=10}]
 [{oxscript add="MediaLibrary.setResourceLink('`$sMediaLink`');" priority=10}]
-[{oxscript add="MediaLibrary.init();" priority=10}]
+[{oxscript add="MediaLibrary.init( /image\/.*/i, null );" priority=10}]
 
 
 [{oxscript}]

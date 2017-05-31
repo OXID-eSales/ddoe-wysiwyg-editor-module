@@ -408,87 +408,89 @@
                 {
                     var self = this;
 
-                    if( !$( '.dd-overlay-dialog-footer .dd-overlay-dialog-apply', self.$overlay ).length )
+                    if( $( '.dd-overlay-dialog-footer .dd-overlay-dialog-apply', self.$overlay ).length )
                     {
-                        if( typeof callback !== 'function' && self.overlayContext )
+                        $( '.dd-overlay-dialog-footer .dd-overlay-dialog-apply', self.$overlay ).remove();
+                    }
+
+                    if( typeof callback !== 'function' && self.overlayContext )
+                    {
+                        callback = function( id, file, fullpath )
                         {
-                            callback = function( id, file, fullpath )
+                            self.overlayContext.invoke('editor.insertImage', fullpath, file);
+                        };
+                    }
+
+                    var $applyAction = $( '<button type="button" class="dd-overlay-dialog-button dd-overlay-dialog-apply">Übernehmen</button>' );
+
+                    $applyAction.on( 'click', function( e )
+                        {
+                            e.preventDefault();
+
+                            var $item = $( '.dd-media-item.active', $dialog );
+
+                            if ( !$item.length )
                             {
-                                self.overlayContext.invoke('editor.insertImage', fullpath, file);
-                            };
-                        }
+                                return;
+                            }
 
-                        var $applyAction = $( '<button type="button" class="dd-overlay-dialog-button dd-overlay-dialog-apply">Übernehmen</button>' );
-
-                        $applyAction.on( 'click', function( e )
+                            if ( typeof callback === 'function' )
                             {
-                                e.preventDefault();
+                                var blTypeNotAllowed = false;
+                                var files            = [];
 
-                                var $item = $( '.dd-media-item.active', $dialog );
+                                $item.each( function ()
+                                    {
+                                        var filetype = $( this ).data( 'filetype' );
 
-                                if ( !$item.length )
-                                {
-                                    return;
-                                }
-
-                                if ( typeof callback === 'function' )
-                                {
-                                    var blTypeNotAllowed = false;
-                                    var files            = [];
-
-                                    $item.each( function ()
+                                        if ( filter !== null && ( ( typeof filter === 'string' && filter !== filetype ) || ( filter instanceof RegExp && !filetype.match( filter ) ) ) )
                                         {
-                                            var filetype = $( this ).data( 'filetype' );
-
-                                            if ( filter !== null && ( ( typeof filter === 'string' && filter !== filetype ) || ( filter instanceof RegExp && !filetype.match( filter ) ) ) )
-                                            {
-                                                blTypeNotAllowed = true;
-                                            }
-                                            else
-                                            {
-                                                files.push(
-                                                    {
-                                                        id: $( this ).data( 'id' ),
-                                                        file: $( this ).data( 'file' ),
-                                                        url: resourceLink + $( this ).data( 'file' ),
-                                                        type: filetype
-                                                    }
-                                                );
-                                            }
-                                        }
-                                    );
-
-                                    if ( blTypeNotAllowed )
-                                    {
-                                        ddh.alert( ddh.translate( 'DD_MEDIA_FILETYPE_NOT_ALLOWED' ) );
-                                        return;
-                                    }
-
-                                    if ( multiple )
-                                    {
-                                        callback.call( $dialog, files );
-                                    }
-                                    else
-                                    {
-                                        if ( files.length )
-                                        {
-                                            var item = files[ 0 ];
-                                            callback.call( $dialog, item.id, item.file, item.url, item.type );
+                                            blTypeNotAllowed = true;
                                         }
                                         else
                                         {
-                                            callback.call( $dialog, false );
+                                            files.push(
+                                                {
+                                                    id: $( this ).data( 'id' ),
+                                                    file: $( this ).data( 'file' ),
+                                                    url: resourceLink + $( this ).data( 'file' ),
+                                                    type: filetype
+                                                }
+                                            );
                                         }
                                     }
+                                );
 
+                                if ( blTypeNotAllowed )
+                                {
+                                    ddh.alert( ddh.translate( 'DD_MEDIA_FILETYPE_NOT_ALLOWED' ) );
+                                    return;
                                 }
 
-                                self.hideOverlay();
-                            }
-                        );
+                                if ( multiple )
+                                {
+                                    callback.call( $dialog, files );
+                                }
+                                else
+                                {
+                                    if ( files.length )
+                                    {
+                                        var item = files[ 0 ];
+                                        callback.call( $dialog, item.id, item.file, item.url, item.type );
+                                    }
+                                    else
+                                    {
+                                        callback.call( $dialog, false );
+                                    }
+                                }
 
-                        $( '.dd-overlay-dialog-footer', self.$overlay ).prepend( $applyAction );
-                    }
+                            }
+
+                            self.hideOverlay();
+                        }
+                    );
+
+                    $( '.dd-overlay-dialog-footer', self.$overlay ).prepend( $applyAction );
                 }
             );
         }
