@@ -3,7 +3,7 @@
  * #PHPHEADER_OXID_LICENSE_INFORMATION#
  */
 
-class ddoewysiwygmedia extends oxAdminDetails
+class ddoewysiwygmedia_view extends oxAdminDetails
 {
 
     /**
@@ -29,7 +29,14 @@ class ddoewysiwygmedia extends oxAdminDetails
 
         if( $this->_oMedia === null )
         {
-            $this->_oMedia = oxNew( 'ddvisualeditor_media' );
+            if( class_exists( 'ddvisualeditor_media' ) )
+            {
+                $this->_oMedia = oxNew( 'ddvisualeditor_media' );
+            }
+            else
+            {
+                $this->_oMedia = oxNew( 'ddoewysiwygmedia' );
+            }
         }
 
         $this->_sUploadDir = $this->_oMedia->getMediaPath();
@@ -145,7 +152,7 @@ class ddoewysiwygmedia extends oxAdminDetails
         $oViewConf = $this->getViewConfig();
 
         $sFormHTML = '<html><head></head><body style="text-align:center;">
-                          <form action="' . $oViewConf->getSelfLink() . 'cl=ddoewysiwygmedia&fnc=upload&src=fallback" method="post" enctype="multipart/form-data">
+                          <form action="' . $oViewConf->getSelfLink() . 'cl=ddoewysiwygmedia_view&fnc=upload&src=fallback" method="post" enctype="multipart/form-data">
                               <input type="file" name="file" onchange="this.form.submit();" />
                           </form>';
 

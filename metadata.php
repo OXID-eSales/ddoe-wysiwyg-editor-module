@@ -26,21 +26,22 @@ $aModule = array(
     'extend'      => array(
 
         'oxadmindetails' => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
-
-        'article_main' => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
+        'article_main'   => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
 
     ),
     'files' => array(
 
-        'ddoewysiwyglangjs' => 'ddoe/wysiwyg/application/controllers/ddoewysiwyglangjs.php',
-        'ddoewysiwygmedia'  => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygmedia.php',
-        'ddoewysiwygmedia_wrapper'  => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygmedia_wrapper.php',
+        'ddoewysiwygmedia'         => 'ddoe/wysiwyg/application/models/ddoewysiwygmedia.php',
+
+        'ddoewysiwyglangjs'        => 'ddoe/wysiwyg/application/controllers/ddoewysiwyglangjs.php',
+        'ddoewysiwygmedia_view'    => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygmedia_view.php',
+        'ddoewysiwygmedia_wrapper' => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygmedia_wrapper.php',
 
     ),
     'templates' => array(
 
-        'ddoewysiwyg.tpl' => 'ddoe/wysiwyg/application/views/admin/tpl/ddoewysiwyg.tpl',
-        'dialog/ddoewysiwygmedia.tpl' => 'ddoe/wysiwyg/application/views/admin/tpl/dialog/ddoewysiwygmedia.tpl',
+        'ddoewysiwyg.tpl'                     => 'ddoe/wysiwyg/application/views/admin/tpl/ddoewysiwyg.tpl',
+        'dialog/ddoewysiwygmedia.tpl'         => 'ddoe/wysiwyg/application/views/admin/tpl/dialog/ddoewysiwygmedia.tpl',
         'dialog/ddoewysiwygmedia_wrapper.tpl' => 'ddoe/wysiwyg/application/views/admin/tpl/dialog/ddoewysiwygmedia_wrapper.tpl',
 
     ),

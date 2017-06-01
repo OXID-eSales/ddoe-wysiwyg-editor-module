@@ -3,7 +3,7 @@
  * #PHPHEADER_OXID_LICENSE_INFORMATION#
  */
 
-class ddoewysiwygmedia_wrapper extends ddoewysiwygmedia
+class ddoewysiwygmedia_wrapper extends ddoewysiwygmedia_view
 {
 
     /**

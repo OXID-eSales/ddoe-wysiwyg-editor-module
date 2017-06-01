@@ -135,7 +135,7 @@
                     <div class="dd-media-upload-fallback" style="display: none;">
                         <span>[{oxmultilang ident="DD_MEDIA_FALLBACK_INFO"}]</span>
                         <br />
-                        <iframe src="[{$oViewConf->getSelfLink()}]cl=ddoewysiwygmedia&fnc=fallback" frameborder="0" scrolling="no"></iframe>
+                        <iframe src="[{$oViewConf->getSelfLink()}]cl=ddoewysiwygmedia_view&fnc=fallback" frameborder="0" scrolling="no"></iframe>
                     </div>
 
                 </div>

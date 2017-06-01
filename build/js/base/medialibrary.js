@@ -286,7 +286,7 @@
                                     }
                                 );
 
-                                $.get( actionLink + 'cl=ddoewysiwygmedia&fnc=remove&id[]=' + deleteIDs.join( '&id[]=' ), function ()
+                                $.get( actionLink + 'cl=ddoewysiwygmedia_view&fnc=remove&id[]=' + deleteIDs.join( '&id[]=' ), function ()
                                     {
                                         $item.each( function ()
                                             {
@@ -559,7 +559,7 @@
         var ui           = this;
         var mediaOptions = $dialog.data( 'media-options' );
 
-        $.get( actionLink + 'cl=ddoewysiwygmedia', function ( html )
+        $.get( actionLink + 'cl=ddoewysiwygmedia_view', function ( html )
             {
                 $( '.dd-media-remove', $dialog ).addClass( 'disabled' );
 
@@ -639,7 +639,7 @@
 
                 $( '.dd-media', $dialog ).dropzone(
                     {
-                        url: actionLink + 'cl=ddoewysiwygmedia&fnc=upload',
+                        url: actionLink + 'cl=ddoewysiwygmedia_view&fnc=upload',
                         parallelUploads: 10,
 
                         previewsContainer: $( '.dd-media-list-items > .row', $dialog )[ 0 ],
@@ -762,7 +762,7 @@
         var start      = page * 18;
         var ui         = this;
 
-        $.get( actionLink + 'cl=ddoewysiwygmedia&fnc=moreFiles&start=' + start, function ( data )
+        $.get( actionLink + 'cl=ddoewysiwygmedia_view&fnc=moreFiles&start=' + start, function ( data )
             {
                 if ( data.files && data.files.length )
                 {
