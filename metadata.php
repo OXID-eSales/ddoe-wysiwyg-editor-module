@@ -37,6 +37,9 @@ $aModule = array(
         'ddoewysiwygmedia_view'    => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygmedia_view.php',
         'ddoewysiwygmedia_wrapper' => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygmedia_wrapper.php',
 
+        // Events
+        'ddoewysiwygevents'        => 'ddoe/wysiwyg/application/events/ddoewysiwygevents.php',
+
     ),
     'templates' => array(
 
@@ -45,9 +48,11 @@ $aModule = array(
         'dialog/ddoewysiwygmedia_wrapper.tpl' => 'ddoe/wysiwyg/application/views/admin/tpl/dialog/ddoewysiwygmedia_wrapper.tpl',
 
     ),
-    'blocks' => array(
-    ),
     'events' => array(
+        'onActivate'   => 'ddoewysiwygevents::onActivate',
+        'onDeactivate' => 'ddoewysiwygevents::onDeactivate'
+    ),
+    'blocks' => array(
     ),
     'settings' => array(
     )
