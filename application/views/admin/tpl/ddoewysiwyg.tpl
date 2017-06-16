@@ -23,14 +23,25 @@
         _win.editorControllerUrl = '[{$oViewConf->getSelfLink()|html_entity_decode|cat:'cl=ddoewysiwygmedia_wrapper&overlay=1'}]';
         _win.isOverlayLoaded     = true;
 
-        var headElement = _doc.getElementsByTagName( 'head' )[ 0 ];
-        var scriptElement = _doc.createElement( 'script' );
+        var headElement       = _doc.getElementsByTagName( 'head' )[ 0 ];
+        var langScriptElement = _doc.createElement( 'script' );
 
-        scriptElement.setAttribute( 'src', '[{$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/overlay.min.js')}]' );
-        headElement.appendChild( scriptElement );
+        langScriptElement.setAttribute( 'src', '[{$oViewConf->getSelfLink()|html_entity_decode|cat:'cl=ddoewysiwyglangjs'}]' );
+        headElement.appendChild( langScriptElement );
+
+        var overlayScriptElement = _doc.createElement( 'script' );
+
+        overlayScriptElement.setAttribute( 'src', '[{$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/overlay.min.js')}]' );
+        headElement.appendChild( overlayScriptElement );
     }
 </script>
+
+[{oxscript include=$oViewConf->getSelfLink()|cat:'cl=ddoewysiwyglangjs' priority=1}]
 
 <script type="text/javascript" src="[{$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/jquery.min.js')}]"></script>
 <script type="text/javascript" src="[{$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/bootstrap.min.js')}]"></script>
 <script type="text/javascript" src="[{$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/backend.min.js')}]"></script>
+
+[{if $langabbr == 'de'}]
+    <script type="text/javascript" src="[{$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/lang/summernote-de.min.js')}]"></script>
+[{/if}]

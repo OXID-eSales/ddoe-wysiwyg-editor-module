@@ -25,13 +25,33 @@ $aModule = array(
     'email'       => 'info@oxid-esales.com',
     'extend'      => array(
 
-        'oxadmindetails' => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
-        'article_main'   => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
+        // Admin Controller
+
+        \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController::class => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
+
+        \OxidEsales\Eshop\Application\Controller\Admin\ArticleMain::class    => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
+        \OxidEsales\Eshop\Application\Controller\Admin\CategoryText::class   => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
+        \OxidEsales\Eshop\Application\Controller\Admin\ContentMain::class    => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
+        \OxidEsales\Eshop\Application\Controller\Admin\ActionsMain::class    => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
+        \OxidEsales\Eshop\Application\Controller\Admin\AdminlinksMain::class => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
+        \OxidEsales\Eshop\Application\Controller\Admin\NewsletterMain::class => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
+        \OxidEsales\Eshop\Application\Controller\Admin\NewsText::class       => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
+        \OxidEsales\Eshop\Application\Controller\Admin\PaymentMain::class    => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
+        \OxidEsales\Eshop\Application\Controller\Admin\PriceAlarmMain::class => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
+
+        // Core
+
+        \OxidEsales\Eshop\Core\Language::class => 'ddoe/wysiwyg/core/ddoewysiwygoxlang',
+        \OxidEsales\Eshop\Core\Utils::class    => 'ddoe/wysiwyg/core/ddoewysiwygoxutils',
 
     ),
     'files' => array(
 
+        // Models
+
         'ddoewysiwygmedia'         => 'ddoe/wysiwyg/application/models/ddoewysiwygmedia.php',
+
+        // Controller
 
         'ddoewysiwyglangjs'        => 'ddoe/wysiwyg/application/controllers/ddoewysiwyglangjs.php',
         'ddoewysiwygmedia_view'    => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygmedia_view.php',

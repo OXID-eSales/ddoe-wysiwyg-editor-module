@@ -41,7 +41,11 @@ class ddoewysiwygoxadmindetails extends ddoewysiwygoxadmindetails_parent
             $iHeight .= 'px';
         }
 
-        $oSmarty = oxRegistry::get( 'oxUtilsView' )->getSmarty( true );
+        $oConfig = $this->getConfig();
+        $oLang = \OxidEsales\Eshop\Core\Registry::getLang();
+
+        $oUtilsView = \OxidEsales\Eshop\Core\Registry::get( 'oxUtilsView' );
+        $oSmarty = $oUtilsView->getSmarty( true );
 
         $oSmarty->assign( 'oView', $this );
         $oSmarty->assign( 'oViewConf', $this->getViewConfig() );
@@ -50,6 +54,11 @@ class ddoewysiwygoxadmindetails extends ddoewysiwygoxadmindetails_parent
         $oSmarty->assign( 'sEditorValue', $sEditObjectValue );
         $oSmarty->assign( 'iEditorHeight', $iHeight );
         $oSmarty->assign( 'iEditorWidth', $iWidth );
+
+        $iDynInterfaceLanguage = $oConfig->getConfigParam( 'iDynInterfaceLanguage' );
+        $sLangAbbr = $oLang->getLanguageAbbr( ( isset( $iDynInterfaceLanguage ) ? $iDynInterfaceLanguage : $oLang->getTplLanguage() ) );
+
+        $oSmarty->assign( 'langabbr', $sLangAbbr );
 
         return $oSmarty->fetch( 'ddoewysiwyg.tpl' );
     }

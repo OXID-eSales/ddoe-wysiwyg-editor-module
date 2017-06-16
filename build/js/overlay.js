@@ -20,6 +20,25 @@
 
     var Overlay = function ()
     {
+        // Create pseudo helper if not exists
+        if ( typeof ddh == 'undefined' )
+        {
+            window.ddh = {
+                translate: function ( string )
+                {
+                    if ( string && typeof i18n === 'object' )
+                    {
+                        if ( i18n[ string ] )
+                        {
+                            return i18n[ string ];
+                        }
+                    }
+
+                    return string;
+                }
+            }
+        }
+
         this.loadStyles();
         this.loadOverlay();
         this.setEvents();
@@ -73,14 +92,14 @@
                     + '<div class="dd-overlay-backdrop"></div>'
                     + '<div class="dd-overlay-dialog">'
                     + '  <div class="dd-overlay-dialog-header">'
-                    + '    Mediathek'
+                    + '    ' + ddh.translate( 'DD_MEDIA_DIALOG' )
                     + '    <a href="javascript:void(null);" class="dd-overlay-dialog-close">&times;</a>'
                     + '  </div>'
                     + '  <div class="dd-overlay-dialog-body">'
                     + '    <iframe src="" id="overlayFrame" frameborder="0" style="width: 100%; height: 100%;"></iframe>'
                     + '  </div>'
                     + '  <div class="dd-overlay-dialog-footer">'
-                    + '    <button type="button" class="dd-overlay-dialog-button dd-overlay-dialog-cancel">Abbrechen</button>'
+                    + '    <button type="button" class="dd-overlay-dialog-button dd-overlay-dialog-cancel">' + ddh.translate( 'DD_CANCEL' ) + '</button>'
                     + '  </div>'
                     + '</div>';
 

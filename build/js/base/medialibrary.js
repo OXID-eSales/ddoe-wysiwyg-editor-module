@@ -421,7 +421,7 @@
                         };
                     }
 
-                    var $applyAction = $( '<button type="button" class="dd-overlay-dialog-button dd-overlay-dialog-apply">Übernehmen</button>' );
+                    var $applyAction = $( '<button type="button" class="dd-overlay-dialog-button dd-overlay-dialog-apply">' + ddh.translate( 'DD_APPLY' ) + '</button>' );
 
                     $applyAction.on( 'click', function( e )
                         {
@@ -571,6 +571,48 @@
                 {
                     $( '.modal-body', $dialog ).html( html );
                 }
+
+                var $detailForm = $( '.dd-media-details-form', $dialog );
+
+                $( '.dd-media-details-delete-action', $dialog ).on( 'click', function()
+                    {
+                        var $item = $( '.dd-media-item.active', $dialog ).first();
+
+                        if ( $item.length )
+                        {
+                            ddh.confirm( ddh.translate( 'DD_MEDIA_REMOVE_CONFIRM' ), function ()
+                                {
+                                    $item.addClass( 'dd-media-item-removing' );
+
+                                    var deleteIDs = [];
+
+                                    $item.each( function ()
+                                        {
+                                            deleteIDs.push( $( this ).data( 'id' ) );
+                                        }
+                                    );
+
+                                    $.get( actionLink + 'cl=ddoewysiwygmedia_view&fnc=remove&id[]=' + deleteIDs.join( '&id[]=' ), function ()
+                                        {
+                                            $item.each( function ()
+                                                {
+                                                    $( this ).parent().remove();
+                                                }
+                                            );
+
+                                            if ( !$( '.dd-media-list-items > .row > .dd-media-col', $dialog ).length )
+                                            {
+                                                $( '.dd-media-list', $dialog ).addClass( 'empty' );
+                                            }
+
+                                            $detailForm.hide();
+                                        }
+                                    );
+                                }
+                            );
+                        }
+                    }
+                );
 
                 $( '.dd-media', $dialog ).on( 'click', '.dd-media-item', function ( e )
                     {

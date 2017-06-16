@@ -13,11 +13,11 @@ class ddoewysiwyglangjs extends oxUBase
     public function init()
     {
         /** @var oxLang $oLang */
-        $oLang = oxNew( 'oxlang' );
+        $oLang = oxNew( \OxidEsales\Eshop\Core\Language::class );
 
         header( 'Content-Type: application/javascript' );
 
-        $oUtils = oxRegistry::getUtils();
+        $oUtils = \OxidEsales\Eshop\Core\Registry::getUtils();
         $sJson = $oUtils->encodeJson( $oLang->getLanguageStrings() );
         $oUtils->showMessageAndExit( ";( function(g){ g.i18n = " . $sJson . "; })(window);" );
     }

@@ -13,7 +13,6 @@ module.exports = {
         files: {
             "out/src/js/backend.min.js": [
                 "build/vendor/summernote/js/summernote.js",
-                "build/vendor/summernote/js/lang/summernote-de-DE.js",
                 "build/vendor/summernote/js/plugins/ddmedia.summernote.js",
                 "build/js/backend.js"
             ],
@@ -30,6 +29,14 @@ module.exports = {
             ]
 
         }
+    },
+
+    wysiwyglang: {
+
+        files: {
+            "out/src/js/lang/summernote-de.min.js": "build/vendor/summernote/js/lang/summernote-de-DE.js"
+        }
+
     },
 
     bootstrap: {

@@ -113,9 +113,13 @@
                             <div class="clearfix" style="height: 30px;"></div>
 
                             <div class="form-group">
-                                <label>Bild-URL</label>
+                                <label>URL</label>
                                 <input type="text" class="form-control dd-media-details-input-url" name="media[url]" value="" readonly="readonly" />
                             </div>
+
+                            <div class="clearfix" style="height: 30px;"></div>
+
+                            <a href="javascript:void(null);" class="dd-media-details-delete-action text-danger">[{oxmultilang ident="DD_MEDIA_REMOVE"}]</a>
 
                         </form>
 

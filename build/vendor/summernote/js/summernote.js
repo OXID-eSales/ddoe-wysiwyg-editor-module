@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor v0.8.2
+ * Super simple wysiwyg editor v0.8.4
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013-2016 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2016-08-07T05:11Z
+ * Date: 2017-05-31T03:24Z
  */
 (function (factory) {
   /* global define */
@@ -22,6 +22,94 @@
   }
 }(function ($) {
   'use strict';
+
+  var isSupportAmd = typeof define === 'function' && define.amd;
+
+  /**
+   * returns whether font is installed or not.
+   *
+   * @param {String} fontName
+   * @return {Boolean}
+   */
+  var isFontInstalled = function (fontName) {
+    var testFontName = fontName === 'Comic Sans MS' ? 'Courier New' : 'Comic Sans MS';
+    var $tester = $('<div>').css({
+      position: 'absolute',
+      left: '-9999px',
+      top: '-9999px',
+      fontSize: '200px'
+    }).text('mmmmmmmmmwwwwwww').appendTo(document.body);
+
+    var originalWidth = $tester.css('fontFamily', testFontName).width();
+    var width = $tester.css('fontFamily', fontName + ',' + testFontName).width();
+
+    $tester.remove();
+
+    return originalWidth !== width;
+  };
+
+  var userAgent = navigator.userAgent;
+  var isMSIE = /MSIE|Trident/i.test(userAgent);
+  var browserVersion;
+  if (isMSIE) {
+    var matches = /MSIE (\d+[.]\d+)/.exec(userAgent);
+    if (matches) {
+      browserVersion = parseFloat(matches[1]);
+    }
+    matches = /Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/.exec(userAgent);
+    if (matches) {
+      browserVersion = parseFloat(matches[1]);
+    }
+  }
+
+  var isEdge = /Edge\/\d+/.test(userAgent);
+
+  var hasCodeMirror = !!window.CodeMirror;
+  if (!hasCodeMirror && isSupportAmd && typeof require !== 'undefined') {
+    if (typeof require.resolve !== 'undefined') {
+      try {
+        // If CodeMirror can't be resolved, `require.resolve` will throw an
+        // exception and `hasCodeMirror` won't be set to `true`.
+        require.resolve('codemirror');
+        hasCodeMirror = true;
+      } catch (e) {
+        // Do nothing.
+      }
+    } else if (typeof eval('require').specified !== 'undefined') {
+      hasCodeMirror = eval('require').specified('codemirror');
+    }
+  }
+
+  var isSupportTouch =
+    (('ontouchstart' in window) ||
+     (navigator.MaxTouchPoints > 0) ||
+     (navigator.msMaxTouchPoints > 0));
+
+  /**
+   * @class core.agent
+   *
+   * Object which check platform and agent
+   *
+   * @singleton
+   * @alternateClassName agent
+   */
+  var agent = {
+    isMac: navigator.appVersion.indexOf('Mac') > -1,
+    isMSIE: isMSIE,
+    isEdge: isEdge,
+    isFF: !isEdge && /firefox/i.test(userAgent),
+    isPhantom: /PhantomJS/i.test(userAgent),
+    isWebkit: !isEdge && /webkit/i.test(userAgent),
+    isChrome: !isEdge && /chrome/i.test(userAgent),
+    isSafari: !isEdge && /safari/i.test(userAgent),
+    browserVersion: browserVersion,
+    jqueryVersion: parseFloat($.fn.jquery),
+    isSupportAmd: isSupportAmd,
+    isSupportTouch: isSupportTouch,
+    hasCodeMirror: hasCodeMirror,
+    isFontInstalled: isFontInstalled,
+    isW3CRangeSupport: !!document.createRange
+  };
 
   /**
    * @class core.func
@@ -381,88 +469,6 @@
              all: all, sum: sum, from: from, isEmpty: isEmpty,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();
-
-  var isSupportAmd = typeof define === 'function' && define.amd;
-
-  /**
-   * returns whether font is installed or not.
-   *
-   * @param {String} fontName
-   * @return {Boolean}
-   */
-  var isFontInstalled = function (fontName) {
-    var testFontName = fontName === 'Comic Sans MS' ? 'Courier New' : 'Comic Sans MS';
-    var $tester = $('<div>').css({
-      position: 'absolute',
-      left: '-9999px',
-      top: '-9999px',
-      fontSize: '200px'
-    }).text('mmmmmmmmmwwwwwww').appendTo(document.body);
-
-    var originalWidth = $tester.css('fontFamily', testFontName).width();
-    var width = $tester.css('fontFamily', fontName + ',' + testFontName).width();
-
-    $tester.remove();
-
-    return originalWidth !== width;
-  };
-
-  var userAgent = navigator.userAgent;
-  var isMSIE = /MSIE|Trident/i.test(userAgent);
-  var browserVersion;
-  if (isMSIE) {
-    var matches = /MSIE (\d+[.]\d+)/.exec(userAgent);
-    if (matches) {
-      browserVersion = parseFloat(matches[1]);
-    }
-    matches = /Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/.exec(userAgent);
-    if (matches) {
-      browserVersion = parseFloat(matches[1]);
-    }
-  }
-
-  var isEdge = /Edge\/\d+/.test(userAgent);
-
-  var hasCodeMirror = !!window.CodeMirror;
-  if (!hasCodeMirror && isSupportAmd && typeof require !== 'undefined') {
-    if (typeof require.resolve !== 'undefined') {
-      try {
-        // If CodeMirror can't be resolved, `require.resolve` will throw an
-        // exception and `hasCodeMirror` won't be set to `true`.
-        require.resolve('codemirror');
-        hasCodeMirror = true;
-      } catch (e) {
-        // Do nothing.
-      }
-    } else if (typeof eval('require').specified !== 'undefined') {
-      hasCodeMirror = eval('require').specified('codemirror');
-    }
-  }
-
-  /**
-   * @class core.agent
-   *
-   * Object which check platform and agent
-   *
-   * @singleton
-   * @alternateClassName agent
-   */
-  var agent = {
-    isMac: navigator.appVersion.indexOf('Mac') > -1,
-    isMSIE: isMSIE,
-    isEdge: isEdge,
-    isFF: !isEdge && /firefox/i.test(userAgent),
-    isPhantom: /PhantomJS/i.test(userAgent),
-    isWebkit: !isEdge && /webkit/i.test(userAgent),
-    isChrome: !isEdge && /chrome/i.test(userAgent),
-    isSafari: !isEdge && /safari/i.test(userAgent),
-    browserVersion: browserVersion,
-    jqueryVersion: parseFloat($.fn.jquery),
-    isSupportAmd: isSupportAmd,
-    hasCodeMirror: hasCodeMirror,
-    isFontInstalled: isFontInstalled,
-    isW3CRangeSupport: !!document.createRange
-  };
 
 
   var NBSP_CHAR = String.fromCharCode(160);
@@ -1455,6 +1461,18 @@
       });
     };
 
+    /**
+     * @method isCustomStyleTag
+     *
+     * assert if a node contains a "note-styletag" class,
+     * which implies that's a custom-made style tag node
+     *
+     * @param {Node} an HTML DOM node
+     */
+    var isCustomStyleTag = function (node) {
+      return node && !dom.isText(node) && list.contains(node.classList, 'note-styletag');
+    };
+
     return {
       /** @property {String} NBSP_CHAR */
       NBSP_CHAR: NBSP_CHAR,
@@ -1542,7 +1560,8 @@
       value: value,
       posFromPlaceholder: posFromPlaceholder,
       attachEvents: attachEvents,
-      detachEvents: detachEvents
+      detachEvents: detachEvents,
+      isCustomStyleTag: isCustomStyleTag
     };
   })();
 
@@ -1621,6 +1640,8 @@
       Object.keys(this.memos).forEach(function (key) {
         self.removeMemo(key);
       });
+      // trigger custom onDestroy callback
+      this.triggerEvent('destroy', this);
     };
 
     this.code = function (html) {
@@ -1729,10 +1750,21 @@
       delete this.memos[key];
     };
 
+    /**
+     *Some buttons need to change their visual style immediately once they get pressed
+     */
+    this.createInvokeHandlerAndUpdateState = function (namespace, value) {
+      return function (event) {
+        self.createInvokeHandler(namespace, value)(event);
+        self.invoke('buttons.updateCurrentStyle');
+      };
+    };
+
     this.createInvokeHandler = function (namespace, value) {
       return function (event) {
         event.preventDefault();
-        self.invoke(namespace, value || $(event.target).closest('[data-value]').data('value'));
+        var $target = $(event.target);
+        self.invoke(namespace, value || $target.closest('[data-value]').data('value'), $target);
       };
     };
 
@@ -1771,8 +1803,11 @@
       var options = hasInitOptions ? list.head(arguments) : {};
 
       options = $.extend({}, $.summernote.options, options);
+
+      // Update options
       options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
       options.icons = $.extend(true, {}, $.summernote.options.icons, options.icons);
+      options.tooltip = options.tooltip === 'auto' ? !agent.isSupportTouch : options.tooltip;
 
       this.each(function (idx, note) {
         var $note = $(note);
@@ -1875,23 +1910,16 @@
   var airEditable = renderer.create('<div class="note-editable" contentEditable="true"/>');
 
   var buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
-  var button = renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
-    if (options && options.tooltip) {
-      $node.attr({
-        title: options.tooltip
-      }).tooltip({
-        container: 'body',
-        trigger: 'hover',
-        placement: 'bottom'
-      });
-    }
-  });
 
   var dropdown = renderer.create('<div class="dropdown-menu">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
       var value = (typeof item === 'string') ? item : (item.value || '');
       var content = options.template ? options.template(item) : item;
-      return '<li><a href="#" data-value="' + value + '">' + content + '</a></li>';
+      var option = (typeof item === 'object') ? item.option : undefined;
+
+      var dataValue = 'data-value="' + value + '"';
+      var dataOption = (option !== undefined) ? ' data-option="' + option + '"' : '';
+      return '<li><a href="#" ' + (dataValue + dataOption) + '>' + content + '</a></li>';
     }).join('') : options.items;
 
     $node.html(markup);
@@ -1986,13 +2014,27 @@
     airEditor: airEditor,
     airEditable: airEditable,
     buttonGroup: buttonGroup,
-    button: button,
     dropdown: dropdown,
     dropdownCheck: dropdownCheck,
     palette: palette,
     dialog: dialog,
     popover: popover,
     icon: icon,
+    options: {},
+
+    button: function ($node, options) {
+      return renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
+        if (options && options.tooltip && self.options.tooltip) {
+          $node.attr({
+            title: options.tooltip
+          }).tooltip({
+            container: 'body',
+            trigger: 'hover',
+            placement: 'bottom'
+          });
+        }
+      })($node, options);
+    },
 
     toggleBtn: function ($btn, isEnable) {
       $btn.toggleClass('disabled', !isEnable);
@@ -2020,6 +2062,7 @@
     },
 
     createLayout: function ($note, options) {
+      self.options = options;
       var $editor = (options.airMode ? ui.airEditor([
         ui.editingArea([
           ui.airEditable()
@@ -2116,7 +2159,7 @@
       },
       style: {
         style: 'Style',
-        normal: 'Normal',
+        p: 'Normal',
         blockquote: 'Quote',
         pre: 'Code',
         h1: 'Header 1',
@@ -3383,7 +3426,8 @@
           'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
           'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
           'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
-          'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal'
+          'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal',
+          'font-family': document.queryCommandValue('fontname') || styleInfo['font-family']
         });
       } catch (e) {}
 
@@ -3685,8 +3729,8 @@
             dom.remove(anchor);
           });
 
-          // replace empty heading or pre with P tag
-          if ((dom.isHeading(nextPara) || dom.isPre(nextPara)) && dom.isEmpty(nextPara)) {
+          // replace empty heading, pre or custom-made styleTag with P tag
+          if ((dom.isHeading(nextPara) || dom.isPre(nextPara) || dom.isCustomStyleTag(nextPara)) && dom.isEmpty(nextPara)) {
             nextPara = dom.replace(nextPara, 'p');
           }
         }
@@ -4189,11 +4233,20 @@
      *
      * @param {String} tagName
      */
-    this.formatBlock = this.wrapCommand(function (tagName) {
+    this.formatBlock = this.wrapCommand(function (tagName, $target) {
+      var onApplyCustomStyle = context.options.callbacks.onApplyCustomStyle;
+      if (onApplyCustomStyle) {
+        onApplyCustomStyle.call(this, $target, context, this.onFormatBlock);
+      } else {
+        this.onFormatBlock(tagName);
+      }
+    });
+
+    this.onFormatBlock = function (tagName) {
       // [workaround] for MSIE, IE need `<`
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
-    });
+    };
 
     this.formatPara = function () {
       this.formatBlock('P');
@@ -4324,6 +4377,10 @@
 
       if (options.onCreateLink) {
         linkUrl = options.onCreateLink(linkUrl);
+      } else {
+        // if url doesn't match an URL schema, set http:// as default
+        linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl) ?
+          linkUrl : 'http://' + linkUrl;
       }
 
       var anchors = [];
@@ -4340,10 +4397,6 @@
       }
 
       $.each(anchors, function (idx, anchor) {
-        // if url doesn't match an URL schema, set http:// as default
-        linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl) ?
-          linkUrl : 'http://' + linkUrl;
-
         $(anchor).attr('href', linkUrl);
         if (isNewWindow) {
           $(anchor).attr('target', '_blank');
@@ -4379,13 +4432,18 @@
 
       // Get the first anchor on range(for edit).
       var $anchor = $(list.head(rng.nodes(dom.isAnchor)));
-
-      return {
+      var linkInfo = {
         range: rng,
         text: rng.toString(),
-        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : false,
         url: $anchor.length ? $anchor.attr('href') : ''
       };
+
+      // Define isNewWindow when anchor exists.
+      if ($anchor.length) {
+        linkInfo.isNewWindow = $anchor.attr('target') === '_blank';
+      }
+
+      return linkInfo;
     };
 
     /**
@@ -4557,9 +4615,9 @@
     this.pasteByHook = function () {
       var node = this.$paste[0].firstChild;
 
-      if (dom.isImg(node)) {
-        var dataURI = node.src;
-        var decodedData = atob(dataURI.split(',')[1]);
+      var src = node && node.src;
+      if (dom.isImg(node) && src.indexOf('data:') === 0) {
+        var decodedData = atob(node.src.split(',')[1]);
         var array = new Uint8Array(decodedData.length);
         for (var i = 0; i < decodedData.length; i++) {
           array[i] = decodedData.charCodeAt(i);
@@ -4833,6 +4891,7 @@
 
     this.initialize = function () {
       if (options.airMode || options.disableResizeEditor) {
+        this.destroy();
         return;
       }
 
@@ -4841,17 +4900,20 @@
         event.stopPropagation();
 
         var editableTop = $editable.offset().top - $document.scrollTop();
-
-        $document.on('mousemove', function (event) {
+        var onMouseMove = function (event) {
           var height = event.clientY - (editableTop + EDITABLE_PADDING);
 
           height = (options.minheight > 0) ? Math.max(height, options.minheight) : height;
           height = (options.maxHeight > 0) ? Math.min(height, options.maxHeight) : height;
 
           $editable.height(height);
-        }).one('mouseup', function () {
-          $document.off('mousemove');
-        });
+        };
+
+        $document
+          .on('mousemove', onMouseMove)
+          .one('mouseup', function () {
+            $document.off('mousemove', onMouseMove);
+          });
       });
     };
 
@@ -4862,6 +4924,7 @@
   };
 
   var Fullscreen = function (context) {
+    var self = this;
     var $editor = context.layoutInfo.editor;
     var $toolbar = context.layoutInfo.toolbar;
     var $editable = context.layoutInfo.editable;
@@ -4870,34 +4933,32 @@
     var $window = $(window);
     var $scrollbar = $('html, body');
 
+    this.resizeTo = function (size) {
+      $editable.css('height', size.h);
+      $codable.css('height', size.h);
+      if ($codable.data('cmeditor')) {
+        $codable.data('cmeditor').setsize(null, size.h);
+      }
+    };
+
+    this.onResize = function () {
+      self.resizeTo({
+        h: $window.height() - $toolbar.outerHeight()
+      });
+    };
+
     /**
      * toggle fullscreen
      */
     this.toggle = function () {
-      var resize = function (size) {
-        $editable.css('height', size.h);
-        $codable.css('height', size.h);
-        if ($codable.data('cmeditor')) {
-          $codable.data('cmeditor').setsize(null, size.h);
-        }
-      };
-
       $editor.toggleClass('fullscreen');
       if (this.isFullscreen()) {
         $editable.data('orgHeight', $editable.css('height'));
-
-        $window.on('resize', function () {
-          resize({
-            h: $window.height() - $toolbar.outerHeight()
-          });
-        }).trigger('resize');
-
+        $window.on('resize', this.onResize).trigger('resize');
         $scrollbar.css('overflow', 'hidden');
       } else {
-        $window.off('resize');
-        resize({
-          h: $editable.data('orgHeight')
-        });
+        $window.off('resize', this.onResize);
+        this.resizeTo({ h: $editable.data('orgHeight') });
         $scrollbar.css('overflow', 'visible');
       }
 
@@ -4952,18 +5013,22 @@
               posStart = $target.offset(),
               scrollTop = $document.scrollTop();
 
-          $document.on('mousemove', function (event) {
+          var onMouseMove = function (event) {
             context.invoke('editor.resizeTo', {
               x: event.clientX - posStart.left,
               y: event.clientY - (posStart.top - scrollTop)
             }, $target, !event.shiftKey);
 
             self.update($target[0]);
-          }).one('mouseup', function (e) {
-            e.preventDefault();
-            $document.off('mousemove');
-            context.invoke('editor.afterCommand');
-          });
+          };
+
+          $document
+            .on('mousemove', onMouseMove)
+            .one('mouseup', function (e) {
+              e.preventDefault();
+              $document.off('mousemove', onMouseMove);
+              context.invoke('editor.afterCommand');
+            });
 
           if (!$target.data('ratio')) { // original ratio.
             $target.data('ratio', $target.height() / $target.width());
@@ -5215,7 +5280,7 @@
           className: 'note-btn-bold',
           contents: ui.icon(options.icons.bold),
           tooltip: lang.font.bold + representShortcut('bold'),
-          click: context.createInvokeHandler('editor.bold')
+          click: context.createInvokeHandlerAndUpdateState('editor.bold')
         }).render();
       });
 
@@ -5224,7 +5289,7 @@
           className: 'note-btn-italic',
           contents: ui.icon(options.icons.italic),
           tooltip: lang.font.italic + representShortcut('italic'),
-          click: context.createInvokeHandler('editor.italic')
+          click: context.createInvokeHandlerAndUpdateState('editor.italic')
         }).render();
       });
 
@@ -5233,7 +5298,7 @@
           className: 'note-btn-underline',
           contents: ui.icon(options.icons.underline),
           tooltip: lang.font.underline + representShortcut('underline'),
-          click: context.createInvokeHandler('editor.underline')
+          click: context.createInvokeHandlerAndUpdateState('editor.underline')
         }).render();
       });
 
@@ -5250,7 +5315,7 @@
           className: 'note-btn-strikethrough',
           contents: ui.icon(options.icons.strikethrough),
           tooltip: lang.font.strikethrough + representShortcut('strikethrough'),
-          click: context.createInvokeHandler('editor.strikethrough')
+          click: context.createInvokeHandlerAndUpdateState('editor.strikethrough')
         }).render();
       });
 
@@ -5259,7 +5324,7 @@
           className: 'note-btn-superscript',
           contents: ui.icon(options.icons.superscript),
           tooltip: lang.font.superscript,
-          click: context.createInvokeHandler('editor.superscript')
+          click: context.createInvokeHandlerAndUpdateState('editor.superscript')
         }).render();
       });
 
@@ -5268,7 +5333,7 @@
           className: 'note-btn-subscript',
           contents: ui.icon(options.icons.subscript),
           tooltip: lang.font.subscript,
-          click: context.createInvokeHandler('editor.subscript')
+          click: context.createInvokeHandlerAndUpdateState('editor.subscript')
         }).render();
       });
 
@@ -5289,7 +5354,7 @@
             template: function (item) {
               return '<span style="font-family:' + item + '">' + item + '</span>';
             },
-            click: context.createInvokeHandler('editor.fontName')
+            click: context.createInvokeHandlerAndUpdateState('editor.fontName')
           })
         ]).render();
       });
@@ -5901,7 +5966,9 @@
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
-                     '<label>' + '<input type="checkbox" checked> ' + lang.link.openInNewWindow + '</label>' +
+                     '<label for="sn-checkbox-open-in-new-window">' + 
+                       '<input type="checkbox" id="sn-checkbox-open-in-new-window" checked />' + lang.link.openInNewWindow +
+                     '</label>' +
                    '</div>' : ''
                  );
       var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
@@ -5986,7 +6053,10 @@
           self.bindEnterKey($linkUrl, $linkBtn);
           self.bindEnterKey($linkText, $linkBtn);
 
-          $openInNewWindow.prop('checked', linkInfo.isNewWindow);
+          var isChecked = linkInfo.isNewWindow !== undefined ?
+            linkInfo.isNewWindow : context.options.linkTargetBlank;
+
+          $openInNewWindow.prop('checked', isChecked);
 
           $linkBtn.one('click', function (event) {
             event.preventDefault();
@@ -6038,6 +6108,7 @@
     var ui = $.summernote.ui;
 
     var options = context.options;
+    var $editor = context.layoutInfo.editor;
 
     this.events = {
       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
@@ -6053,13 +6124,14 @@
     };
 
     this.initialize = function () {
+      var $container = options.dialogsInBody ? $(document.body) : $editor; // digidesk: fix for popovers in body
       this.$popover = ui.popover({
         className: 'note-link-popover',
         callback: function ($node) {
           var $content = $node.find('.popover-content');
           $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
         }
-      }).render().appendTo('body');
+      }).render().appendTo($container);
       var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.link);
@@ -6221,15 +6293,17 @@
     var ui = $.summernote.ui;
 
     var options = context.options;
+    var $editor = context.layoutInfo.editor;
 
     this.shouldInitialize = function () {
       return !list.isEmpty(options.popover.image);
     };
 
     this.initialize = function () {
+      var $container = options.dialogsInBody ? $(document.body) : $editor; // digidesk: fix for popovers in body
       this.$popover = ui.popover({
         className: 'note-image-popover'
-      }).render().appendTo('body');
+      }).render().appendTo($container);
       var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.image);
@@ -6306,7 +6380,7 @@
       var vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
       var vMatch = url.match(vRegExp);
 
-      var vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/;
+      var vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*/;
       var vimMatch = url.match(vimRegExp);
 
       var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
@@ -6461,7 +6535,7 @@
 
       var body = [
         '<p class="text-center">',
-        '<a href="http://summernote.org/" target="_blank">Summernote 0.8.2</a> · ',
+        '<a href="http://summernote.org/" target="_blank">Summernote 0.8.4</a> · ',
         '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ',
         '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>',
         '</p>'
@@ -6584,6 +6658,7 @@
     var hint = context.options.hint || [];
     var direction = context.options.hintDirection || 'bottom';
     var hints = $.isArray(hint) ? hint : [hint];
+    var $editor = context.layoutInfo.editor;
 
     this.events = {
       'summernote.keyup': function (we, e) {
@@ -6604,12 +6679,13 @@
     };
 
     this.initialize = function () {
+      var $container = options.dialogsInBody ? $(document.body) : $editor; // digidesk: fix for popovers in body
       this.lastWordRange = null;
       this.$popover = ui.popover({
         className: 'note-hint-popover',
         hideArrow: true,
         direction: ''
-      }).render().appendTo('body');
+      }).render().appendTo($container);
 
       this.$popover.hide();
 
@@ -6672,11 +6748,13 @@
 
       if ($item.length) {
         var node = this.nodeFromItem($item);
+        // XXX: consider to move codes to editor for recording redo/undo.
         this.lastWordRange.insertNode(node);
         range.createFromNode(node).collapse().select();
 
         this.lastWordRange = null;
         this.hide();
+        context.triggerEvent('change', context.layoutInfo.editable.html(), context.layoutInfo.editable);
         context.invoke('editor.focus');
       }
 
@@ -6806,7 +6884,7 @@
 
 
   $.summernote = $.extend($.summernote, {
-    version: '0.8.2',
+    version: '0.8.4',
     ui: ui,
     dom: dom,
 
@@ -6839,7 +6917,7 @@
       },
 
       buttons: {},
-      
+
       lang: 'en-US',
 
       // toolbar
@@ -6878,6 +6956,7 @@
 
       width: null,
       height: null,
+      linkTargetBlank: true,
 
       focus: false,
       tabSize: 4,
@@ -6885,6 +6964,7 @@
       shortcuts: true,
       textareaAutoSync: true,
       direction: null,
+      tooltip: 'auto',
 
       styleTags: ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 

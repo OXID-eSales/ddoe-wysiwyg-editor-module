@@ -18,7 +18,7 @@
                     // create button
                     var button = ui.button(
                         {
-                            className: 'btn-info',
+                            className: 'btn-default',
                             contents: '<i class="fa fa-file-image-o"></i>',
                             click: function ( e )
                             {
