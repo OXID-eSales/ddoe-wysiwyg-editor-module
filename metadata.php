@@ -27,17 +27,7 @@ $aModule = array(
 
         // Admin Controller
 
-        \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController::class => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
-
-        \OxidEsales\Eshop\Application\Controller\Admin\ArticleMain::class    => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
-        \OxidEsales\Eshop\Application\Controller\Admin\CategoryText::class   => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
-        \OxidEsales\Eshop\Application\Controller\Admin\ContentMain::class    => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
-        \OxidEsales\Eshop\Application\Controller\Admin\ActionsMain::class    => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
-        \OxidEsales\Eshop\Application\Controller\Admin\AdminlinksMain::class => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
-        \OxidEsales\Eshop\Application\Controller\Admin\NewsletterMain::class => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
-        \OxidEsales\Eshop\Application\Controller\Admin\NewsText::class       => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
-        \OxidEsales\Eshop\Application\Controller\Admin\PaymentMain::class    => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
-        \OxidEsales\Eshop\Application\Controller\Admin\PriceAlarmMain::class => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygoxadmindetails',
+        \OxidEsales\Eshop\Application\Controller\TextEditorHandler::class    => 'ddoe/wysiwyg/application/controllers/ddoewysiwygtexteditorhandler',
 
         // Core
 
