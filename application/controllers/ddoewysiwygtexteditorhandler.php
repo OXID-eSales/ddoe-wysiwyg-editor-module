@@ -1,16 +1,15 @@
 <?php
 
 /**
+ * This Software is the property of OXID eSales and is protected
+ * by copyright law.
  *
- *     |o     o    |          |
- * ,---|.,---..,---|,---.,---.|__/
- * |   |||   |||   ||---'`---.|  \
- * `---'``---|``---'`---'`---'`   `
- *       `---'    [media solutions]
+ * Any unauthorized use of this software will be prosecuted by
+ * civil and criminal law.
  *
- * @copyright   (c) digidesk - media solutions
- * @link        http://www.digidesk.de
- * @author      pclaisse
+ * @link      http://www.oxid-esales.com
+ * @copyright (C) OXID eSales AG 2003-2017
+ * @version   OXID eSales Summernote
  */
 
 class ddoewysiwygtexteditorhandler extends ddoewysiwygtexteditorhandler_parent
