@@ -11,7 +11,6 @@
  * @copyright (C) OXID eSales AG 2003-2017
  * @version   OXID eSales Summernote
  */
-
 class ddoewysiwygtexteditorhandler extends ddoewysiwygtexteditorhandler_parent
 {
 
@@ -27,44 +26,44 @@ class ddoewysiwygtexteditorhandler extends ddoewysiwygtexteditorhandler_parent
      */
     public function renderRichTextEditor($width, $height, $objectValue, $fieldName)
     {
-        if( strpos( $width, '%' ) === false ) {
+        if (strpos($width, '%') === false) {
             $width .= 'px';
         }
 
-        if( strpos( $height, '%' ) === false ) {
+        if (strpos($height, '%') === false) {
             $height .= 'px';
         }
 
         $oConfig = $this->getConfig();
         $oLang = \OxidEsales\Eshop\Core\Registry::getLang();
 
-        $oUtilsView = \OxidEsales\Eshop\Core\Registry::get( 'oxUtilsView' );
-        $oSmarty = $oUtilsView->getSmarty( true );
+        $oUtilsView = \OxidEsales\Eshop\Core\Registry::get('oxUtilsView');
+        $oSmarty = $oUtilsView->getSmarty(true);
 
-        $oSmarty->assign( 'oView', $this->getView() );
-        $oSmarty->assign( 'oViewConf', $this->getViewConfig() );
+        $oSmarty->assign('oView', $this->getView());
+        $oSmarty->assign('oViewConf', $this->getViewConfig());
 
-        $oSmarty->assign( 'sEditorField', $fieldName );
-        $oSmarty->assign( 'sEditorValue', $objectValue );
-        $oSmarty->assign( 'iEditorHeight', $height );
-        $oSmarty->assign( 'iEditorWidth', $width );
+        $oSmarty->assign('sEditorField', $fieldName);
+        $oSmarty->assign('sEditorValue', $objectValue);
+        $oSmarty->assign('iEditorHeight', $height);
+        $oSmarty->assign('iEditorWidth', $width);
 
-        $iDynInterfaceLanguage = $oConfig->getConfigParam( 'iDynInterfaceLanguage' );
-        $sLangAbbr = $oLang->getLanguageAbbr( ( isset( $iDynInterfaceLanguage ) ? $iDynInterfaceLanguage : $oLang->getTplLanguage() ) );
+        $iDynInterfaceLanguage = $oConfig->getConfigParam('iDynInterfaceLanguage');
+        $sLangAbbr = $oLang->getLanguageAbbr((isset($iDynInterfaceLanguage) ? $iDynInterfaceLanguage : $oLang->getTplLanguage()));
 
-        $oSmarty->assign( 'langabbr', $sLangAbbr );
+        $oSmarty->assign('langabbr', $sLangAbbr);
 
-        return $oSmarty->fetch( 'ddoewysiwyg.tpl' );
+        return $oSmarty->fetch('ddoewysiwyg.tpl');
     }
 
     /**
-     * Gets viewConfig object
+     * Config instance getter
      *
-     * @return object
+     * @return \OxidEsales\Eshop\Core\Config
      */
-    public function getViewConfig()
+    public function getConfig()
     {
-        return $this->getView()->getViewConfig();
+        return \OxidEsales\Eshop\Core\Registry::getConfig();
     }
 
     /**
@@ -78,12 +77,12 @@ class ddoewysiwygtexteditorhandler extends ddoewysiwygtexteditorhandler_parent
     }
 
     /**
-     * Config instance getter
+     * Gets viewConfig object
      *
-     * @return \OxidEsales\Eshop\Core\Config
+     * @return object
      */
-    public function getConfig()
+    public function getViewConfig()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig();
+        return $this->getView()->getViewConfig();
     }
 }

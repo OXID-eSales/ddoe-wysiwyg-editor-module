@@ -24,12 +24,12 @@ class ddoewysiwygevents extends oxUBase
      */
     private static $_sCreateDdMediaSql =
         "CREATE TABLE IF NOT EXISTS `ddmedia` (
-           `OXID` char(32) NOT NULL,
-           `DDFILENAME` varchar(255) NOT NULL,
-           `DDFILESIZE` int(10) unsigned NOT NULL,
-           `DDFILETYPE` varchar(50) NOT NULL,
-           `DDTHUMB` varchar(255) NOT NULL,
-           `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+           `OXID` CHAR(32) NOT NULL,
+           `DDFILENAME` VARCHAR(255) NOT NULL,
+           `DDFILESIZE` INT(10) UNSIGNED NOT NULL,
+           `DDFILETYPE` VARCHAR(50) NOT NULL,
+           `DDTHUMB` VARCHAR(255) NOT NULL,
+           `OXTIMESTAMP` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
            PRIMARY KEY (`OXID`)
          ) ENGINE=InnoDB; ";
 
@@ -48,8 +48,7 @@ class ddoewysiwygevents extends oxUBase
      *
      * @var array
      */
-    private static $__aUpdateSQLs = array(
-    );
+    private static $__aUpdateSQLs = array();
 
 
     /**
@@ -57,8 +56,7 @@ class ddoewysiwygevents extends oxUBase
      *
      * @var array
      */
-    private static $__aActivateSQLs = array(
-    );
+    private static $__aActivateSQLs = array();
 
 
     /**
@@ -66,9 +64,7 @@ class ddoewysiwygevents extends oxUBase
      *
      * @var array
      */
-    private static $__aDeactivateSQLs = array(
-        // '',
-    );
+    private static $__aDeactivateSQLs = array();
 
 
     /**
@@ -87,35 +83,6 @@ class ddoewysiwygevents extends oxUBase
         self::clearCache();
     }
 
-
-    /**
-     * Execute action on deactivate event
-     */
-    public static function onDeactivate()
-    {
-        self::executeSQLs( self::$__aDeactivateSQLs );
-
-        /** @var oxConfig $oConfig */
-        $oConfig = oxNew( \OxidEsales\Eshop\Core\Config::class );
-
-        // Cache leeren
-        /** @var oxUtilsView $oUtilsView */
-        $oUtilsView = \OxidEsales\Eshop\Core\Registry::get( 'oxUtilsView' );
-        $sSmartyDir = $oUtilsView->getSmartyDir();
-
-        if( $sSmartyDir && is_readable( $sSmartyDir ) )
-        {
-            foreach( glob( $sSmartyDir . '*' ) as $sFile )
-            {
-                if ( !is_dir( $sFile ) )
-                {
-                    @unlink( $sFile );
-                }
-            }
-        }
-
-    }
-
     /**
      * Execute the sql at the first time of the module installation.
      */
@@ -132,83 +99,8 @@ class ddoewysiwygevents extends oxUBase
             }
         }
         /** @var oxConfig $oConfig */
-        $oConfig = oxNew( \OxidEsales\Eshop\Core\Config::class );
-        $oConfig->saveShopConfVar( 'bool', 'blModuleWasEnabled', 'true', $oConfig->getShopId(), 'module:ddoewysiwyg' );
-
-    }
-
-    /**
-     * Activate module after installation.
-     */
-    private static function activateModule()
-    {
-        self::executeSQLs( self::$__aActivateSQLs );
-    }
-
-    /**
-     * Updates module if it was already installed.
-     */
-    private static function updateModule()
-    {
-        /** @var oxConfig $oConfig */
-        $oConfig = oxNew( \OxidEsales\Eshop\Core\Config::class );
-
-        /** @var oxModule $oModule */
-        $oModule = oxNew( \OxidEsales\Eshop\Core\Module\Module::class );
-        $oModule->load( 'ddoewysiwyg' );
-
-        $sCurrentVersion   = $oModule->getInfo( 'version' );
-        $sInstalledVersion = $oConfig->getShopConfVar( 'iInstallledVersion', $oConfig->getShopId(), 'module:ddoewysiwyg' );
-
-        if( !$sInstalledVersion || version_compare( $sInstalledVersion, $sCurrentVersion, '<' ) )
-        {
-            if( self::$__aUpdateSQLs )
-            {
-                foreach( self::$__aUpdateSQLs as $sUpdateVersion => $aSQLs )
-                {
-                    if( !$sInstalledVersion || version_compare( $sUpdateVersion, $sInstalledVersion, '>' ) )
-                    {
-                        self::executeSQLs( $aSQLs );
-                    }
-                }
-            }
-
-            $oConfig->saveShopConfVar( 'str', 'iInstallledVersion', $sCurrentVersion, $oConfig->getShopId(), 'module:ddoewysiwyg' );
-        }
-
-    }
-
-    /**
-     * Regenerate views for changed tables
-     */
-    protected static function regenerateViews()
-    {
-        $oDbMetaDataHandler = oxNew(\OxidEsales\Eshop\Core\DbMetaDataHandler::class );
-        $oDbMetaDataHandler->updateViews();
-    }
-
-    /**
-     * Empty cache
-     */
-    private static function clearCache()
-    {
-        /** @var oxUtilsView $oUtilsView */
-        $oUtilsView = \OxidEsales\Eshop\Core\Registry::get( 'oxUtilsView' );
-        $sSmartyDir = $oUtilsView->getSmartyDir();
-
-        if( $sSmartyDir && is_readable( $sSmartyDir ) )
-        {
-            foreach( glob( $sSmartyDir . '*' ) as $sFile )
-            {
-                if ( !is_dir( $sFile ) )
-                {
-                    @unlink( $sFile );
-                }
-            }
-        }
-
-        // Initialise Smarty
-        $oUtilsView->getSmarty( true );
+        $oConfig = oxNew(\OxidEsales\Eshop\Core\Config::class);
+        $oConfig->saveShopConfVar('bool', 'blModuleWasEnabled', 'true', $oConfig->getShopId(), 'module:ddoewysiwyg');
     }
 
     /**
@@ -220,8 +112,19 @@ class ddoewysiwygevents extends oxUBase
      */
     protected static function tableExists($sTableName)
     {
-        $oDbMetaDataHandler = oxNew( \OxidEsales\Eshop\Core\DbMetaDataHandler::class );
+        $oDbMetaDataHandler = oxNew(\OxidEsales\Eshop\Core\DbMetaDataHandler::class);
+
         return $oDbMetaDataHandler->tableExists($sTableName);
+    }
+
+    /**
+     * Executes given sql statement.
+     *
+     * @param string $sSQL Sql to execute.
+     */
+    private static function executeSQL($sSQL)
+    {
+        @oxDb::getDb()->execute($sSQL);
     }
 
     /**
@@ -234,33 +137,112 @@ class ddoewysiwygevents extends oxUBase
      */
     protected static function fieldExists($sFieldName, $sTableName)
     {
-        $oDbMetaDataHandler = oxNew(\OxidEsales\Eshop\Core\DbMetaDataHandler::class );
+        $oDbMetaDataHandler = oxNew(\OxidEsales\Eshop\Core\DbMetaDataHandler::class);
+
         return $oDbMetaDataHandler->fieldExists($sFieldName, $sTableName);
+    }
+
+    /**
+     * Updates module if it was already installed.
+     */
+    private static function updateModule()
+    {
+        /** @var oxConfig $oConfig */
+        $oConfig = oxNew(\OxidEsales\Eshop\Core\Config::class);
+
+        /** @var oxModule $oModule */
+        $oModule = oxNew(\OxidEsales\Eshop\Core\Module\Module::class);
+        $oModule->load('ddoewysiwyg');
+
+        $sCurrentVersion = $oModule->getInfo('version');
+        $sInstalledVersion = $oConfig->getShopConfVar('iInstallledVersion', $oConfig->getShopId(), 'module:ddoewysiwyg');
+
+        if (!$sInstalledVersion || version_compare($sInstalledVersion, $sCurrentVersion, '<')) {
+            if (self::$__aUpdateSQLs) {
+                foreach (self::$__aUpdateSQLs as $sUpdateVersion => $aSQLs) {
+                    if (!$sInstalledVersion || version_compare($sUpdateVersion, $sInstalledVersion, '>')) {
+                        self::executeSQLs($aSQLs);
+                    }
+                }
+            }
+
+            $oConfig->saveShopConfVar('str', 'iInstallledVersion', $sCurrentVersion, $oConfig->getShopId(), 'module:ddoewysiwyg');
+        }
     }
 
     /**
      * Executes given sql statements.
      *
-     * @param $aSQLs array
+     * @param array $aSQLs
      */
-    private static function executeSQLs( $aSQLs )
+    private static function executeSQLs($aSQLs)
     {
-        if( count( $aSQLs ) > 0 )
-        {
-            foreach( $aSQLs as $sSQL )
-            {
-                self::executeSQL( $sSQL );
+        if (count($aSQLs) > 0) {
+            foreach ($aSQLs as $sSQL) {
+                self::executeSQL($sSQL);
             }
         }
     }
 
     /**
-     * Executes given sql statement.
-     *
-     * @param string $sSQL Sql to execute.
+     * Activate module after installation.
      */
-    private static function executeSQL( $sSQL )
+    private static function activateModule()
     {
-        @oxDb::getDb()->execute( $sSQL );
+        self::executeSQLs(self::$__aActivateSQLs);
+    }
+
+    /**
+     * Regenerate views for changed tables
+     */
+    protected static function regenerateViews()
+    {
+        $oDbMetaDataHandler = oxNew(\OxidEsales\Eshop\Core\DbMetaDataHandler::class);
+        $oDbMetaDataHandler->updateViews();
+    }
+
+    /**
+     * Empty cache
+     */
+    private static function clearCache()
+    {
+        /** @var oxUtilsView $oUtilsView */
+        $oUtilsView = \OxidEsales\Eshop\Core\Registry::get('oxUtilsView');
+        $sSmartyDir = $oUtilsView->getSmartyDir();
+
+        if ($sSmartyDir && is_readable($sSmartyDir)) {
+            foreach (glob($sSmartyDir . '*') as $sFile) {
+                if (!is_dir($sFile)) {
+                    @unlink($sFile);
+                }
+            }
+        }
+
+        // Initialise Smarty
+        $oUtilsView->getSmarty(true);
+    }
+
+    /**
+     * Execute action on deactivate event
+     */
+    public static function onDeactivate()
+    {
+        self::executeSQLs(self::$__aDeactivateSQLs);
+
+        /** @var oxConfig $oConfig */
+        $oConfig = oxNew(\OxidEsales\Eshop\Core\Config::class);
+
+        // Cache leeren
+        /** @var oxUtilsView $oUtilsView */
+        $oUtilsView = \OxidEsales\Eshop\Core\Registry::get('oxUtilsView');
+        $sSmartyDir = $oUtilsView->getSmartyDir();
+
+        if ($sSmartyDir && is_readable($sSmartyDir)) {
+            foreach (glob($sSmartyDir . '*') as $sFile) {
+                if (!is_dir($sFile)) {
+                    @unlink($sFile);
+                }
+            }
+        }
     }
 }

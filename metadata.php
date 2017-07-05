@@ -35,7 +35,7 @@ $aModule = array(
 
         // Admin Controller
 
-        \OxidEsales\Eshop\Application\Controller\TextEditorHandler::class    => 'ddoe/wysiwyg/application/controllers/ddoewysiwygtexteditorhandler',
+        \OxidEsales\Eshop\Application\Controller\TextEditorHandler::class => 'ddoe/wysiwyg/application/controllers/ddoewysiwygtexteditorhandler',
 
         // Core
 
@@ -43,11 +43,11 @@ $aModule = array(
         \OxidEsales\Eshop\Core\Utils::class    => 'ddoe/wysiwyg/core/ddoewysiwygoxutils',
 
     ),
-    'files' => array(
+    'files'       => array(
 
         // Models
 
-        'ddoewysiwygmedia'         => 'ddoe/wysiwyg/application/models/ddoewysiwygmedia.php',
+        'ddoewysiwygmedia' => 'ddoe/wysiwyg/application/models/ddoewysiwygmedia.php',
 
         // Controller
 
@@ -59,19 +59,17 @@ $aModule = array(
         'ddoewysiwygevents'        => 'ddoe/wysiwyg/application/events/ddoewysiwygevents.php',
 
     ),
-    'templates' => array(
+    'templates'   => array(
 
         'ddoewysiwyg.tpl'                     => 'ddoe/wysiwyg/application/views/admin/tpl/ddoewysiwyg.tpl',
         'dialog/ddoewysiwygmedia.tpl'         => 'ddoe/wysiwyg/application/views/admin/tpl/dialog/ddoewysiwygmedia.tpl',
         'dialog/ddoewysiwygmedia_wrapper.tpl' => 'ddoe/wysiwyg/application/views/admin/tpl/dialog/ddoewysiwygmedia_wrapper.tpl',
 
     ),
-    'events' => array(
+    'events'      => array(
         'onActivate'   => 'ddoewysiwygevents::onActivate',
         'onDeactivate' => 'ddoewysiwygevents::onDeactivate'
     ),
-    'blocks' => array(
-    ),
-    'settings' => array(
-    )
+    'blocks'      => array(),
+    'settings'    => array()
 );
