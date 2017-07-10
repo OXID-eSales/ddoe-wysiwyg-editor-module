@@ -24,7 +24,7 @@ class ddoewysiwygevents extends oxUBase
      */
     private static $_sCreateDdMediaSql =
         "CREATE TABLE IF NOT EXISTS `ddmedia` (
-           `OXID` char(32) NOT NULL,
+           `OXID` char(32) character set latin1 collate latin1_general_ci NOT NULL,
            `DDFILENAME` varchar(255) NOT NULL,
            `DDFILESIZE` int(10) unsigned NOT NULL,
            `DDFILETYPE` varchar(50) NOT NULL,
