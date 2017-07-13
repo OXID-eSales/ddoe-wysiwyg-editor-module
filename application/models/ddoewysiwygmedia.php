@@ -10,7 +10,6 @@
  * @copyright (C) OXID eSales AG 2003-2017
  * @version   OXID eSales Summernote
  */
-
 class ddoewysiwygmedia extends oxBase
 {
 
@@ -18,155 +17,154 @@ class ddoewysiwygmedia extends oxBase
     protected $_iDefaultThumbnailSize = 185;
 
 
-    public function init( $sTableName = NULL, $blForceAllFields = false ) {}
-
-
-    public function getMediaPath( $sFile = '' )
+    /**
+     * @param null|string $sTableName
+     * @param bool        $blForceAllFields
+     */
+    public function init($sTableName = null, $blForceAllFields = false)
     {
-        $sPath = rtrim( getShopBasePath(), '/' ) . $this->_sMediaPath;
-
-        if ( $sFile )
-        {
-            return $sPath . $sFile;
-        }
-
-        return $sPath;
-
     }
 
+    /**
+     * @param string       $sFile
+     * @param null|integer $iThumbSize
+     *
+     * @return bool|string
+     */
+    public function getThumbnailUrl($sFile = '', $iThumbSize = null)
+    {
+        if ($sFile) {
+            if (!$iThumbSize) {
+                $iThumbSize = $this->_iDefaultThumbnailSize;
+            }
 
-    public function getMediaUrl( $sFile = '' )
+            $sThumbName = $this->getThumbName($sFile, $iThumbSize);
+
+            if ($sThumbName) {
+                return $this->getMediaUrl('thumbs/' . $sThumbName);
+            }
+        } else {
+            return $this->getMediaUrl('thumbs/');
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string       $sFile
+     * @param null|integer $iThumbSize
+     *
+     * @return string
+     */
+    public function getThumbName($sFile, $iThumbSize = null)
+    {
+        if (!$iThumbSize) {
+            $iThumbSize = $this->_iDefaultThumbnailSize;
+        }
+
+        return str_replace('.', '_', md5(basename($sFile))) . '_thumb_' . $iThumbSize . '.jpg';
+    }
+
+    /**
+     * @param string $sFile
+     *
+     * @return bool|string
+     */
+    public function getMediaUrl($sFile = '')
     {
         $oConfig = $this->getConfig();
 
-        $sFilePath = $this->getMediaPath( $sFile );
+        $sFilePath = $this->getMediaPath($sFile);
 
-        if( !is_readable( $sFilePath ) )
-        {
+        if (!is_readable($sFilePath)) {
             return false;
         }
 
-        if( $oConfig->isSsl() )
-        {
-            $sUrl = $oConfig->getSslShopUrl( false );
-        }
-        else
-        {
-            $sUrl = $oConfig->getShopUrl( false );
+        if ($oConfig->isSsl()) {
+            $sUrl = $oConfig->getSslShopUrl(false);
+        } else {
+            $sUrl = $oConfig->getShopUrl(false);
         }
 
-        $sUrl = rtrim( $sUrl, '/' ) . $this->_sMediaPath;
+        $sUrl = rtrim($sUrl, '/') . $this->_sMediaPath;
 
-        if( $sFile )
-        {
+        if ($sFile) {
             return $sUrl . $sFile;
         }
 
         return $sUrl;
-
     }
 
-
-    public function getThumbnailPath( $sFile = '' )
+    /**
+     * @param string $sFile
+     *
+     * @return string
+     */
+    public function getMediaPath($sFile = '')
     {
-        $sPath = $this->getMediaPath() . 'thumbs/';
+        $sPath = rtrim(getShopBasePath(), '/') . $this->_sMediaPath;
 
-        if ( $sFile )
-        {
+        if ($sFile) {
             return $sPath . $sFile;
         }
 
         return $sPath;
     }
 
-
-    public function getThumbnailUrl( $sFile = '', $iThumbSize = null )
-    {
-        if( $sFile )
-        {
-            if( !$iThumbSize )
-            {
-                $iThumbSize = $this->_iDefaultThumbnailSize;
-            }
-
-            $sThumbName = $this->getThumbName( $sFile, $iThumbSize );
-
-            if( $sThumbName )
-            {
-                return $this->getMediaUrl( 'thumbs/' . $sThumbName );
-            }
-        }
-        else
-        {
-            return $this->getMediaUrl( 'thumbs/' );
-        }
-
-        return false;
-
-    }
-
-
-    public function getThumbName( $sFile, $iThumbSize = null )
-    {
-        if( !$iThumbSize )
-        {
-            $iThumbSize = $this->_iDefaultThumbnailSize;
-        }
-
-        return str_replace( '.', '_', md5( basename( $sFile ) ) ) . '_thumb_' . $iThumbSize . '.jpg';
-    }
-
-
+    /**
+     * @return int
+     */
     public function getDefaultThumbSize()
     {
         return $this->_iDefaultThumbnailSize;
     }
 
-
-    public function uploadeMedia( $sSourcePath, $sDestPath, $blCreateThumbs = false )
+    /**
+     * @param string $sSourcePath
+     * @param string $sDestPath
+     * @param bool   $blCreateThumbs
+     *
+     * @return array
+     */
+    public function uploadeMedia($sSourcePath, $sDestPath, $blCreateThumbs = false)
     {
         $this->createDirs();
 
         $sThumbName = '';
-        $sFileName  = basename( $sDestPath );
+        $sFileName = basename($sDestPath);
         $iFileCount = 0;
 
-        while( file_exists( $sDestPath ) )
-        {
-            $aFileParts = explode( '.', $sFileName );
-            $aFileParts = array_reverse( $aFileParts );
+        while (file_exists($sDestPath)) {
+            $aFileParts = explode('.', $sFileName);
+            $aFileParts = array_reverse($aFileParts);
 
-            $sFileExt = $aFileParts[ 0 ];
-            unset( $aFileParts[ 0 ] );
+            $sFileExt = $aFileParts[0];
+            unset($aFileParts[0]);
 
-            $sBaseName = implode( '.', array_reverse( $aFileParts ) );
+            $sBaseName = implode('.', array_reverse($aFileParts));
 
-            $aBaseParts = explode( '_', $sBaseName );
-            $aBaseParts = array_reverse( $aBaseParts );
+            $aBaseParts = explode('_', $sBaseName);
+            $aBaseParts = array_reverse($aBaseParts);
 
-            if( strlen( $aBaseParts[ 0 ] ) == 1 && is_numeric( $aBaseParts[ 0 ] ) )
-            {
-                $iFileCount = (int)$aBaseParts[ 0 ];
-                unset( $aBaseParts[ 0 ] );
+            if (strlen($aBaseParts[0]) == 1 && is_numeric($aBaseParts[0])) {
+                $iFileCount = (int) $aBaseParts[0];
+                unset($aBaseParts[0]);
             }
 
-            $sBaseName = implode( '_', array_reverse( $aBaseParts ) );
+            $sBaseName = implode('_', array_reverse($aBaseParts));
 
-            $sFileName = $sBaseName . '_' . ( ++$iFileCount ) . '.' . $sFileExt;
-            $sDestPath   = $this->_sUploadDir . $sFileName;
+            $sFileName = $sBaseName . '_' . (++$iFileCount) . '.' . $sFileExt;
+            $sDestPath = $this->_sUploadDir . $sFileName;
         }
 
-        move_uploaded_file( $sSourcePath, $sDestPath );
+        move_uploaded_file($sSourcePath, $sDestPath);
 
-        if( $blCreateThumbs )
-        {
+        if ($blCreateThumbs) {
             try {
-                $sThumbName = $this->createThumbnail( $sFileName );
+                $sThumbName = $this->createThumbnail($sFileName);
 
-                $this->createMoreThumbnails( $sFileName );
-            }
-            catch( Exception $e )
-            {
+                $this->createMoreThumbnails($sFileName);
+            } catch (Exception $e) {
                 $sThumbName = '';
             }
         }
@@ -176,104 +174,122 @@ class ddoewysiwygmedia extends oxBase
             'filename'  => $sFileName,
             'thumbnail' => $sThumbName
         );
-
     }
 
-
-    public function createThumbnail( $sFileName, $iThumbSize = null, $blCrop = true )
+    /**
+     * Create directories
+     */
+    public function createDirs()
     {
-        $sFilePath = $this->getMediaPath( $sFileName );
+        if (!is_dir($this->getMediaPath())) {
+            mkdir($this->getMediaPath());
+        }
 
-        if( is_readable( $sFilePath ) )
-        {
-            if( !$iThumbSize )
-            {
+        if (!is_dir($this->getThumbnailPath())) {
+            mkdir($this->getThumbnailPath());
+        }
+    }
+
+    /**
+     * @param string $sFile
+     *
+     * @return string
+     */
+    public function getThumbnailPath($sFile = '')
+    {
+        $sPath = $this->getMediaPath() . 'thumbs/';
+
+        if ($sFile) {
+            return $sPath . $sFile;
+        }
+
+        return $sPath;
+    }
+
+    /**
+     * @param string       $sFileName
+     * @param null|integer $iThumbSize
+     * @param bool         $blCrop
+     *
+     * @return bool|string
+     * @throws Exception
+     */
+    public function createThumbnail($sFileName, $iThumbSize = null, $blCrop = true)
+    {
+        $sFilePath = $this->getMediaPath($sFileName);
+
+        if (is_readable($sFilePath)) {
+            if (!$iThumbSize) {
                 $iThumbSize = $this->_iDefaultThumbnailSize;
             }
 
-            list( $iImageWidth, $iImageHeight, $iImageType ) = getimagesize( $sFilePath );
+            list($iImageWidth, $iImageHeight, $iImageType) = getimagesize($sFilePath);
 
-            switch( $iImageType )
-            {
+            switch ($iImageType) {
                 case 1:
-                    $rImg = imagecreatefromgif( $sFilePath );
+                    $rImg = imagecreatefromgif($sFilePath);
                     break;
 
                 case 2:
-                    $rImg = imagecreatefromjpeg( $sFilePath );
+                    $rImg = imagecreatefromjpeg($sFilePath);
                     break;
 
                 case 3:
-                    $rImg = imagecreatefrompng( $sFilePath );
+                    $rImg = imagecreatefrompng($sFilePath);
                     break;
 
                 default:
-                    throw new Exception( 'Invalid filetype' );
+                    throw new Exception('Invalid filetype');
                     break;
             }
 
-            $iThumbWidth  = $iImageWidth;
+            $iThumbWidth = $iImageWidth;
             $iThumbHeight = $iImageHeight;
 
             $iThumbX = 0;
             $iThumbY = 0;
 
-            if( $blCrop )
-            {
-                if( $iImageWidth < $iImageHeight )
-                {
-                    $iThumbWidth  = $iThumbSize;
-                    $iThumbHeight = $iImageHeight / ( $iImageWidth / $iThumbWidth );
+            if ($blCrop) {
+                if ($iImageWidth < $iImageHeight) {
+                    $iThumbWidth = $iThumbSize;
+                    $iThumbHeight = $iImageHeight / ($iImageWidth / $iThumbWidth);
 
-                    $iThumbY = ( ( $iThumbSize - $iThumbHeight ) / 2 );
-                }
-                elseif( $iImageHeight < $iImageWidth )
-                {
+                    $iThumbY = (($iThumbSize - $iThumbHeight) / 2);
+                } elseif ($iImageHeight < $iImageWidth) {
                     $iThumbHeight = $iThumbSize;
-                    $iThumbWidth  = $iImageWidth / ( $iImageHeight / $iThumbHeight );
+                    $iThumbWidth = $iImageWidth / ($iImageHeight / $iThumbHeight);
 
-                    $iThumbX = ( ( $iThumbSize - $iThumbWidth ) / 2 );
+                    $iThumbX = (($iThumbSize - $iThumbWidth) / 2);
                 }
-            }
-            else
-            {
-                if( $iImageWidth < $iImageHeight )
-                {
-                    if( $iImageHeight > $iThumbSize )
-                    {
-                        $iThumbWidth  *= ( $iThumbSize / $iImageHeight );
-                        $iThumbHeight *= ( $iThumbSize / $iImageHeight );
+            } else {
+                if ($iImageWidth < $iImageHeight) {
+                    if ($iImageHeight > $iThumbSize) {
+                        $iThumbWidth *= ($iThumbSize / $iImageHeight);
+                        $iThumbHeight *= ($iThumbSize / $iImageHeight);
+                    }
+                } elseif ($iImageHeight < $iImageWidth) {
+                    if ($iImageHeight > $iThumbSize) {
+                        $iThumbWidth *= ($iThumbSize / $iImageWidth);
+                        $iThumbHeight *= ($iThumbSize / $iImageWidth);
                     }
                 }
-                elseif( $iImageHeight < $iImageWidth )
-                {
-                    if( $iImageHeight > $iThumbSize )
-                    {
-                        $iThumbWidth  *= ( $iThumbSize / $iImageWidth );
-                        $iThumbHeight *= ( $iThumbSize / $iImageWidth );
-                    }
-                }
-
             }
 
-            $rTmpImg = imagecreatetruecolor( $iThumbWidth, $iThumbHeight );
-            imagecopyresampled( $rTmpImg, $rImg, $iThumbX, $iThumbY, 0, 0, $iThumbWidth, $iThumbHeight, $iImageWidth, $iImageHeight);
+            $rTmpImg = imagecreatetruecolor($iThumbWidth, $iThumbHeight);
+            imagecopyresampled($rTmpImg, $rImg, $iThumbX, $iThumbY, 0, 0, $iThumbWidth, $iThumbHeight, $iImageWidth, $iImageHeight);
 
-            if( $blCrop )
-            {
-                $rThumbImg = imagecreatetruecolor( $iThumbSize, $iThumbSize );
-                imagefill( $rThumbImg, 0, 0, imagecolorallocate( $rThumbImg,  0, 0, 0 ) );
+            if ($blCrop) {
+                $rThumbImg = imagecreatetruecolor($iThumbSize, $iThumbSize);
+                imagefill($rThumbImg, 0, 0, imagecolorallocate($rThumbImg, 0, 0, 0));
 
-                imagecopymerge( $rThumbImg, $rTmpImg, 0, 0, 0, 0, $iThumbSize, $iThumbSize, 100 );
-            }
-            else
-            {
+                imagecopymerge($rThumbImg, $rTmpImg, 0, 0, 0, 0, $iThumbSize, $iThumbSize, 100);
+            } else {
                 $rThumbImg = $rTmpImg;
             }
 
-            $sThumbName = $this->getThumbName( $sFileName, $iThumbSize );
+            $sThumbName = $this->getThumbName($sFileName, $iThumbSize);
 
-            imagejpeg( $rThumbImg, $this->getThumbnailPath( $sThumbName ) );
+            imagejpeg($rThumbImg, $this->getThumbnailPath($sThumbName));
 
             return $sThumbName;
         }
@@ -281,53 +297,38 @@ class ddoewysiwygmedia extends oxBase
         return false;
     }
 
-
-    public function createMoreThumbnails( $sFileName )
+    /**
+     * @param string $sFileName
+     */
+    public function createMoreThumbnails($sFileName)
     {
         // More Thumbnail Sizes
-        $this->createThumbnail( $sFileName, 300 );
-        $this->createThumbnail( $sFileName, 800 );
+        $this->createThumbnail($sFileName, 300);
+        $this->createThumbnail($sFileName, 800);
     }
 
-
-    public function createDirs()
+    /**
+     * @param null|integer $iThumbSize
+     * @param bool         $blOverwrite
+     * @param bool         $blCrop
+     */
+    public function generateThumbnails($iThumbSize = null, $blOverwrite = false, $blCrop = true)
     {
-        if( !is_dir( $this->getMediaPath() ) )
-        {
-            mkdir( $this->getMediaPath() );
-        }
-
-        if( !is_dir( $this->getThumbnailPath() ) )
-        {
-            mkdir( $this->getThumbnailPath() );
-        }
-    }
-
-
-    public function generateThumbnails( $iThumbSize = null, $blOverwrite = false, $blCrop = true )
-    {
-        if( !$iThumbSize )
-        {
+        if (!$iThumbSize) {
             $iThumbSize = $this->_iDefaultThumbnailSize;
         }
 
-        if( is_dir( $this->getMediaPath() ) )
-        {
-            foreach( new DirectoryIterator( $this->getMediaPath() ) as $oFile )
-            {
-                if( $oFile->isFile() )
-                {
-                    $sThumbName = $this->getThumbName( $oFile->getBasename(), $iThumbSize );
-                    $sThumbPath = $this->getThumbnailPath( $sThumbName );
+        if (is_dir($this->getMediaPath())) {
+            foreach (new DirectoryIterator($this->getMediaPath()) as $oFile) {
+                if ($oFile->isFile()) {
+                    $sThumbName = $this->getThumbName($oFile->getBasename(), $iThumbSize);
+                    $sThumbPath = $this->getThumbnailPath($sThumbName);
 
-                    if( !file_exists( $sThumbPath ) || $blOverwrite )
-                    {
-                        $this->createThumbnail( $oFile->getBasename(), $iThumbSize, $blCrop );
+                    if (!file_exists($sThumbPath) || $blOverwrite) {
+                        $this->createThumbnail($oFile->getBasename(), $iThumbSize, $blCrop);
                     }
                 }
             }
         }
-
     }
-
 }
