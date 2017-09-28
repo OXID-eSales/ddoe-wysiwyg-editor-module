@@ -20,7 +20,16 @@
  * @version   OXID eSales WYSIWYG
  */
 
-class ddoewysiwygmedia extends oxBase
+namespace OxidEsales\WysiwygModule\Application\Model;
+
+use OxidEsales\Eshop\Core\Model\BaseModel;
+
+/**
+ * Class Media
+ *
+ * @mixin \OxidEsales\Eshop\Core\Model\BaseModel
+ */
+class Media extends BaseModel
 {
 
     protected $_sMediaPath = '/out/pictures/ddmedia/';
@@ -174,7 +183,7 @@ class ddoewysiwygmedia extends oxBase
                 $sThumbName = $this->createThumbnail($sFileName);
 
                 $this->createMoreThumbnails($sFileName);
-            } catch (Exception $e) {
+            } catch ( \Exception $e) {
                 $sThumbName = '';
             }
         }
@@ -249,7 +258,7 @@ class ddoewysiwygmedia extends oxBase
                     break;
 
                 default:
-                    throw new Exception('Invalid filetype');
+                    throw new \Exception('Invalid filetype');
                     break;
             }
 
@@ -329,7 +338,7 @@ class ddoewysiwygmedia extends oxBase
         }
 
         if (is_dir($this->getMediaPath())) {
-            foreach (new DirectoryIterator($this->getMediaPath()) as $oFile) {
+            foreach (new \DirectoryIterator($this->getMediaPath()) as $oFile) {
                 if ($oFile->isFile()) {
                     $sThumbName = $this->getThumbName($oFile->getBasename(), $iThumbSize);
                     $sThumbPath = $this->getThumbnailPath($sThumbName);

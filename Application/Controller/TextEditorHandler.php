@@ -21,7 +21,16 @@
  * @version   OXID eSales WYSIWYG
  */
 
-class ddoewysiwygtexteditorhandler extends ddoewysiwygtexteditorhandler_parent
+namespace OxidEsales\WysiwygModule\Application\Controller;
+
+use OxidEsales\Eshop\Core\Registry;
+
+/**
+ * Class TextEditorHandler
+ *
+ * @mixin \OxidEsales\Eshop\Application\Controller\TextEditorHandler
+ */
+class TextEditorHandler extends TextEditorHandler_parent
 {
 
     /**
@@ -45,9 +54,9 @@ class ddoewysiwygtexteditorhandler extends ddoewysiwygtexteditorhandler_parent
         }
 
         $oConfig = $this->getConfig();
-        $oLang = \OxidEsales\Eshop\Core\Registry::getLang();
+        $oLang = Registry::getLang();
 
-        $oUtilsView = \OxidEsales\Eshop\Core\Registry::get('oxUtilsView');
+        $oUtilsView = Registry::get('oxUtilsView');
         $oSmarty = $oUtilsView->getSmarty(true);
 
         $oSmarty->assign('oView', $this->getView());
@@ -73,7 +82,7 @@ class ddoewysiwygtexteditorhandler extends ddoewysiwygtexteditorhandler_parent
      */
     public function getConfig()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig();
+        return Registry::getConfig();
     }
 
     /**

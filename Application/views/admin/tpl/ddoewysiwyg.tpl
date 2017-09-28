@@ -23,16 +23,26 @@
         _win.editorControllerUrl = '[{$oViewConf->getSelfLink()|html_entity_decode|cat:'cl=ddoewysiwygmedia_wrapper&overlay=1'}]';
         _win.isOverlayLoaded     = true;
 
-        var headElement       = _doc.getElementsByTagName( 'head' )[ 0 ];
-        var langScriptElement = _doc.createElement( 'script' );
+        var loadScript = function( src, cb )
+        {
+            var headElement   = _doc.getElementsByTagName( 'head' )[ 0 ];
+            var scriptElement = _doc.createElement( 'script' );
 
-        langScriptElement.setAttribute( 'src', '[{$oViewConf->getSelfLink()|html_entity_decode|cat:'cl=ddoewysiwyglangjs'}]' );
-        headElement.appendChild( langScriptElement );
+            scriptElement.setAttribute( 'src', src );
 
-        var overlayScriptElement = _doc.createElement( 'script' );
+            if( typeof cb === 'function' )
+            {
+                scriptElement.addEventListener( 'load', function( e ) { cb( null, e ); }, false );
+            }
 
-        overlayScriptElement.setAttribute( 'src', '[{$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/overlay.min.js')}]' );
-        headElement.appendChild( overlayScriptElement );
+            headElement.appendChild( scriptElement );
+        };
+
+        loadScript( '[{$oViewConf->getSelfLink()|html_entity_decode|cat:'cl=ddoewysiwyglangjs'}]', function()
+            {
+                loadScript( '[{$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/overlay.min.js')}]' );
+            }
+        );
     }
 </script>
 

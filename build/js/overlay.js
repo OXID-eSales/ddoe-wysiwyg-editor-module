@@ -29,22 +29,22 @@
     var Overlay = function ()
     {
         // Create pseudo helper if not exists
-        if ( typeof ddh == 'undefined' )
+        if ( typeof ddh === 'undefined' )
         {
             window.ddh = {
                 translate: function ( string )
                 {
-                    if ( string && typeof i18n === 'object' )
+                    if ( string && typeof window.i18n === 'object' )
                     {
-                        if ( i18n[ string ] )
+                        if ( window.i18n[ string ] )
                         {
-                            return i18n[ string ];
+                            return window.i18n[ string ];
                         }
                     }
 
                     return string;
                 }
-            }
+            };
         }
 
         this.loadStyles();
@@ -160,6 +160,6 @@
     };
 
     // Initialize Overlay
-    window.OverlayInstance = new Overlay();
+   window.OverlayInstance = new Overlay();
 
 }( jQuery );

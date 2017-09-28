@@ -20,10 +20,17 @@
  * @version   OXID eSales WYSIWYG
  */
 
+namespace OxidEsales\WysiwygModule\Core;
+
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\DatabaseProvider;
+use OxidEsales\Eshop\Core\DbMetaDataHandler;
+use OxidEsales\Eshop\Core\Module\Module;
+
 /**
  * Class defines what module does on Shop events.
  */
-class ddoewysiwygevents extends oxUBase
+class Events
 {
 
     /**
@@ -107,8 +114,8 @@ class ddoewysiwygevents extends oxUBase
                 self::executeSQL($sSql);
             }
         }
-        /** @var oxConfig $oConfig */
-        $oConfig = oxNew(\OxidEsales\Eshop\Core\Config::class);
+        /** @var \OxidEsales\Eshop\Core\Config $oConfig */
+        $oConfig = Registry::getConfig();
         $oConfig->saveShopConfVar('bool', 'blModuleWasEnabled', 'true', $oConfig->getShopId(), 'module:ddoewysiwyg');
     }
 
@@ -121,7 +128,7 @@ class ddoewysiwygevents extends oxUBase
      */
     protected static function tableExists($sTableName)
     {
-        $oDbMetaDataHandler = oxNew(\OxidEsales\Eshop\Core\DbMetaDataHandler::class);
+        $oDbMetaDataHandler = oxNew(DbMetaDataHandler::class );
 
         return $oDbMetaDataHandler->tableExists($sTableName);
     }
@@ -133,7 +140,7 @@ class ddoewysiwygevents extends oxUBase
      */
     private static function executeSQL($sSQL)
     {
-        @oxDb::getDb()->execute($sSQL);
+        @DatabaseProvider::getDb()->execute($sSQL);
     }
 
     /**
@@ -146,7 +153,7 @@ class ddoewysiwygevents extends oxUBase
      */
     protected static function fieldExists($sFieldName, $sTableName)
     {
-        $oDbMetaDataHandler = oxNew(\OxidEsales\Eshop\Core\DbMetaDataHandler::class);
+        $oDbMetaDataHandler = oxNew(DbMetaDataHandler::class );
 
         return $oDbMetaDataHandler->fieldExists($sFieldName, $sTableName);
     }
@@ -156,11 +163,11 @@ class ddoewysiwygevents extends oxUBase
      */
     private static function updateModule()
     {
-        /** @var oxConfig $oConfig */
-        $oConfig = oxNew(\OxidEsales\Eshop\Core\Config::class);
+        /** @var \OxidEsales\Eshop\Core\Config $oConfig */
+        $oConfig = Registry::getConfig();
 
-        /** @var oxModule $oModule */
-        $oModule = oxNew(\OxidEsales\Eshop\Core\Module\Module::class);
+        /** @var Module $oModule */
+        $oModule = oxNew(Module::class);
         $oModule->load('ddoewysiwyg');
 
         $sCurrentVersion = $oModule->getInfo('version');
@@ -206,7 +213,7 @@ class ddoewysiwygevents extends oxUBase
      */
     protected static function regenerateViews()
     {
-        $oDbMetaDataHandler = oxNew(\OxidEsales\Eshop\Core\DbMetaDataHandler::class);
+        $oDbMetaDataHandler = oxNew(DbMetaDataHandler::class );
         $oDbMetaDataHandler->updateViews();
     }
 
@@ -215,8 +222,8 @@ class ddoewysiwygevents extends oxUBase
      */
     private static function clearCache()
     {
-        /** @var oxUtilsView $oUtilsView */
-        $oUtilsView = \OxidEsales\Eshop\Core\Registry::get('oxUtilsView');
+        /** @var \OxidEsales\Eshop\Core\UtilsView $oUtilsView */
+        $oUtilsView = Registry::get('oxUtilsView');
         $sSmartyDir = $oUtilsView->getSmartyDir();
 
         if ($sSmartyDir && is_readable($sSmartyDir)) {
@@ -238,20 +245,6 @@ class ddoewysiwygevents extends oxUBase
     {
         self::executeSQLs(self::$__aDeactivateSQLs);
 
-        /** @var oxConfig $oConfig */
-        $oConfig = oxNew(\OxidEsales\Eshop\Core\Config::class);
-
-        // Cache leeren
-        /** @var oxUtilsView $oUtilsView */
-        $oUtilsView = \OxidEsales\Eshop\Core\Registry::get('oxUtilsView');
-        $sSmartyDir = $oUtilsView->getSmartyDir();
-
-        if ($sSmartyDir && is_readable($sSmartyDir)) {
-            foreach (glob($sSmartyDir . '*') as $sFile) {
-                if (!is_dir($sFile)) {
-                    @unlink($sFile);
-                }
-            }
-        }
+        self::clearCache();
     }
 }

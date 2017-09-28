@@ -20,10 +20,14 @@
  * @version   OXID eSales WYSIWYG
  */
 
+namespace OxidEsales\WysiwygModule\Core;
+
 /**
- * @package core
+ * Class Utils
+ *
+ * @mixin \OxidEsales\Eshop\Core\Utils
  */
-class ddoewysiwygoxutils extends ddoewysiwygoxutils_parent
+class Utils extends Utils_parent
 {
 
     /**

@@ -23,7 +23,7 @@
 /**
  * Metadata version
  */
-$sMetadataVersion = '1.1';
+$sMetadataVersion = '2.0';
 
 /**
  * Module information
@@ -43,29 +43,21 @@ $aModule = array(
     'extend'      => array(
 
         // Admin Controller
-
-        \OxidEsales\Eshop\Application\Controller\TextEditorHandler::class => 'ddoe/wysiwyg/application/controllers/ddoewysiwygtexteditorhandler',
+        \OxidEsales\Eshop\Application\Controller\TextEditorHandler::class => \OxidEsales\WysiwygModule\Application\Controller\TextEditorHandler::class,
 
         // Core
-
-        \OxidEsales\Eshop\Core\Language::class => 'ddoe/wysiwyg/core/ddoewysiwygoxlang',
-        \OxidEsales\Eshop\Core\Utils::class    => 'ddoe/wysiwyg/core/ddoewysiwygoxutils',
+        \OxidEsales\Eshop\Core\Language::class => \OxidEsales\WysiwygModule\Core\Language::class,
+        \OxidEsales\Eshop\Core\Utils::class    => \OxidEsales\WysiwygModule\Core\Utils::class,
 
     ),
-    'files'       => array(
+    'controllers'       => array(
 
-        // Models
+        // Lang
+        'ddoewysiwyglangjs' => \OxidEsales\WysiwygModule\Application\Controller\WysiwygLangJs::class,
 
-        'ddoewysiwygmedia' => 'ddoe/wysiwyg/application/models/ddoewysiwygmedia.php',
-
-        // Controller
-
-        'ddoewysiwyglangjs'        => 'ddoe/wysiwyg/application/controllers/ddoewysiwyglangjs.php',
-        'ddoewysiwygmedia_view'    => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygmedia_view.php',
-        'ddoewysiwygmedia_wrapper' => 'ddoe/wysiwyg/application/controllers/admin/ddoewysiwygmedia_wrapper.php',
-
-        // Events
-        'ddoewysiwygevents'        => 'ddoe/wysiwyg/application/events/ddoewysiwygevents.php',
+        // Admin Controller
+        'ddoewysiwygmedia_view'    => \OxidEsales\WysiwygModule\Application\Controller\Admin\WysiwygMedia::class,
+        'ddoewysiwygmedia_wrapper' => \OxidEsales\WysiwygModule\Application\Controller\Admin\WysiwygMediaWrapper::class,
 
     ),
     'templates'   => array(
@@ -76,8 +68,8 @@ $aModule = array(
 
     ),
     'events'      => array(
-        'onActivate'   => 'ddoewysiwygevents::onActivate',
-        'onDeactivate' => 'ddoewysiwygevents::onDeactivate'
+        'onActivate'   => '\OxidEsales\WysiwygModule\Core\Events::onActivate',
+        'onDeactivate' => '\OxidEsales\WysiwygModule\Core\Events::onDeactivate'
     ),
     'blocks'      => array(),
     'settings'    => array()
