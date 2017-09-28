@@ -24,7 +24,8 @@ module.exports = {
     wysiwyg: {
 
         options: {
-            sourceMap: true
+            sourceMap: true,
+            preserveComments: 'some'
         },
 
         files: {
