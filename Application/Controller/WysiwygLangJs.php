@@ -20,13 +20,30 @@
  * @version   OXID eSales WYSIWYG
  */
 
-class ddoewysiwygmedia_wrapper extends ddoewysiwygmedia_view
+namespace OxidEsales\WysiwygModule\Application\Controller;
+
+use OxidEsales\Eshop\Application\Controller\FrontendController;
+use OxidEsales\Eshop\Core\Language;
+use OxidEsales\Eshop\Core\Registry;
+
+/**
+ * Class WysiwygLangJs
+ */
+class WysiwygLangJs extends FrontendController
 {
 
     /**
-     * Current class template name.
-     *
-     * @var string
+     * Init function
      */
-    protected $_sThisTemplate = 'dialog/ddoewysiwygmedia_wrapper.tpl';
+    public function init()
+    {
+        /** @var Language $oLang */
+        $oLang = oxNew(Language::class);
+
+        header('Content-Type: application/javascript');
+
+        $oUtils = Registry::getUtils();
+        $sJson = $oUtils->encodeJson($oLang->getLanguageStrings());
+        $oUtils->showMessageAndExit(";( function(g){ g.i18n = " . $sJson . "; })(window);");
+    }
 }

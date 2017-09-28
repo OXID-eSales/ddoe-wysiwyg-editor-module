@@ -20,36 +20,18 @@
  * @version   OXID eSales WYSIWYG
  */
 
+namespace OxidEsales\WysiwygModule\Application\Controller\Admin;
+
 /**
- * @package core
+ * Class WysiwygMediaWrapper
  */
-class ddoewysiwygoxlang extends ddoewysiwygoxlang_parent
+class WysiwygMediaWrapper extends WysiwygMedia
 {
 
     /**
-     * @param null|integer $iLang
-     * @param null|bool    $blAdminMode
+     * Current class template name.
      *
-     * @return array
+     * @var string
      */
-    public function getLanguageStrings($iLang = null, $blAdminMode = null)
-    {
-        $aLang = array();
-
-        foreach ($this->_getLangTranslationArray($iLang, $blAdminMode) as $sLangKey => $sLangValue) {
-            $aLang[$sLangKey] = $sLangValue;
-        }
-
-        foreach ($this->_getLanguageMap($iLang, $blAdminMode) as $sLangKey => $sLangValue) {
-            $aLang[$sLangKey] = $sLangValue;
-        }
-
-        if (count($this->_aAdditionalLangFiles)) {
-            foreach ($this->_getLangTranslationArray($iLang, $blAdminMode, $this->_aAdditionalLangFiles) as $sLangKey => $sLangValue) {
-                $aLang[$sLangKey] = $sLangValue;
-            }
-        }
-
-        return $aLang;
-    }
+    protected $_sThisTemplate = 'dialog/ddoewysiwygmedia_wrapper.tpl';
 }

@@ -20,7 +20,17 @@
  * @version   OXID eSales WYSIWYG
  */
 
-class ddoewysiwygmedia_view extends oxAdminDetails
+namespace OxidEsales\WysiwygModule\Application\Controller\Admin;
+
+use OxidEsales\WysiwygModule\Application\Model\Media;
+
+use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
+use OxidEsales\Eshop\Core\DatabaseProvider;
+
+/**
+ * Class WysiwygMedia
+ */
+class WysiwygMedia extends AdminDetailsController
 {
 
     /**
@@ -31,7 +41,7 @@ class ddoewysiwygmedia_view extends oxAdminDetails
     protected $_sThisTemplate = 'dialog/ddoewysiwygmedia.tpl';
 
     /**
-     * @var ddvisualeditor_media
+     * @var Media
      */
     protected $_oMedia = null;
 
@@ -47,11 +57,15 @@ class ddoewysiwygmedia_view extends oxAdminDetails
     {
         parent::init();
 
-        if ($this->_oMedia === null) {
-            if (class_exists('ddvisualeditor_media')) {
-                $this->_oMedia = oxNew('ddvisualeditor_media');
-            } else {
-                $this->_oMedia = oxNew('ddoewysiwygmedia');
+        if ( $this->_oMedia === null )
+        {
+            if ( class_exists( '\\OxidEsales\\VisualCmsModule\\Application\\Model\\Media' ) )
+            {
+                $this->_oMedia = oxNew( \OxidEsales\VisualCmsModule\Application\Model\Media::class );
+            }
+            else
+            {
+                $this->_oMedia = oxNew( Media::class );
             }
         }
 
@@ -88,7 +102,7 @@ class ddoewysiwygmedia_view extends oxAdminDetails
     {
         $sSelect = "SELECT * FROM `ddmedia` WHERE 1 " . ($iShopId != null ? "AND `OXSHOPID` = '" . $iShopId . "' " : "") . "ORDER BY `OXTIMESTAMP` DESC LIMIT " . $iStart . ", 18 ";
 
-        return oxDb::getDb(oxDb::FETCH_MODE_ASSOC)->getAll($sSelect);
+        return DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC)->getAll($sSelect);
     }
 
     /**
@@ -100,7 +114,7 @@ class ddoewysiwygmedia_view extends oxAdminDetails
     {
         $sSelect = "SELECT COUNT(*) AS 'count' FROM `ddmedia` WHERE 1 " . ($iShopId != null ? "AND `OXSHOPID` = '" . $iShopId . "' " : "");
 
-        return oxDb::getDb(oxDb::FETCH_MODE_ASSOC)->getOne($sSelect);
+        return DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC)->getOne($sSelect);
     }
 
     /**
@@ -142,7 +156,7 @@ class ddoewysiwygmedia_view extends oxAdminDetails
                         VALUES
                           ( '" . $sId . "', '" . $iShopId . "', '" . $sFileName . "', " . $sFileSize . ", '" . $sFileType . "', '" . $sThumbName . "', '" . $sImageSize . "' );";
 
-            oxDb::getDb()->execute($sInsert);
+            DatabaseProvider::getDb()->execute($sInsert);
         }
 
         if ($oConfig->getRequestParameter('src') == 'fallback') {
@@ -184,7 +198,7 @@ class ddoewysiwygmedia_view extends oxAdminDetails
         $oConfig = $this->getConfig();
 
         if ($aIDs = $oConfig->getRequestParameter('id')) {
-            $oDb = oxDb::getDb(oxDb::FETCH_MODE_ASSOC);
+            $oDb = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
 
             $sSelect = "SELECT `OXID`, `DDFILENAME`, `DDTHUMB` FROM `ddmedia` WHERE `OXID` IN('" . implode("','", $aIDs) . "'); ";
             $aData = $oDb->getAll($sSelect);
