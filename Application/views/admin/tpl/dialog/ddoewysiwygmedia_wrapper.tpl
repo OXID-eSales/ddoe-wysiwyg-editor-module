@@ -51,7 +51,7 @@
 [{oxscript include=$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/medialibrary.min.js') priority=1}]
 
 [{assign var="sActionLink" value=$oViewConf->getSelfLink()|html_entity_decode|cat:"overlay=`$smarty.get.overlay`&"}]
-[{assign var="sMediaLink" value=$oConf->getCurrentShopUrl(true)|regex_replace:'/([^\/])(\/admin)/':'$1'|rtrim:'/'|cat:'/out/pictures/ddmedia/'|html_entity_decode}]
+[{assign var="sMediaLink" value=$oConf->getCurrentShopUrl(true)|regex_replace:'/([^\/])(\/admin)/':'$1'|regex_replace:'/http(s)?\:/':''|rtrim:'/'|cat:'/out/pictures/ddmedia/'|html_entity_decode}]
 
 [{oxscript add="MediaLibrary.setActionLink('`$sActionLink`');" priority=10}]
 [{oxscript add="MediaLibrary.setResourceLink('`$sMediaLink`');" priority=10}]

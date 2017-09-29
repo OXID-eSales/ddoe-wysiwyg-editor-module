@@ -173,7 +173,7 @@ class Media extends BaseModel
             $sBaseName = implode('_', array_reverse($aBaseParts));
 
             $sFileName = $sBaseName . '_' . (++$iFileCount) . '.' . $sFileExt;
-            $sDestPath = $this->_sUploadDir . $sFileName;
+            $sDestPath = dirname( $sDestPath ) . '/' . $sFileName;
         }
 
         move_uploaded_file($sSourcePath, $sDestPath);
@@ -231,7 +231,7 @@ class Media extends BaseModel
      * @param bool         $blCrop
      *
      * @return bool|string
-     * @throws Exception
+     * @throws \Exception
      */
     public function createThumbnail($sFileName, $iThumbSize = null, $blCrop = true)
     {

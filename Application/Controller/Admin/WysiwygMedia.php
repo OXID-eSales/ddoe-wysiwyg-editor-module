@@ -129,17 +129,17 @@ class WysiwygMedia extends AdminDetailsController
         if ($_FILES) {
             $this->_oMedia->createDirs();
 
-            $sFileName = $_FILES['file']['name'];
             $sFileSize = $_FILES['file']['size'];
             $sFileType = $_FILES['file']['type'];
 
             $sSourcePath = $_FILES['file']['tmp_name'];
-            $sDestPath = $this->_sUploadDir . $sFileName;
+            $sDestPath = $this->_sUploadDir . $_FILES['file']['name'];
 
             $aFile = $this->_oMedia->uploadeMedia($sSourcePath, $sDestPath, true);
 
-            $sId = md5($aFile['filename']);
-            $sThumbName = $aFile['thumbnail'];
+            $sId = md5( $aFile[ 'filename' ] );
+            $sThumbName = $aFile[ 'thumbnail' ];
+            $sFileName = $aFile[ 'filename' ];
 
             $aImageSize = null;
             $sImageSize = '';

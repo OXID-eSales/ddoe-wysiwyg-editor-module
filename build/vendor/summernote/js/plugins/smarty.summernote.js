@@ -22,31 +22,31 @@
     $.extend( $.summernote.dom,
         {
             value: function( $node, stripLinebreaks )
-            {
-                var val;
-
-                if( isTextarea( $node[0] ) )
                 {
-                    val = $node.val();
-                    val = val.replace( /(=\s*")([^>]*)(")/gi, function( text, start, attr, end )
-                        {
-                            attr = attr.replace( /\\"/g, '\'' ).replace( /"/g, '\'' );
-                            return ( start + attr + end );
-                        }
-                    );
-                }
-                else
-                {
-                    val = $node.html();
-                }
+                    var val;
 
-                if ( stripLinebreaks )
-                {
-                    return val.replace( /[\n\r]/g, '' );
-                }
+                    if( isTextarea( $node[0] ) )
+                    {
+                        val = $node.val();
+                        val = val.replace( /(=\s*")([^">]*)(\[\{([^\}\]]|\}[^\]]|[^\}]\])*\}\])([^">]*)(")/gi, function( text, start, attr_before, smarty, smarty_inner, attr_after, end )
+                                           {
+                                               smarty = smarty.replace( /\\"/g, '\'' ).replace( /"/g, '\'' );
+                                               return ( start + attr_before + smarty + attr_after + end );
+                                           }
+                        );
+                    }
+                    else
+                    {
+                        val = $node.html();
+                    }
 
-                return val;
-            }
+                    if ( stripLinebreaks )
+                    {
+                        return val.replace( /[\n\r]/g, '' );
+                    }
+
+                    return val;
+                }
 
         }
     );
