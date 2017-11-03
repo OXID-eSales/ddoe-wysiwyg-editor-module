@@ -40,9 +40,9 @@ $.noConflict();
     $( function()
         {
             // Summernote WYSIWYG Editor
-            if ( typeof $().summernote == 'function' )
+            if ( typeof $().summernote === 'function' )
             {
-                $( '.ddoe-wysiwyg-editor textarea' ).each( function ()
+                $( '.ddoe-wysiwyg-editor > textarea' ).each( function ()
                     {
                         $( this ).closest( 'td' ).find( '.messagebox' ).remove();
 
@@ -77,6 +77,20 @@ $.noConflict();
                                 disableDragAndDrop: true
 
                             }
+                        );
+                    }
+                );
+
+                var $form = $( '.ddoe-wysiwyg-editor' ).first().closest( 'form' );
+
+                $form.find( '*[type="submit"]' ).first().on( 'click', function()
+                    {
+                        $( '.ddoe-wysiwyg-editor > textarea', $form ).each( function ()
+                           {
+                               // deactivate codeview before getting value
+                               var context = $( this ).data( 'summernote' );
+                               context.invoke( 'codeview.deactivate' );
+                           }
                         );
                     }
                 );

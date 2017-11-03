@@ -29,10 +29,10 @@
                     {
                         val = $node.val();
                         val = val.replace( /(=\s*")([^">]*)(\[\{([^\}\]]|\}[^\]]|[^\}]\])*\}\])([^">]*)(")/gi, function( text, start, attr_before, smarty, smarty_inner, attr_after, end )
-                                           {
-                                               smarty = smarty.replace( /\\"/g, '\'' ).replace( /"/g, '\'' );
-                                               return ( start + attr_before + smarty + attr_after + end );
-                                           }
+                           {
+                               smarty = smarty.replace( /\\"/g, '\'' ).replace( /"/g, '\'' );
+                               return ( start + attr_before + smarty + attr_after + end );
+                           }
                         );
                     }
                     else
