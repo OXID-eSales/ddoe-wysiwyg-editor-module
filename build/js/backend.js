@@ -87,9 +87,13 @@ $.noConflict();
                     {
                         $( '.ddoe-wysiwyg-editor > textarea', $form ).each( function ()
                            {
-                               // deactivate codeview before getting value
                                var context = $( this ).data( 'summernote' );
-                               context.invoke( 'codeview.deactivate' );
+
+                               // deactivate codeview before getting value
+                               if( context.invoke( 'codeview.isActivated' ) )
+                               {
+                                   context.invoke( 'codeview.deactivate' );
+                               }
                            }
                         );
                     }
