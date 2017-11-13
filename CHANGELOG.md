@@ -9,8 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Introduced namespaces
 
 ### Changed
+- Usage of matadata 2.0
 
 ### Deprecated
 
@@ -18,6 +20,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Smarty tags are parsed correct now
+- Correct protocol usage for image urls
 
 ### Security
-
