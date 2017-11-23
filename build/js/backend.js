@@ -79,6 +79,10 @@ $.noConflict();
                             }
                         );
 
+                        if ('disabled' === $(this).attr('disabled')) {
+                            $(this).summernote('disable');
+                        }
+
                         var editorContext = $editor.data( 'summernote' );
 
                         editorContext.invoke( 'codeview.activate' );

@@ -6,9 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
-## [Unreleased]
+## [2.1.0] - unreleased
 
 ### Added
+- Option to disable the wysiyg editor and make the content display readonly 
 
 ### Changed
 

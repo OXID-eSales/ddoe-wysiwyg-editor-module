@@ -66,6 +66,7 @@ class TextEditorHandler extends TextEditorHandler_parent
         $oSmarty->assign('sEditorValue', $objectValue);
         $oSmarty->assign('iEditorHeight', $height);
         $oSmarty->assign('iEditorWidth', $width);
+        $oSmarty->assign('blTextEditorDisabled', $this->isTextEditorDisabled());
 
         $iDynInterfaceLanguage = $oConfig->getConfigParam('iDynInterfaceLanguage');
         $sLangAbbr = $oLang->getLanguageAbbr((isset($iDynInterfaceLanguage) ? $iDynInterfaceLanguage : $oLang->getTplLanguage()));
