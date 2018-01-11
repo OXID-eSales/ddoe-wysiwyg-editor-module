@@ -22,31 +22,73 @@
     $.extend( $.summernote.dom,
         {
             value: function( $node, stripLinebreaks )
+            {
+                var val;
+
+                if( isTextarea( $node[0] ) )
                 {
-                    var val;
+                    val = $node.val();
 
-                    if( isTextarea( $node[0] ) )
-                    {
-                        val = $node.val();
-                        val = val.replace( /(=\s*")([^">]*)(\[\{([^\}\]]|\}[^\]]|[^\}]\])*\}\])([^">]*)(")/gi, function( text, start, attr_before, smarty, smarty_inner, attr_after, end )
-                           {
-                               smarty = smarty.replace( /\\"/g, '\'' ).replace( /"/g, '\'' );
-                               return ( start + attr_before + smarty + attr_after + end );
-                           }
-                        );
-                    }
-                    else
-                    {
-                        val = $node.html();
-                    }
+                    // fix smarty tags within attributes
+                    val = val.replace( /(=\s*")([^">]*)(\[\{([^\}\]]|\}[^\]]|[^\}]\])*\}\])([^">]*)(")/gi, function( text, start, attr_before, smarty, smarty_inner, attr_after, end )
+                        {
+                            smarty = smarty.replace( /\\"/g, '\'' ).replace( /"/g, '\'' );
+                            return ( start + attr_before + smarty + attr_after + end );
+                        }
+                    );
 
-                    if ( stripLinebreaks )
-                    {
-                        return val.replace( /[\n\r]/g, '' );
-                    }
+                    val = val.replace( /<img[^>]*src=\s*"(\[\{\$oViewConf\-\>getMediaUrl\(\)\}\][^">]+)"[^>]*data-filepath=\s*"([^">]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi, function( text, src, filepath )
+                        {
+                            text = text.replace( src, filepath );
+                            return text;
+                        }
+                    );
 
-                    return val;
                 }
+                else
+                {
+                    val = $node.html();
+                }
+
+                if ( stripLinebreaks )
+                {
+                    return val.replace( /[\n\r]/g, '' );
+                }
+
+                return val;
+            },
+
+            html: function ( $node, isNewlineOnBlock )
+            {
+                var markup = this.value( $node );
+
+                if ( isNewlineOnBlock )
+                {
+                    var regexTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
+
+                    markup = markup.replace( regexTag, function ( match, endSlash, name )
+                        {
+                            name = name.toUpperCase();
+
+                            var isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test( name ) && !!endSlash;
+                            var isBlockNode            = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test( name );
+
+                            return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
+                        }
+                    );
+
+                    markup = $.trim( markup );
+                }
+
+                // set media smarty tags
+                markup = markup.replace( /<img[^>]*src=\s*"([^"]+)"[^>]*data-filename=\s*"([^">]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi, function( tag, src, filename )
+                    {
+                        return tag.replace( src, '[{$oViewConf->getMediaUrl()}]' + filename );
+                    }
+                );
+
+                return markup;
+            }
 
         }
     );

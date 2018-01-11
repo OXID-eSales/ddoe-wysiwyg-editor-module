@@ -48,7 +48,7 @@ $.noConflict();
 
                         var iHeight = $( this ).height();
 
-                        $( this ).summernote(
+                        var $editor = $( this ).summernote(
                             {
                                 lang: 'de-DE',
                                 minHeight: iHeight || 100,
@@ -78,6 +78,11 @@ $.noConflict();
 
                             }
                         );
+
+                        var editorContext = $editor.data( 'summernote' );
+
+                        editorContext.invoke( 'codeview.activate' );
+                        editorContext.invoke( 'codeview.deactivate' );
                     }
                 );
 
@@ -94,6 +99,8 @@ $.noConflict();
                                {
                                    context.invoke( 'codeview.deactivate' );
                                }
+
+                               context.invoke( 'codeview.activate' );
                            }
                         );
                     }

@@ -46,8 +46,9 @@ $aModule = array(
         \OxidEsales\Eshop\Application\Controller\TextEditorHandler::class => \OxidEsales\WysiwygModule\Application\Controller\TextEditorHandler::class,
 
         // Core
-        \OxidEsales\Eshop\Core\Language::class => \OxidEsales\WysiwygModule\Core\Language::class,
-        \OxidEsales\Eshop\Core\Utils::class    => \OxidEsales\WysiwygModule\Core\Utils::class,
+        \OxidEsales\Eshop\Core\ViewConfig::class  => \OxidEsales\WysiwygModule\Core\ViewConfig::class,
+        \OxidEsales\Eshop\Core\Language::class    => \OxidEsales\WysiwygModule\Core\Language::class,
+        \OxidEsales\Eshop\Core\Utils::class       => \OxidEsales\WysiwygModule\Core\Utils::class,
 
     ),
     'controllers'       => array(

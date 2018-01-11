@@ -50,7 +50,15 @@
                                 {
                                     MediaLibrary.open( /image\/.*/i, function( id, file, fullpath )
                                         {
-                                            context.invoke('editor.insertImage', fullpath, file);
+                                            context.invoke('editor.insertImage', fullpath, function( $image )
+                                                {
+                                                    $image.css( 'max-width', '100%' );
+                                                    $image.attr( 'data-filename', file );
+                                                    $image.attr( 'data-filepath', fullpath );
+                                                    $image.attr( 'data-source', 'media' );
+                                                    $image.addClass( 'dd-wysiwyg-media-image' );
+                                                }
+                                            );
                                         }
                                     );
                                 }
