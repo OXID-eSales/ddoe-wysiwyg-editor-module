@@ -11,16 +11,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Option to disable the wysiyg editor and make the content display readonly 
 
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
-
 ## [2.0.0] - 2017-11-14
 
 ### Added
