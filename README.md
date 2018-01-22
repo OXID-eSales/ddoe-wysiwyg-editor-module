@@ -17,3 +17,6 @@ Please, type `Yes`
 ### Module activation in OXID eShop Admin 
 After installation, please, activate the module in OXID eShop Admin  
 `EXTENSIONS -> Modules -> "WYSIWYG Editor + Mediathek" -> Activate`
+
+### Requirements
+- OXID eShop compilation >=6.0.1
