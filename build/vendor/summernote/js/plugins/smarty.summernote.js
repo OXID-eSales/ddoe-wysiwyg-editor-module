@@ -37,6 +37,7 @@
                         }
                     );
 
+                    // switch smarty function call with media url
                     val = val.replace( /<img[^>]*src=\s*"(\[\{\$oViewConf\-\>getMediaUrl\(\)\}\][^">]+)"[^>]*data-filepath=\s*"([^">]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi, function( text, src, filepath )
                         {
                             text = text.replace( src, filepath );
@@ -86,6 +87,14 @@
                         return tag.replace( src, '[{$oViewConf->getMediaUrl()}]' + filename );
                     }
                 );
+
+                // replace html entities in smarty tags
+                markup = markup.replace( /\[\{(([^\}\]]|\}[^\]]|[^\}]\])*)\}\]/gi, function( tag, smarty, char )
+                    {
+                        return $( '<textarea />' ).html( tag ).text();
+                    }
+                );
+
 
                 return markup;
             }
