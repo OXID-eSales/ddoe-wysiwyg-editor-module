@@ -20,3 +20,7 @@ After installation, please, activate the module in OXID eShop Admin
 
 ### Requirements
 - OXID eShop compilation >=6.0.1
+
+## Bugs and Issues
+
+If you experience any bugs or issues, please report them in the section **WYSIWYG Editor + Media Gallery** of https://bugs.oxid-esales.com.
