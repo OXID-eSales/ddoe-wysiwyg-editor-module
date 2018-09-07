@@ -44,49 +44,56 @@ $.noConflict();
             {
                 $( '.ddoe-wysiwyg-editor > textarea' ).each( function ()
                     {
-                        $( this ).closest( 'td' ).find( '.messagebox' ).remove();
+                        var dataRte = $( this ).attr('data-rte');
 
-                        var iHeight = $( this ).height();
+                        if (typeof dataRte === 'undefined')
+                        {
+                            $( this ).attr('data-rte', '1');
 
-                        var $editor = $( this ).summernote(
-                            {
-                                lang: 'de-DE',
-                                minHeight: iHeight || 100,
+                            $( this ).closest( 'td' ).find( '.messagebox' ).remove();
 
-                                toolbar: [
+                            var iHeight = $( this ).height();
 
-                                    [ 'style', [ 'style' ] ],
-                                    [ 'formatting', [ 'bold', 'italic', 'underline', 'strikethrough', 'clear' ] ],
-                                    //[ 'fontname', [ 'fontname' ] ],
-                                    [ 'fontsize', [ 'fontsize' ] ],
-                                    [ 'color', [ 'color' ] ],
-                                    [ 'layout', [ 'ul', 'ol', 'paragraph' ] ],
-                                    [ 'height', [ 'height' ] ],
-                                    [ 'table', [ 'table' ] ],
-                                    [ 'insert', [ 'link', 'video', 'hr' ] ],
-                                    [ 'misc', [ 'codeview' ] ]
+                            var $editor = $( this ).summernote(
+                                {
+                                    lang: 'de-DE',
+                                    minHeight: iHeight || 100,
 
-                                ],
+                                    toolbar: [
 
-                                dialogsInBody: false,
+                                        [ 'style', [ 'style' ] ],
+                                        [ 'formatting', [ 'bold', 'italic', 'underline', 'strikethrough', 'clear' ] ],
+                                        //[ 'fontname', [ 'fontname' ] ],
+                                        [ 'fontsize', [ 'fontsize' ] ],
+                                        [ 'color', [ 'color' ] ],
+                                        [ 'layout', [ 'ul', 'ol', 'paragraph' ] ],
+                                        [ 'height', [ 'height' ] ],
+                                        [ 'table', [ 'table' ] ],
+                                        [ 'insert', [ 'link', 'video', 'hr' ] ],
+                                        [ 'misc', [ 'codeview' ] ]
 
-                                buttons: {
-                                    ddmedia: 'ddmedia'
-                                },
+                                    ],
 
-                                disableDragAndDrop: true
+                                    dialogsInBody: false,
 
+                                    buttons: {
+                                        ddmedia: 'ddmedia'
+                                    },
+
+                                    disableDragAndDrop: true
+
+                                }
+                            );
+
+                            if ('disabled' === $(this).attr('disabled')) {
+                                $(this).summernote('disable');
                             }
-                        );
 
-                        if ('disabled' === $(this).attr('disabled')) {
-                            $(this).summernote('disable');
+                            var editorContext = $editor.data( 'summernote' );
+
+                            editorContext.invoke( 'codeview.activate' );
+                            editorContext.invoke( 'codeview.deactivate' );
                         }
-
-                        var editorContext = $editor.data( 'summernote' );
-
-                        editorContext.invoke( 'codeview.activate' );
-                        editorContext.invoke( 'codeview.deactivate' );
                     }
                 );
 
