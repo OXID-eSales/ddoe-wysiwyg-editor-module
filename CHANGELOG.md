@@ -4,10 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.1.2] - 2019-01-18
+## [2.2.0] - 2019-01-21
 
-### Fixed
-- Initiate the RTE for a textarea only once, if we have more then one textarea on a admin-page [PR-10](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/pull/10). Fixes [Bug #6884](https://bugs.oxid-esales.com/view.php?id=6884).
+### Added
+- Possibility to have more than one textarea on a admin-page [PR-10](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/pull/10). [Bug #6884](https://bugs.oxid-esales.com/view.php?id=6884).
 
 ## [2.1.1] - 2018-03-26
 
@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Correct protocol usage for image urls
 
 
-[2.1.2]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.1.1...v2.1.2
+[2.2.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/tree/v2.0.0
