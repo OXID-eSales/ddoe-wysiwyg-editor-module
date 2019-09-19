@@ -23,6 +23,7 @@
 namespace OxidEsales\WysiwygModule\Application\Model;
 
 use OxidEsales\Eshop\Core\Model\BaseModel;
+use OxidEsales\Eshop\Core\Registry;
 
 /**
  * Class Media
@@ -34,6 +35,7 @@ class Media extends BaseModel
 
     protected $_sMediaPath = '/out/pictures/ddmedia/';
     protected $_iDefaultThumbnailSize = 185;
+    protected $_aFileExtBlacklist = [ 'php.*', 'exe', 'js', 'jsp', 'cgi', 'cmf', 'phtml', 'pht', 'phar' ]; // regex allowed
 
 
     /**
@@ -153,46 +155,51 @@ class Media extends BaseModel
         $sFileName = basename($sDestPath);
         $iFileCount = 0;
 
-        while (file_exists($sDestPath)) {
-            $aFileParts = explode('.', $sFileName);
-            $aFileParts = array_reverse($aFileParts);
+        if( $this->validateFilename( $sFileName ) )
+        {
+            while (file_exists($sDestPath)) {
+                $aFileParts = explode('.', $sFileName);
+                $aFileParts = array_reverse($aFileParts);
 
-            $sFileExt = $aFileParts[0];
-            unset($aFileParts[0]);
+                $sFileExt = $aFileParts[0];
+                unset($aFileParts[0]);
 
-            $sBaseName = implode('.', array_reverse($aFileParts));
+                $sBaseName = implode('.', array_reverse($aFileParts));
 
-            $aBaseParts = explode('_', $sBaseName);
-            $aBaseParts = array_reverse($aBaseParts);
+                $aBaseParts = explode('_', $sBaseName);
+                $aBaseParts = array_reverse($aBaseParts);
 
-            if (strlen($aBaseParts[0]) == 1 && is_numeric($aBaseParts[0])) {
-                $iFileCount = (int) $aBaseParts[0];
-                unset($aBaseParts[0]);
+                if (strlen($aBaseParts[0]) == 1 && is_numeric($aBaseParts[0])) {
+                    $iFileCount = (int) $aBaseParts[0];
+                    unset($aBaseParts[0]);
+                }
+
+                $sBaseName = implode('_', array_reverse($aBaseParts));
+
+                $sFileName = $sBaseName . '_' . (++$iFileCount) . '.' . $sFileExt;
+                $sDestPath = dirname( $sDestPath ) . '/' . $sFileName;
             }
 
-            $sBaseName = implode('_', array_reverse($aBaseParts));
+            move_uploaded_file($sSourcePath, $sDestPath);
 
-            $sFileName = $sBaseName . '_' . (++$iFileCount) . '.' . $sFileExt;
-            $sDestPath = dirname( $sDestPath ) . '/' . $sFileName;
-        }
+            if ($blCreateThumbs) {
+                try {
+                    $sThumbName = $this->createThumbnail($sFileName);
 
-        move_uploaded_file($sSourcePath, $sDestPath);
-
-        if ($blCreateThumbs) {
-            try {
-                $sThumbName = $this->createThumbnail($sFileName);
-
-                $this->createMoreThumbnails($sFileName);
-            } catch ( \Exception $e) {
-                $sThumbName = '';
+                    $this->createMoreThumbnails($sFileName);
+                } catch ( \Exception $e) {
+                    $sThumbName = '';
+                }
             }
+
+            return array(
+                'filepath'  => $sDestPath,
+                'filename'  => $sFileName,
+                'thumbnail' => $sThumbName
+            );
         }
 
-        return array(
-            'filepath'  => $sDestPath,
-            'filename'  => $sFileName,
-            'thumbnail' => $sThumbName
-        );
+        return false;
     }
 
     /**
@@ -349,5 +356,20 @@ class Media extends BaseModel
                 }
             }
         }
+    }
+
+    public function validateFilename( $sFileName )
+    {
+        $aFileNameParts = explode( '.', $sFileName  );
+        $aFileNameParts = array_reverse( $aFileNameParts );
+        $sFileNameExt = $aFileNameParts[ 0 ];
+        foreach( $this->_aFileExtBlacklist as $sBlacklistPattern )
+        {
+            if( preg_match( "/" . $sBlacklistPattern . "/", $sFileNameExt ) )
+            {
+                throw new \Exception( Registry::getLang()->translateString( 'DD_MEDIA_EXCEPTION_INVALID_FILEEXT' ) );
+            }
+        }
+        return true;
     }
 }

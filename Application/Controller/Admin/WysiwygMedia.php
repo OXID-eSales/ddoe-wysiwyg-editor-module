@@ -59,7 +59,9 @@ class WysiwygMedia extends AdminDetailsController
 
         if ( $this->_oMedia === null )
         {
-            if ( class_exists( '\\OxidEsales\\VisualCmsModule\\Application\\Model\\Media' ) )
+            $oModule = oxNew(\OxidEsales\Eshop\Core\Module\Module::class);
+
+            if ( class_exists( '\\OxidEsales\\VisualCmsModule\\Application\\Model\\Media' ) && $oModule->load( 'ddoevisualcms' ) && $oModule->isActive() )
             {
                 $this->_oMedia = oxNew( \OxidEsales\VisualCmsModule\Application\Model\Media::class );
             }
@@ -126,44 +128,74 @@ class WysiwygMedia extends AdminDetailsController
 
         $sId = null;
 
-        if ($_FILES) {
-            $this->_oMedia->createDirs();
+        try
+        {
+            if ($_FILES)
+            {
+                $this->_oMedia->createDirs();
 
-            $sFileSize = $_FILES['file']['size'];
-            $sFileType = $_FILES['file']['type'];
+                $sFileSize = $_FILES['file']['size'];
+                $sFileType = $_FILES['file']['type'];
 
-            $sSourcePath = $_FILES['file']['tmp_name'];
-            $sDestPath = $this->_sUploadDir . $_FILES['file']['name'];
+                $sSourcePath = $_FILES['file']['tmp_name'];
+                $sDestPath = $this->_sUploadDir . $_FILES['file']['name'];
 
-            $aFile = $this->_oMedia->uploadeMedia($sSourcePath, $sDestPath, true);
+                $aFile = $this->_oMedia->uploadeMedia($sSourcePath, $sDestPath, true);
 
-            $sId = md5( $aFile[ 'filename' ] );
-            $sThumbName = $aFile[ 'thumbnail' ];
-            $sFileName = $aFile[ 'filename' ];
+                $sId = md5( $aFile[ 'filename' ] );
+                $sThumbName = $aFile[ 'thumbnail' ];
+                $sFileName = $aFile[ 'filename' ];
 
-            $aImageSize = null;
-            $sImageSize = '';
+                $aImageSize = null;
+                $sImageSize = '';
 
-            if (is_readable($sDestPath) && preg_match("/image\//", $sFileType)) {
-                $aImageSize = getimagesize($sDestPath);
-                $sImageSize = ($aImageSize ? $aImageSize[0] . 'x' . $aImageSize[1] : '');
-            }
+                if (is_readable($sDestPath) && preg_match("/image\//", $sFileType)) {
+                    $aImageSize = getimagesize($sDestPath);
+                    $sImageSize = ($aImageSize ? $aImageSize[0] . 'x' . $aImageSize[1] : '');
+                }
 
-            $iShopId = $oConfig->getActiveShop()->getShopId();
+                $iShopId = $oConfig->getActiveShop()->getShopId();
 
-            $sInsert = "REPLACE INTO `ddmedia`
+                $sInsert = "REPLACE INTO `ddmedia`
                           ( `OXID`, `OXSHOPID`, `DDFILENAME`, `DDFILESIZE`, `DDFILETYPE`, `DDTHUMB`, `DDIMAGESIZE` )
                         VALUES
                           ( '" . $sId . "', '" . $iShopId . "', '" . $sFileName . "', " . $sFileSize . ", '" . $sFileType . "', '" . $sThumbName . "', '" . $sImageSize . "' );";
 
-            DatabaseProvider::getDb()->execute($sInsert);
-        }
+                DatabaseProvider::getDb()->execute($sInsert);
+            }
 
-        if ($oConfig->getRequestParameter('src') == 'fallback') {
-            $this->fallback(true);
-        } else {
-            header('Content-Type: application/json');
-            die(json_encode(array('success' => true, 'id' => $sId, 'file' => $sFileName, 'filepath' => $sDestPath, 'filetype' => $sFileType, 'filesize' => $sFileSize, 'imagesize' => $sImageSize)));
+            if ($oConfig->getRequestParameter('src') == 'fallback') {
+                $this->fallback(true);
+            } else {
+                header('Content-Type: application/json');
+                die( json_encode(
+                    array(
+                        'success'   => true,
+                        'id'        => $sId,
+                        'file'      => $sFileName,
+                        'filepath'  => $sDestPath,
+                        'filetype'  => $sFileType,
+                        'filesize'  => $sFileSize,
+                        'imagesize' => $sImageSize,
+                    )
+                ) );
+            }
+        }
+        catch( \Exception $e )
+        {
+            if ($oConfig->getRequestParameter('src') == 'fallback')
+            {
+                $this->fallback( false, true );
+            }
+            else
+            {
+                die( json_encode(
+                    array(
+                        'success'   => false,
+                        'id'        => $sId,
+                    )
+                ) );
+            }
         }
     }
 
