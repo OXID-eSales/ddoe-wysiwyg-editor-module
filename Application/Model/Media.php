@@ -93,7 +93,7 @@ class Media extends BaseModel
      */
     public function getMediaUrl($sFile = '')
     {
-        $oConfig = $this->getConfig();
+        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
 
         $sFilePath = $this->getMediaPath($sFile);
 

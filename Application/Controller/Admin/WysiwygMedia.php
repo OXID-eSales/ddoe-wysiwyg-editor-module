@@ -83,7 +83,7 @@ class WysiwygMedia extends AdminDetailsController
      */
     public function render()
     {
-        $oConfig = $this->getConfig();
+        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
         $iShopId = $oConfig->getConfigParam('blMediaLibraryMultiShopCapability') ? $oConfig->getActiveShop()->getShopId() : null;
 
         $this->_aViewData['aFiles'] = $this->_getFiles(0, $iShopId);
@@ -124,7 +124,7 @@ class WysiwygMedia extends AdminDetailsController
      */
     public function upload()
     {
-        $oConfig = $this->getConfig();
+        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
 
         $sId = null;
 
@@ -227,7 +227,7 @@ class WysiwygMedia extends AdminDetailsController
      */
     public function remove()
     {
-        $oConfig = $this->getConfig();
+        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
 
         if ($aIDs = $oConfig->getRequestParameter('id')) {
             $oDb = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
@@ -257,7 +257,7 @@ class WysiwygMedia extends AdminDetailsController
      */
     public function moreFiles()
     {
-        $oConfig = $this->getConfig();
+        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
         $iStart = $oConfig->getRequestParameter('start') ? $oConfig->getRequestParameter('start') : 0;
         //$iShopId = $oConfig->getRequestParameter( 'oxshopid' ) ? $oConfig->getRequestParameter( 'oxshopid' ) : null;
         $iShopId = $oConfig->getConfigParam('blMediaLibraryMultiShopCapability') ? $oConfig->getActiveShop()->getShopId() : null;
