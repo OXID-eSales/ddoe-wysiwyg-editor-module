@@ -714,6 +714,18 @@
 
                         clickable: $( '.dd-media-upload', $dialog )[ 0 ],
 
+                        accept: function( file, done )
+                        {
+                            if( !file.type || file.type.match( /php|javascript|x\-msdownload|js|jsp|cgi|cmf|phtml|pht|phar/ ) )
+                            {
+                                done( ddh.translate( 'DD_MEDIA_FILETYPE_NOT_ALLOWED' ) );
+                            }
+                            else
+                            {
+                                done();
+                            }
+                        },
+
                         //forceFallback: true,
                         fallback: function ()
                         {

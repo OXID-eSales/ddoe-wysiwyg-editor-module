@@ -51,4 +51,6 @@ $aLang = array(
     'DD_MEDIA_FILES_FOUND'          => 'Files in the media gallery',
     'DD_MEDIA_MULTIPLE_INFO'        => 'CTRL + left click for multi choice',
 
+    'DD_MEDIA_EXCEPTION_INVALID_FILEEXT'                   => 'Uploading files with this file extension is not allowed!',
+
 );

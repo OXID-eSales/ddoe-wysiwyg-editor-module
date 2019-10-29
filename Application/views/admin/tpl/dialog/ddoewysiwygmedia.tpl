@@ -59,6 +59,7 @@
                                         </div>
                                         <div class="dd-media-item-label" style="display: none;">
                                             <small data-dz-name></small>
+                                            <small class="text-danger" data-dz-errormessage></small>
                                         </div>
                                     </div>
                                 </a>

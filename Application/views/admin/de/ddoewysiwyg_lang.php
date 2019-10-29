@@ -52,4 +52,6 @@ $aLang = array(
     'DD_MEDIA_FILES_FOUND'          => 'Dateien in der Mediathek',
     'DD_MEDIA_MULTIPLE_INFO'        => 'STRG + Mausklick f&uuml;r Mehrfachauswahl',
 
+    'DD_MEDIA_EXCEPTION_INVALID_FILEEXT'                   => 'Der Upload von Dateien mit dieser Dateiendung ist nicht erlaubt!',
+
 );
