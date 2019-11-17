@@ -21,6 +21,8 @@
 
 ;( function( $ )
 {
+    'use strict';
+
     $.extend( $.summernote.plugins,
         {
             ddmedia: function( context )
@@ -37,7 +39,7 @@
                         {
                             className: 'btn-default',
                             contents: '<i class="fa fa-file-image-o"></i>',
-                            click: function ( e )
+                            click: function ()
                             {
                                 if( typeof MediaLibrary === 'undefined' )
                                 {

@@ -89,7 +89,7 @@
                 );
 
                 // replace html entities in smarty tags
-                markup = markup.replace( /\[\{(([^\}\]]|\}[^\]]|[^\}]\])*)\}\]/gi, function( tag, smarty, char )
+                markup = markup.replace( /\[\{(([^\}\]]|\}[^\]]|[^\}]\])*)\}\]/gi, function( tag )
                     {
                         return $( '<textarea />' ).html( tag ).text();
                     }
