@@ -27,7 +27,8 @@ module.exports = {
 
     development: {
         src: [
-            "build/js/*.js"
+            "build/js/*.js",
+            "build/vendor/summernote/js/plugins/*.js"
         ]
     }
 

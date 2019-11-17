@@ -2,13 +2,13 @@ development:
   - "jshint:development"
   - "less:wysiwyg"
   - "uglify:wysiwyg"
-
+  - "replace:summernotefontfix"
 production:
+  - "copy:fonts"
   - "development"
   - "less:bootstrap"
   - "less:fontawesome"
   - "uglify:bootstrap"
   - "uglify:jquery"
-
 default:
   - "production"

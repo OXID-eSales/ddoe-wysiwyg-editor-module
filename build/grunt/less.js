@@ -46,13 +46,13 @@ module.exports = {
 
     bootstrap: {
         files: {
-            "out/src/css/bootstrap.min.css": "build/vendor/bootstrap/less/bootstrap.less"
+            "out/src/css/bootstrap.min.css": "node_modules/bootstrap/less/bootstrap.less"
         }
     },
 
     fontawesome: {
         files: {
-            "out/src/css/font-awesome.min.css": "build/vendor/font-awesome/less/font-awesome.less"
+            "out/src/css/font-awesome.min.css": "node_modules/font-awesome/less/font-awesome.less"
         }
     }
 
