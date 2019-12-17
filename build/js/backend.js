@@ -112,6 +112,15 @@ $.noConflict();
                                }
 
                                context.invoke( 'codeview.activate' );
+
+                               // replace incorrectly encoded html lace bracket in smarty tags
+                               var markupStr = $( this ).summernote('code');
+                                markupStr = markupStr.replace( /\[\{(([^\}\]]|\}[^\]]|[^\}]\])*)\}\]/gi, function( smarty )
+                                    {
+                                        return smarty.replace(/-&gt;/g, "->");
+                                    }
+                                );
+                                $( this ).summernote('code', markupStr);
                            }
                         );
                     }
