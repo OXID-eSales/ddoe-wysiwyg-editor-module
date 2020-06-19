@@ -4,10 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.3.0] - Unreleased
+## Unreleased
 
 ### Changed
 - File upload improvements
+- Update Summernote to version 0.8.18
 
 ### Fixed
 - Replace incorrectly encoded html lace bracket in smarty tags [PR-13](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/pull/13) [#0007045](https://bugs.oxid-esales.com/view.php?id=7045) [#0006779](https://bugs.oxid-esales.com/view.php?id=6779)
@@ -40,7 +41,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Correct protocol usage for image urls
 
 
-[2.3.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.2.0...master
 [2.2.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.0.0...v2.1.0

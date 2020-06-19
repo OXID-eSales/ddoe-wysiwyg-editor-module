@@ -1,6 +1,7 @@
 development:
   - "jshint:development"
   - "less:wysiwyg"
+  - "cssmin:wysiwyg"
   - "uglify:wysiwyg"
 
 production:
