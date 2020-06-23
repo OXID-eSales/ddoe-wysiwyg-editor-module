@@ -29,8 +29,7 @@ $.noConflict();
 
     $.fn.tooltip = function( options )
     {
-        if( typeof options !== 'undefined' )
-        {
+        if (Object.prototype.toString.call(options) === "[object Object]") {
             options.container = '#ddoew';
         }
 
