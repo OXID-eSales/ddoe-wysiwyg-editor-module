@@ -156,12 +156,23 @@ class WysiwygMedia extends AdminDetailsController
 
                 $iShopId = $oConfig->getActiveShop()->getShopId();
 
-                $sInsert = "REPLACE INTO `ddmedia`
-                          ( `OXID`, `OXSHOPID`, `DDFILENAME`, `DDFILESIZE`, `DDFILETYPE`, `DDTHUMB`, `DDIMAGESIZE` )
-                        VALUES
-                          ( '" . $sId . "', '" . $iShopId . "', '" . $sFileName . "', " . $sFileSize . ", '" . $sFileType . "', '" . $sThumbName . "', '" . $sImageSize . "' );";
+                $sInsert = 'REPLACE INTO `ddmedia`
+                              (`OXID`, `OXSHOPID`, `DDFILENAME`, `DDFILESIZE`, `DDFILETYPE`, `DDTHUMB`, `DDIMAGESIZE`)
+                            VALUES
+                              (?, ?, ?, ?, ?, ?, ?);';
 
-                DatabaseProvider::getDb()->execute($sInsert);
+                DatabaseProvider::getDb()->execute(
+                    $sInsert,
+                    [
+                        $sId,
+                        $iShopId,
+                        $sFileName,
+                        $sFileSize,
+                        $sFileType,
+                        $sThumbName,
+                        $sImageSize,
+                    ]
+                );
             }
 
             if ($oConfig->getRequestParameter('src') == 'fallback') {
@@ -232,7 +243,8 @@ class WysiwygMedia extends AdminDetailsController
         if ($aIDs = $oConfig->getRequestParameter('id')) {
             $oDb = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
 
-            $sSelect = "SELECT `OXID`, `DDFILENAME`, `DDTHUMB` FROM `ddmedia` WHERE `OXID` IN('" . implode("','", $aIDs) . "'); ";
+            $inIds = implode(',', $oDb->quoteArray($aIDs));
+            $sSelect = "SELECT `OXID`, `DDFILENAME`, `DDTHUMB` FROM `ddmedia` WHERE `OXID` IN($inIds);";
             $aData = $oDb->getAll($sSelect);
 
             foreach ($aData as $aRow) {
