@@ -112,6 +112,9 @@ $.noConflict();
 
                                context.invoke( 'codeview.activate' );
 
+                               if (typeof smarty === 'undefined' || typeof smarty.replace !== 'function') {
+                                   return;
+                               }
                                // replace incorrectly encoded html lace bracket in smarty tags
                                var markupStr = $( this ).summernote('code');
                                 markupStr = markupStr.replace( /\[\{(([^\}\]]|\}[^\]]|[^\}]\])*)\}\]/gi, function( smarty )
