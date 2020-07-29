@@ -61,7 +61,7 @@ $.noConflict();
                                     toolbar: [
 
                                         [ 'style', [ 'style' ] ],
-                                        [ 'formatting', [ 'bold', 'italic', 'underline', 'strikethrough', 'clear' ] ],
+                                        [ 'formatting', [ 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'clear' ] ],
                                         //[ 'fontname', [ 'fontname' ] ],
                                         [ 'fontsize', [ 'fontsize' ] ],
                                         [ 'color', [ 'color' ] ],
