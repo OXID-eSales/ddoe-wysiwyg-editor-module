@@ -61,10 +61,11 @@ $.noConflict();
                                     toolbar: [
 
                                         [ 'style', [ 'style' ] ],
-                                        [ 'formatting', [ 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'clear' ] ],
+                                        [ 'formatting', [ 'bold', 'underline', 'clear' ] ],
                                         //[ 'fontname', [ 'fontname' ] ],
-                                        [ 'fontsize', [ 'fontsize' ] ],
-                                        [ 'color', [ 'color' ] ],
+                                        [ 'insert', ['grid']],
+                                        //[ 'fontsize', [ 'fontsize' ] ],
+                                        //[ 'color', [ 'color' ] ],
                                         [ 'layout', [ 'ul', 'ol', 'paragraph' ] ],
                                         [ 'height', [ 'height' ] ],
                                         [ 'table', [ 'table' ] ],
