@@ -61,16 +61,16 @@ $.noConflict();
                                     toolbar: [
 
                                         [ 'style', [ 'style' ] ],
-                                        [ 'formatting', [ 'bold', 'underline', 'clear' ] ],
+                                        [ 'formatting', [ 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'clear' ] ],
                                         //[ 'fontname', [ 'fontname' ] ],
-                                        [ 'insert', ['grid']],
                                         //[ 'fontsize', [ 'fontsize' ] ],
                                         //[ 'color', [ 'color' ] ],
                                         [ 'layout', [ 'ul', 'ol', 'paragraph' ] ],
                                         [ 'height', [ 'height' ] ],
                                         [ 'table', [ 'table' ] ],
                                         [ 'insert', [ 'link', 'video', 'hr' ] ],
-                                        [ 'misc', [ 'codeview' ] ]
+                                        [ 'misc', [ 'codeview' ] ],
+                                        [ 'insert', ['grid']]
 
                                     ],
 
