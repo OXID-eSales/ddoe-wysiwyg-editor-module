@@ -33,6 +33,7 @@ module.exports = {
                 "build/vendor/summernote/js/summernote.js",
                 "build/vendor/summernote/js/plugins/ddmedia.summernote.js",
                 "build/vendor/summernote/js/plugins/smarty.summernote.js",
+                "build/vendor/summernote/js/plugins/summernote-grid.js",
                 "build/js/backend.js"
             ],
 
