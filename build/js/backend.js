@@ -62,9 +62,9 @@ $.noConflict();
 
                                         [ 'style', [ 'style' ] ],
                                         [ 'formatting', [ 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'clear' ] ],
-                                        //[ 'fontname', [ 'fontname' ] ],
-                                        //[ 'fontsize', [ 'fontsize' ] ],
-                                        //[ 'color', [ 'color' ] ],
+                                        [ 'fontname', [ 'fontname' ] ],
+                                        [ 'fontsize', [ 'fontsize' ] ],
+                                        [ 'color', [ 'color' ] ],
                                         [ 'layout', [ 'ul', 'ol', 'paragraph' ] ],
                                         [ 'height', [ 'height' ] ],
                                         [ 'table', [ 'table' ] ],
