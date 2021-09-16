@@ -40,16 +40,16 @@ class Language extends Language_parent
     {
         $aLang = array();
 
-        foreach ($this->_getLangTranslationArray($iLang, $blAdminMode) as $sLangKey => $sLangValue) {
+        foreach ($this->getLangTranslationArray($iLang, $blAdminMode) as $sLangKey => $sLangValue) {
             $aLang[$sLangKey] = $sLangValue;
         }
 
-        foreach ($this->_getLanguageMap($iLang, $blAdminMode) as $sLangKey => $sLangValue) {
+        foreach ($this->getLanguageMap($iLang, $blAdminMode) as $sLangKey => $sLangValue) {
             $aLang[$sLangKey] = $sLangValue;
         }
 
         if (count($this->_aAdditionalLangFiles)) {
-            foreach ($this->_getLangTranslationArray($iLang, $blAdminMode, $this->_aAdditionalLangFiles) as $sLangKey => $sLangValue) {
+            foreach ($this->getLangTranslationArray($iLang, $blAdminMode, $this->_aAdditionalLangFiles) as $sLangKey => $sLangValue) {
                 $aLang[$sLangKey] = $sLangValue;
             }
         }

@@ -86,8 +86,8 @@ class WysiwygMedia extends AdminDetailsController
         $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
         $iShopId = $oConfig->getConfigParam('blMediaLibraryMultiShopCapability') ? $oConfig->getActiveShop()->getShopId() : null;
 
-        $this->_aViewData['aFiles'] = $this->_getFiles(0, $iShopId);
-        $this->_aViewData['iFileCount'] = $this->_getFileCount($iShopId);
+        $this->_aViewData['aFiles'] = $this->getFiles(0, $iShopId);
+        $this->_aViewData['iFileCount'] = $this->getFileCount($iShopId);
         $this->_aViewData['sResourceUrl'] = $this->_oMedia->getMediaUrl();
         $this->_aViewData['sThumbsUrl'] = $this->_oMedia->getThumbnailUrl();
 
@@ -100,7 +100,7 @@ class WysiwygMedia extends AdminDetailsController
      *
      * @return array
      */
-    protected function _getFiles($iStart = 0, $iShopId = null)
+    protected function getFiles($iStart = 0, $iShopId = null)
     {
         $sSelect = "SELECT * FROM `ddmedia` WHERE 1 " . ($iShopId != null ? "AND `OXSHOPID` = '" . $iShopId . "' " : "") . "ORDER BY `OXTIMESTAMP` DESC LIMIT " . $iStart . ", 18 ";
 
@@ -112,7 +112,7 @@ class WysiwygMedia extends AdminDetailsController
      *
      * @return false|string
      */
-    protected function _getFileCount($iShopId = null)
+    protected function getFileCount($iShopId = null)
     {
         $sSelect = "SELECT COUNT(*) AS 'count' FROM `ddmedia` WHERE 1 " . ($iShopId != null ? "AND `OXSHOPID` = '" . $iShopId . "' " : "");
 
@@ -274,8 +274,8 @@ class WysiwygMedia extends AdminDetailsController
         //$iShopId = $oConfig->getRequestParameter( 'oxshopid' ) ? $oConfig->getRequestParameter( 'oxshopid' ) : null;
         $iShopId = $oConfig->getConfigParam('blMediaLibraryMultiShopCapability') ? $oConfig->getActiveShop()->getShopId() : null;
 
-        $aFiles = $this->_getFiles($iStart, $iShopId);
-        $blLoadMore = ($iStart + 18 < $this->_getFileCount($iShopId));
+        $aFiles = $this->getFiles($iStart, $iShopId);
+        $blLoadMore = ($iStart + 18 < $this->getFileCount($iShopId));
 
         header('Content-Type: application/json');
         die(json_encode(array('files' => $aFiles, 'more' => $blLoadMore)));
