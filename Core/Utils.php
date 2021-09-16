@@ -55,7 +55,7 @@ class Utils extends Utils_parent
                 $mMsg = ( array ) $mMsg;
             }
 
-            $mMsg = $this->_encodeUtf8Array($mMsg);
+            $mMsg = $this->encodeUtf8Array($mMsg);
         }
 
         return json_encode($mMsg);
@@ -80,7 +80,7 @@ class Utils extends Utils_parent
      *
      * @return array
      */
-    protected function _encodeUtf8Array($aArray)
+    protected function encodeUtf8Array($aArray)
     {
         $aRet = array();
 
@@ -94,7 +94,7 @@ class Utils extends Utils_parent
                     $mValue = utf8_encode($mValue);
                 }
             } elseif (is_array($mValue)) {
-                $mValue = $this->_encodeUtf8Array($mValue);
+                $mValue = $this->encodeUtf8Array($mValue);
             }
 
             $aRet[$sKey] = $mValue;

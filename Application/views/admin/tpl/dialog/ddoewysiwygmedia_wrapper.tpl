@@ -8,7 +8,6 @@
     <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
 
     [{assign var="oViewConf" value=$oView->getViewConfig()}]
-    [{assign var="oConf" value=$oView->getConfig()}]
 
     [{oxstyle include=$oViewConf->getModuleUrl('ddoewysiwyg','out/src/css/bootstrap.min.css')}]
     [{oxstyle include=$oViewConf->getModuleUrl('ddoewysiwyg','out/src/css/font-awesome.min.css')}]
