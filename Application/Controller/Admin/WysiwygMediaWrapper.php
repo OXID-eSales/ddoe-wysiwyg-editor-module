@@ -22,6 +22,8 @@
 
 namespace OxidEsales\WysiwygModule\Application\Controller\Admin;
 
+use OxidEsales\Eshop\Core\Registry;
+
 /**
  * Class WysiwygMediaWrapper
  */
@@ -34,4 +36,11 @@ class WysiwygMediaWrapper extends WysiwygMedia
      * @var string
      */
     protected $_sThisTemplate = 'dialog/ddoewysiwygmedia_wrapper.tpl';
+
+    public function init()
+    {
+        $this->_aViewData["oConf"] = Registry::getConfig();
+
+        parent::init();
+    }
 }
