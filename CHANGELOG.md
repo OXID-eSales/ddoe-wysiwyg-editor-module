@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Templates file path as a relative path in metadata.php
 
+## [2.4.1] - 2020-11-26
+
+### Fixed
+- Fix broken editor view in some html cases [PR-18](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/pull/18)
+
 ## [2.4.0] - 2020-10-27
 
 ### Added
@@ -48,6 +53,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
+[2.4.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.4.0...v2.4.1
 [2.4.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.1.1...v2.2.0
