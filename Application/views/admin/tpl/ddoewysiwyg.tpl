@@ -9,7 +9,7 @@
 
 <div class="ddoe-wysiwyg" id="ddoew">
     <div class="ddoe-wysiwyg-editor">
-        <textarea [{if $blTextEditorDisabled }]disabled [{/if}]id="editor_[{$sEditorField}]" name="[{$sEditorField}]" style="width: [{if $iEditorWidth}][{$iEditorWidth}][{else}]100%[{/if}]; height: [{if $iEditorheight}][{$iEditorheight}][{else}]300px[{/if}];">[{$sEditorValue}]</textarea>
+        <textarea [{if $blTextEditorDisabled }]disabled [{/if}]id="editor_[{$sEditorField}]" name="[{$sEditorField}]" style="width: [{if $iEditorWidth}][{$iEditorWidth}][{else}]100%[{/if}]; height: [{if $iEditorheight}][{$iEditorheight}][{else}]300px[{/if}];">[{$sEditorValue|escape:"html"}]</textarea>
     </div>
 </div>
 
