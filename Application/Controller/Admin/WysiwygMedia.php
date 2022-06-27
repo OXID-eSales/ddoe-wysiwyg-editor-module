@@ -22,6 +22,7 @@
 
 namespace OxidEsales\WysiwygModule\Application\Controller\Admin;
 
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\WysiwygModule\Application\Model\Media;
 
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
@@ -132,6 +133,18 @@ class WysiwygMedia extends AdminDetailsController
         {
             if ($_FILES)
             {
+                $aAllowedUploadTypes = (array) Registry::getConfig()->getConfigParam('aAllowedUploadTypes');
+                $allowedExtensions = array_map("strtolower", $aAllowedUploadTypes);
+
+                $sSourcePath = $_FILES['file']['name'];
+                $path_parts = pathinfo($sSourcePath);
+                $extension = strtolower($path_parts['extension']);
+                if (!in_array($extension, $allowedExtensions)) {
+                    header('HTTP/1.1 415 Invalid File Type Upload');
+                    header('Content-Type: application/json; charset=UTF-8');
+                    die(json_encode(array('error' => "attempt to upload invalid file extension in the media library")));
+                }
+                
                 $this->_oMedia->createDirs();
 
                 $sFileSize = $_FILES['file']['size'];
