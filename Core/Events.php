@@ -95,8 +95,6 @@ class Events
         self::activateModule();
 
         self::regenerateViews();
-
-        self::clearCache();
     }
 
     /**
@@ -218,33 +216,10 @@ class Events
     }
 
     /**
-     * Empty cache
-     */
-    private static function clearCache()
-    {
-        /** @var \OxidEsales\Eshop\Core\UtilsView $oUtilsView */
-        $oUtilsView = Registry::get('oxUtilsView');
-        $sSmartyDir = $oUtilsView->getSmartyDir();
-
-        if ($sSmartyDir && is_readable($sSmartyDir)) {
-            foreach (glob($sSmartyDir . '*') as $sFile) {
-                if (!is_dir($sFile)) {
-                    @unlink($sFile);
-                }
-            }
-        }
-
-        // Initialise Smarty
-        $oUtilsView->getSmarty(true);
-    }
-
-    /**
      * Execute action on deactivate event
      */
     public static function onDeactivate()
     {
         self::executeSQLs(self::$__aDeactivateSQLs);
-
-        self::clearCache();
     }
 }
