@@ -23,7 +23,7 @@
     },
     "autoload":    {
         "psr-4": {
-            "OxidEsales\\WysiwygModule\\": "./"
+            "OxidEsales\\WysiwygModule\\": "./src"
         }
     }
 }
