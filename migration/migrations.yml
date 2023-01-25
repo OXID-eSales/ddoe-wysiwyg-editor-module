@@ -1,0 +1,4 @@
+table_storage:
+  table_name: oxmigrations_ddoewysiwyg
+migrations_paths:
+  'OxidEsales\WysiwygModule\Migrations': data

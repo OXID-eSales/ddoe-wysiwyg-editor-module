@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [3.0.0] - Unreleased
 
 ### Changed
+- Migrations are used during module activation to install and update module related database parts
 - Php code moved to 'src' folder
 - Template access keys changed in metadata.php; New keys used in controllers and template includes
 - TemplateRenderer used to load templates
+
+### Removed
+- Unnecessary parameters removed:
+  - `blModuleWasEnabled`
+  - `iInstallledVersion`
 
 ## [2.4.1] - 2021-11-26
 
