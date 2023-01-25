@@ -24,6 +24,8 @@
 namespace OxidEsales\WysiwygModule\Application\Controller;
 
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
 
 /**
  * Class TextEditorHandler
@@ -56,24 +58,24 @@ class TextEditorHandler extends TextEditorHandler_parent
         $oConfig = $this->getConfig();
         $oLang = Registry::getLang();
 
-        $oUtilsView = Registry::get('oxUtilsView');
-        $oSmarty = $oUtilsView->getSmarty(true);
-
-        $oSmarty->assign('oView', $this->getView());
-        $oSmarty->assign('oViewConf', $this->getViewConfig());
-
-        $oSmarty->assign('sEditorField', $fieldName);
-        $oSmarty->assign('sEditorValue', $objectValue);
-        $oSmarty->assign('iEditorHeight', $height);
-        $oSmarty->assign('iEditorWidth', $width);
-        $oSmarty->assign('blTextEditorDisabled', $this->isTextEditorDisabled());
-
         $iDynInterfaceLanguage = $oConfig->getConfigParam('iDynInterfaceLanguage');
         $sLangAbbr = $oLang->getLanguageAbbr((isset($iDynInterfaceLanguage) ? $iDynInterfaceLanguage : $oLang->getTplLanguage()));
 
-        $oSmarty->assign('langabbr', $sLangAbbr);
+        /** @var TemplateRendererInterface $templateRenderer */
+        $templateRenderer = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(TemplateRendererInterface::class);
 
-        return $oSmarty->fetch('ddoewysiwyg.tpl');
+        return $templateRenderer->renderTemplate('ddoewysiwyg.tpl', [
+            'oView' => $this->getView(),
+            'oViewConf' => $this->getViewConfig(),
+            'sEditorField' => $fieldName,
+            'sEditorValue' => $objectValue,
+            'iEditorHeight' => $height,
+            'iEditorWidth' => $width,
+            'blTextEditorDisabled' => $this->isTextEditorDisabled(),
+            'langabbr' => $sLangAbbr
+        ]);
     }
 
     /**
