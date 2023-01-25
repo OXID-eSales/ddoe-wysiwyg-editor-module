@@ -62,11 +62,9 @@ $aModule = array(
 
     ),
     'templates'   => array(
-
-        'ddoewysiwyg.tpl'                     => 'views/admin_smarty/tpl/ddoewysiwyg.tpl',
-        'dialog/ddoewysiwygmedia.tpl'         => 'views/admin_smarty/tpl/dialog/ddoewysiwygmedia.tpl',
-        'dialog/ddoewysiwygmedia_wrapper.tpl' => 'views/admin_smarty/tpl/dialog/ddoewysiwygmedia_wrapper.tpl',
-
+        '@ddoewysiwyg/ddoewysiwyg.tpl'                     => 'views/admin_smarty/tpl/ddoewysiwyg.tpl',
+        '@ddoewysiwyg/dialog/ddoewysiwygmedia.tpl'         => 'views/admin_smarty/tpl/dialog/ddoewysiwygmedia.tpl',
+        '@ddoewysiwyg/dialog/ddoewysiwygmedia_wrapper.tpl' => 'views/admin_smarty/tpl/dialog/ddoewysiwygmedia_wrapper.tpl',
     ),
     'events'      => array(
         'onActivate'   => '\OxidEsales\WysiwygModule\Core\Events::onActivate',

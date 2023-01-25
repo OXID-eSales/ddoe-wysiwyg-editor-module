@@ -66,7 +66,7 @@ class TextEditorHandler extends TextEditorHandler_parent
             ->getContainer()
             ->get(TemplateRendererInterface::class);
 
-        return $templateRenderer->renderTemplate('ddoewysiwyg.tpl', [
+        return $templateRenderer->renderTemplate('@ddoewysiwyg/ddoewysiwyg', [
             'oView' => $this->getView(),
             'oViewConf' => $this->getViewConfig(),
             'sEditorField' => $fieldName,

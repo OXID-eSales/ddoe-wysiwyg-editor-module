@@ -35,7 +35,7 @@ class WysiwygMediaWrapper extends WysiwygMedia
      *
      * @var string
      */
-    protected $_sThisTemplate = 'dialog/ddoewysiwygmedia_wrapper.tpl';
+    protected $_sThisTemplate = '@ddoewysiwyg/dialog/ddoewysiwygmedia_wrapper';
 
     public function init()
     {

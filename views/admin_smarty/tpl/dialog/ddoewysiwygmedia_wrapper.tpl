@@ -38,9 +38,7 @@
     [{/if}]
 
     <div class="dd-content">
-
-        [{include file="dialog/ddoewysiwygmedia.tpl"}]
-
+        [{include file="@ddoewysiwyg/dialog/ddoewysiwygmedia.tpl"}]
     </div>
 
 [{oxscript include=$oViewConf->getSelfLink()|cat:'cl=ddoewysiwyglangjs' priority=1}]

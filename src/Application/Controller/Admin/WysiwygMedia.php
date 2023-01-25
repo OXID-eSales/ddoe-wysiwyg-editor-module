@@ -38,7 +38,7 @@ class WysiwygMedia extends AdminDetailsController
      *
      * @var string
      */
-    protected $_sThisTemplate = 'dialog/ddoewysiwygmedia.tpl';
+    protected $_sThisTemplate = '@ddoewysiwyg/dialog/ddoewysiwygmedia';
 
     /**
      * @var Media
