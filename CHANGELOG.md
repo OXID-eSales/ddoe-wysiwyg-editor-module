@@ -4,10 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [3.0.0] - Unreleased
 
 ### Changed
-- Templates file path as a relative path in metadata.php
+- Php code moved to 'src' folder
+- Template access keys changed in metadata.php; New keys used in controllers and template includes
+- TemplateRenderer used to load templates
 
 ## [2.4.1] - 2021-11-26
 
@@ -53,6 +55,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
+[3.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.4.1...b-7.0.x
 [2.4.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.4.0...v2.4.1
 [2.4.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.2.0...v2.3.0
