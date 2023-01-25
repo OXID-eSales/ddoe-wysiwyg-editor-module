@@ -63,9 +63,9 @@ $aModule = array(
     ),
     'templates'   => array(
 
-        'ddoewysiwyg.tpl'                     => 'views/admin/tpl/ddoewysiwyg.tpl',
-        'dialog/ddoewysiwygmedia.tpl'         => 'views/admin/tpl/dialog/ddoewysiwygmedia.tpl',
-        'dialog/ddoewysiwygmedia_wrapper.tpl' => 'views/admin/tpl/dialog/ddoewysiwygmedia_wrapper.tpl',
+        'ddoewysiwyg.tpl'                     => 'views/admin_smarty/tpl/ddoewysiwyg.tpl',
+        'dialog/ddoewysiwygmedia.tpl'         => 'views/admin_smarty/tpl/dialog/ddoewysiwygmedia.tpl',
+        'dialog/ddoewysiwygmedia_wrapper.tpl' => 'views/admin_smarty/tpl/dialog/ddoewysiwygmedia_wrapper.tpl',
 
     ),
     'events'      => array(
