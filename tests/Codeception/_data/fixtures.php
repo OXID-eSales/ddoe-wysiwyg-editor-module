@@ -8,4 +8,9 @@
 declare(strict_types=1);
 
 return [
+    'admin' => [
+        'OXID' => 'oxdefaultadmin',
+        'email' => 'admin@myoxideshop.com',
+        'password' => 'admin0303',
+    ],
 ];
