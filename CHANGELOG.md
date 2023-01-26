@@ -6,16 +6,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [3.0.0] - Unreleased
 
+### Added
+- Simple codeception test to check module is functioning
+- Code quality tools - phpcs
+
 ### Changed
 - Migrations are used during module activation to install and update module related database parts
 - Php code moved to 'src' folder
 - Template access keys changed in metadata.php; New keys used in controllers and template includes
 - TemplateRenderer used to load templates
 
+### Fixed
+- Coding style issues
+
 ### Removed
 - Unnecessary parameters removed:
   - `blModuleWasEnabled`
   - `iInstallledVersion`
+- PHP 7.3 and 7.4 support
 
 ## [2.4.1] - 2021-11-26
 
