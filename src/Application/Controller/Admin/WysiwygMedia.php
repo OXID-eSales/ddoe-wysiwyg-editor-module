@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OXID eSales WYSIWYG module.
  *
@@ -22,17 +23,18 @@
 
 namespace OxidEsales\WysiwygModule\Application\Controller\Admin;
 
-use OxidEsales\WysiwygModule\Application\Model\Media;
-
+use Exception;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\DatabaseProvider;
+use OxidEsales\Eshop\Core\Module\Module;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\WysiwygModule\Application\Model\Media;
 
 /**
  * Class WysiwygMedia
  */
 class WysiwygMedia extends AdminDetailsController
 {
-
     /**
      * Current class template name.
      *
@@ -57,17 +59,16 @@ class WysiwygMedia extends AdminDetailsController
     {
         parent::init();
 
-        if ( $this->_oMedia === null )
-        {
-            $oModule = oxNew(\OxidEsales\Eshop\Core\Module\Module::class);
+        if ($this->_oMedia === null) {
+            $oModule = oxNew(Module::class);
 
-            if ( class_exists( '\\OxidEsales\\VisualCmsModule\\Application\\Model\\Media' ) && $oModule->load( 'ddoevisualcms' ) && $oModule->isActive() )
-            {
-                $this->_oMedia = oxNew( \OxidEsales\VisualCmsModule\Application\Model\Media::class );
-            }
-            else
-            {
-                $this->_oMedia = oxNew( Media::class );
+            if (
+                class_exists('\\OxidEsales\\VisualCmsModule\\Application\\Model\\Media')
+                && $oModule->load('ddoevisualcms') && $oModule->isActive()
+            ) {
+                $this->_oMedia = oxNew(\OxidEsales\VisualCmsModule\Application\Model\Media::class);
+            } else {
+                $this->_oMedia = oxNew(Media::class);
             }
         }
 
@@ -83,8 +84,10 @@ class WysiwygMedia extends AdminDetailsController
      */
     public function render()
     {
-        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
-        $iShopId = $oConfig->getConfigParam('blMediaLibraryMultiShopCapability') ? $oConfig->getActiveShop()->getShopId() : null;
+        $oConfig = Registry::getConfig();
+        $iShopId = $oConfig->getConfigParam('blMediaLibraryMultiShopCapability')
+            ? $oConfig->getActiveShop()->getShopId()
+            : null;
 
         $this->_aViewData['aFiles'] = $this->getFiles(0, $iShopId);
         $this->_aViewData['iFileCount'] = $this->getFileCount($iShopId);
@@ -95,14 +98,16 @@ class WysiwygMedia extends AdminDetailsController
     }
 
     /**
-     * @param int  $iStart
+     * @param int $iStart
      * @param null $iShopId
      *
      * @return array
      */
     protected function getFiles($iStart = 0, $iShopId = null)
     {
-        $sSelect = "SELECT * FROM `ddmedia` WHERE 1 " . ($iShopId != null ? "AND `OXSHOPID` = '" . $iShopId . "' " : "") . "ORDER BY `OXTIMESTAMP` DESC LIMIT " . $iStart . ", 18 ";
+        $sSelect = "SELECT * FROM `ddmedia` WHERE 1 "
+            . ($iShopId != null ? "AND `OXSHOPID` = '" . $iShopId . "' " : "")
+            . "ORDER BY `OXTIMESTAMP` DESC LIMIT " . $iStart . ", 18 ";
 
         return DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC)->getAll($sSelect);
     }
@@ -114,7 +119,8 @@ class WysiwygMedia extends AdminDetailsController
      */
     protected function getFileCount($iShopId = null)
     {
-        $sSelect = "SELECT COUNT(*) AS 'count' FROM `ddmedia` WHERE 1 " . ($iShopId != null ? "AND `OXSHOPID` = '" . $iShopId . "' " : "");
+        $sSelect = "SELECT COUNT(*) AS 'count' FROM `ddmedia` WHERE 1 "
+            . ($iShopId != null ? "AND `OXSHOPID` = '" . $iShopId . "' " : "");
 
         return DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC)->getOne($sSelect);
     }
@@ -124,14 +130,12 @@ class WysiwygMedia extends AdminDetailsController
      */
     public function upload()
     {
-        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
+        $oConfig = Registry::getConfig();
 
         $sId = null;
 
-        try
-        {
-            if ($_FILES)
-            {
+        try {
+            if ($_FILES) {
                 $this->_oMedia->createDirs();
 
                 $sFileSize = $_FILES['file']['size'];
@@ -142,9 +146,9 @@ class WysiwygMedia extends AdminDetailsController
 
                 $aFile = $this->_oMedia->uploadeMedia($sSourcePath, $sDestPath, true);
 
-                $sId = md5( $aFile[ 'filename' ] );
-                $sThumbName = $aFile[ 'thumbnail' ];
-                $sFileName = $aFile[ 'filename' ];
+                $sId = md5($aFile['filename']);
+                $sThumbName = $aFile['thumbnail'];
+                $sFileName = $aFile['filename'];
 
                 $aImageSize = null;
                 $sImageSize = '';
@@ -179,33 +183,24 @@ class WysiwygMedia extends AdminDetailsController
                 $this->fallback(true);
             } else {
                 header('Content-Type: application/json');
-                die( json_encode(
-                    array(
-                        'success'   => true,
-                        'id'        => $sId,
-                        'file'      => $sFileName,
-                        'filepath'  => $sDestPath,
-                        'filetype'  => $sFileType,
-                        'filesize'  => $sFileSize,
-                        'imagesize' => $sImageSize,
-                    )
-                ) );
+                die(json_encode([
+                    'success' => true,
+                    'id' => $sId,
+                    'file' => $sFileName,
+                    'filepath' => $sDestPath,
+                    'filetype' => $sFileType,
+                    'filesize' => $sFileSize,
+                    'imagesize' => $sImageSize,
+                ]));
             }
-        }
-        catch( \Exception $e )
-        {
-            if ($oConfig->getRequestParameter('src') == 'fallback')
-            {
-                $this->fallback( false, true );
-            }
-            else
-            {
-                die( json_encode(
-                    array(
-                        'success'   => false,
-                        'id'        => $sId,
-                    )
-                ) );
+        } catch (Exception $e) {
+            if ($oConfig->getRequestParameter('src') == 'fallback') {
+                $this->fallback(false, true);
+            } else {
+                die(json_encode([
+                    'success' => false,
+                    'id' => $sId,
+                ]));
             }
         }
     }
@@ -219,9 +214,10 @@ class WysiwygMedia extends AdminDetailsController
         $oViewConf = $this->getViewConfig();
 
         $sFormHTML = '<html><head></head><body style="text-align:center;">
-                          <form action="' . $oViewConf->getSelfLink() . 'cl=ddoewysiwygmedia_view&fnc=upload&src=fallback" method="post" enctype="multipart/form-data">
-                              <input type="file" name="file" onchange="this.form.submit();" />
-                          </form>';
+          <form action="' . $oViewConf->getSelfLink()
+            . 'cl=ddoewysiwygmedia_view&fnc=upload&src=fallback" method="post" enctype="multipart/form-data">
+              <input type="file" name="file" onchange="this.form.submit();" />
+          </form>';
 
         if ($blComplete) {
             $sFormHTML .= '<script>window.parent.MediaLibrary.refreshMedia();</script>';
@@ -238,7 +234,7 @@ class WysiwygMedia extends AdminDetailsController
      */
     public function remove()
     {
-        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
+        $oConfig = Registry::getConfig();
 
         if ($aIDs = $oConfig->getRequestParameter('id')) {
             $oDb = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
@@ -251,7 +247,13 @@ class WysiwygMedia extends AdminDetailsController
                 @unlink($this->_sUploadDir . $aRow['DDFILENAME']);
 
                 if ($aRow['DDTHUMB']) {
-                    foreach (glob($this->_sThumbDir . str_replace('thumb_' . $this->_iDefaultThumbnailSize . '.jpg', '*', $aRow['DDTHUMB'])) as $sThumb) {
+                    foreach (
+                        glob($this->_sThumbDir . str_replace(
+                            'thumb_' . $this->_iDefaultThumbnailSize . '.jpg',
+                            '*',
+                            $aRow['DDTHUMB']
+                        )) as $sThumb
+                    ) {
                         @unlink($sThumb);
                     }
                 }
@@ -269,15 +271,17 @@ class WysiwygMedia extends AdminDetailsController
      */
     public function moreFiles()
     {
-        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
+        $oConfig = Registry::getConfig();
         $iStart = $oConfig->getRequestParameter('start') ? $oConfig->getRequestParameter('start') : 0;
         //$iShopId = $oConfig->getRequestParameter( 'oxshopid' ) ? $oConfig->getRequestParameter( 'oxshopid' ) : null;
-        $iShopId = $oConfig->getConfigParam('blMediaLibraryMultiShopCapability') ? $oConfig->getActiveShop()->getShopId() : null;
+        $iShopId = $oConfig->getConfigParam('blMediaLibraryMultiShopCapability')
+            ? $oConfig->getActiveShop()->getShopId()
+            : null;
 
         $aFiles = $this->getFiles($iStart, $iShopId);
         $blLoadMore = ($iStart + 18 < $this->getFileCount($iShopId));
 
         header('Content-Type: application/json');
-        die(json_encode(array('files' => $aFiles, 'more' => $blLoadMore)));
+        die(json_encode(['files' => $aFiles, 'more' => $blLoadMore]));
     }
 }

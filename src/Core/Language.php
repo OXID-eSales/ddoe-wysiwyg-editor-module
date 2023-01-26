@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OXID eSales WYSIWYG module.
  *
@@ -29,16 +30,15 @@ namespace OxidEsales\WysiwygModule\Core;
  */
 class Language extends Language_parent
 {
-
     /**
      * @param null|integer $iLang
-     * @param null|bool    $blAdminMode
+     * @param null|bool $blAdminMode
      *
      * @return array
      */
     public function getLanguageStrings($iLang = null, $blAdminMode = null)
     {
-        $aLang = array();
+        $aLang = [];
 
         foreach ($this->getLangTranslationArray($iLang, $blAdminMode) as $sLangKey => $sLangValue) {
             $aLang[$sLangKey] = $sLangValue;
@@ -49,7 +49,13 @@ class Language extends Language_parent
         }
 
         if (count($this->_aAdditionalLangFiles)) {
-            foreach ($this->getLangTranslationArray($iLang, $blAdminMode, $this->_aAdditionalLangFiles) as $sLangKey => $sLangValue) {
+            foreach (
+                $this->getLangTranslationArray(
+                    $iLang,
+                    $blAdminMode,
+                    $this->_aAdditionalLangFiles
+                ) as $sLangKey => $sLangValue
+            ) {
                 $aLang[$sLangKey] = $sLangValue;
             }
         }

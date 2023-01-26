@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OXID eSales WYSIWYG module.
  *
@@ -29,7 +30,6 @@ use OxidEsales\Eshop\Core\Registry;
  */
 class WysiwygMediaWrapper extends WysiwygMedia
 {
-
     /**
      * Current class template name.
      *

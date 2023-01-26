@@ -23,6 +23,7 @@
 
 namespace OxidEsales\WysiwygModule\Application\Controller;
 
+use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
@@ -34,14 +35,13 @@ use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInte
  */
 class TextEditorHandler extends TextEditorHandler_parent
 {
-
     /**
      * Render text editor.
      *
-     * @param int    $width       The editor width
-     * @param int    $height      The editor height
+     * @param int $width The editor width
+     * @param int $height The editor height
      * @param object $objectValue The object value passed to editor
-     * @param string $fieldName   The name of object field which content is passed to editor
+     * @param string $fieldName The name of object field which content is passed to editor
      *
      * @return string The Editor output
      */
@@ -59,7 +59,9 @@ class TextEditorHandler extends TextEditorHandler_parent
         $oLang = Registry::getLang();
 
         $iDynInterfaceLanguage = $oConfig->getConfigParam('iDynInterfaceLanguage');
-        $sLangAbbr = $oLang->getLanguageAbbr((isset($iDynInterfaceLanguage) ? $iDynInterfaceLanguage : $oLang->getTplLanguage()));
+        $sLangAbbr = $oLang->getLanguageAbbr(
+            (isset($iDynInterfaceLanguage) ? $iDynInterfaceLanguage : $oLang->getTplLanguage())
+        );
 
         /** @var TemplateRendererInterface $templateRenderer */
         $templateRenderer = ContainerFactory::getInstance()
@@ -81,7 +83,7 @@ class TextEditorHandler extends TextEditorHandler_parent
     /**
      * Config instance getter
      *
-     * @return \OxidEsales\Eshop\Core\Config
+     * @return Config
      */
     public function getConfig()
     {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OXID eSales WYSIWYG module.
  *
@@ -31,7 +32,6 @@ use OxidEsales\Eshop\Core\Registry;
  */
 class WysiwygLangJs extends FrontendController
 {
-
     /**
      * Init function
      */

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This Software is the property of OXID eSales and is protected
  * by copyright law.
@@ -22,12 +23,10 @@ use OxidEsales\WysiwygModule\Application\Model\Media;
  */
 class ViewConfig extends ViewConfig_parent
 {
-
-    public function getMediaUrl( $sFile = '' )
+    public function getMediaUrl($sFile = '')
     {
         /** @var Media $oMedia */
-        $oMedia = oxNew( Media::class );
-        return $oMedia->getMediaUrl( $sFile );
+        $oMedia = oxNew(Media::class);
+        return $oMedia->getMediaUrl($sFile);
     }
-
 }

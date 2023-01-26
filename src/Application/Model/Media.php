@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OXID eSales WYSIWYG module.
  *
@@ -22,32 +23,43 @@
 
 namespace OxidEsales\WysiwygModule\Application\Model;
 
+use DirectoryIterator;
+use Exception;
 use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\Eshop\Core\Registry;
 
 /**
  * Class Media
  *
- * @mixin \OxidEsales\Eshop\Core\Model\BaseModel
+ * @mixin BaseModel
  */
 class Media extends BaseModel
 {
-
     protected $_sMediaPath = '/out/pictures/ddmedia/';
     protected $_iDefaultThumbnailSize = 185;
-    protected $_aFileExtBlacklist = [ 'php.*', 'exe', 'js', 'jsp', 'cgi', 'cmf', 'phtml', 'pht', 'phar' ]; // regex allowed
+    protected $_aFileExtBlacklist = [
+        'php.*',
+        'exe',
+        'js',
+        'jsp',
+        'cgi',
+        'cmf',
+        'phtml',
+        'pht',
+        'phar'
+    ]; // regex allowed
 
 
     /**
      * @param null|string $sTableName
-     * @param bool        $blForceAllFields
+     * @param bool $blForceAllFields
      */
     public function init($sTableName = null, $blForceAllFields = false)
     {
     }
 
     /**
-     * @param string       $sFile
+     * @param string $sFile
      * @param null|integer $iThumbSize
      *
      * @return bool|string
@@ -72,7 +84,7 @@ class Media extends BaseModel
     }
 
     /**
-     * @param string       $sFile
+     * @param string $sFile
      * @param null|integer $iThumbSize
      *
      * @return string
@@ -93,7 +105,7 @@ class Media extends BaseModel
      */
     public function getMediaUrl($sFile = '')
     {
-        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
+        $oConfig = Registry::getConfig();
 
         $sFilePath = $this->getMediaPath($sFile);
 
@@ -143,7 +155,7 @@ class Media extends BaseModel
     /**
      * @param string $sSourcePath
      * @param string $sDestPath
-     * @param bool   $blCreateThumbs
+     * @param bool $blCreateThumbs
      *
      * @return array
      */
@@ -155,8 +167,7 @@ class Media extends BaseModel
         $sFileName = basename($sDestPath);
         $iFileCount = 0;
 
-        if( $this->validateFilename( $sFileName ) )
-        {
+        if ($this->validateFilename($sFileName)) {
             while (file_exists($sDestPath)) {
                 $aFileParts = explode('.', $sFileName);
                 $aFileParts = array_reverse($aFileParts);
@@ -170,14 +181,14 @@ class Media extends BaseModel
                 $aBaseParts = array_reverse($aBaseParts);
 
                 if (strlen($aBaseParts[0]) == 1 && is_numeric($aBaseParts[0])) {
-                    $iFileCount = (int) $aBaseParts[0];
+                    $iFileCount = (int)$aBaseParts[0];
                     unset($aBaseParts[0]);
                 }
 
                 $sBaseName = implode('_', array_reverse($aBaseParts));
 
                 $sFileName = $sBaseName . '_' . (++$iFileCount) . '.' . $sFileExt;
-                $sDestPath = dirname( $sDestPath ) . '/' . $sFileName;
+                $sDestPath = dirname($sDestPath) . '/' . $sFileName;
             }
 
             move_uploaded_file($sSourcePath, $sDestPath);
@@ -187,16 +198,16 @@ class Media extends BaseModel
                     $sThumbName = $this->createThumbnail($sFileName);
 
                     $this->createMoreThumbnails($sFileName);
-                } catch ( \Exception $e) {
+                } catch (Exception $e) {
                     $sThumbName = '';
                 }
             }
 
-            return array(
-                'filepath'  => $sDestPath,
-                'filename'  => $sFileName,
+            return [
+                'filepath' => $sDestPath,
+                'filename' => $sFileName,
                 'thumbnail' => $sThumbName
-            );
+            ];
         }
 
         return false;
@@ -233,12 +244,12 @@ class Media extends BaseModel
     }
 
     /**
-     * @param string       $sFileName
+     * @param string $sFileName
      * @param null|integer $iThumbSize
-     * @param bool         $blCrop
+     * @param bool $blCrop
      *
      * @return bool|string
-     * @throws \Exception
+     * @throws Exception
      */
     public function createThumbnail($sFileName, $iThumbSize = null, $blCrop = true)
     {
@@ -265,7 +276,7 @@ class Media extends BaseModel
                     break;
 
                 default:
-                    throw new \Exception('Invalid filetype');
+                    throw new Exception('Invalid filetype');
                     break;
             }
 
@@ -302,7 +313,18 @@ class Media extends BaseModel
             }
 
             $rTmpImg = imagecreatetruecolor($iThumbWidth, $iThumbHeight);
-            imagecopyresampled($rTmpImg, $rImg, $iThumbX, $iThumbY, 0, 0, $iThumbWidth, $iThumbHeight, $iImageWidth, $iImageHeight);
+            imagecopyresampled(
+                $rTmpImg,
+                $rImg,
+                $iThumbX,
+                $iThumbY,
+                0,
+                0,
+                $iThumbWidth,
+                $iThumbHeight,
+                $iImageWidth,
+                $iImageHeight
+            );
 
             if ($blCrop) {
                 $rThumbImg = imagecreatetruecolor($iThumbSize, $iThumbSize);
@@ -335,8 +357,8 @@ class Media extends BaseModel
 
     /**
      * @param null|integer $iThumbSize
-     * @param bool         $blOverwrite
-     * @param bool         $blCrop
+     * @param bool $blOverwrite
+     * @param bool $blCrop
      */
     public function generateThumbnails($iThumbSize = null, $blOverwrite = false, $blCrop = true)
     {
@@ -345,7 +367,7 @@ class Media extends BaseModel
         }
 
         if (is_dir($this->getMediaPath())) {
-            foreach (new \DirectoryIterator($this->getMediaPath()) as $oFile) {
+            foreach (new DirectoryIterator($this->getMediaPath()) as $oFile) {
                 if ($oFile->isFile()) {
                     $sThumbName = $this->getThumbName($oFile->getBasename(), $iThumbSize);
                     $sThumbPath = $this->getThumbnailPath($sThumbName);
@@ -358,16 +380,14 @@ class Media extends BaseModel
         }
     }
 
-    public function validateFilename( $sFileName )
+    public function validateFilename($sFileName)
     {
-        $aFileNameParts = explode( '.', $sFileName  );
-        $aFileNameParts = array_reverse( $aFileNameParts );
-        $sFileNameExt = $aFileNameParts[ 0 ];
-        foreach( $this->_aFileExtBlacklist as $sBlacklistPattern )
-        {
-            if( preg_match( "/" . $sBlacklistPattern . "/", $sFileNameExt ) )
-            {
-                throw new \Exception( Registry::getLang()->translateString( 'DD_MEDIA_EXCEPTION_INVALID_FILEEXT' ) );
+        $aFileNameParts = explode('.', $sFileName);
+        $aFileNameParts = array_reverse($aFileNameParts);
+        $sFileNameExt = $aFileNameParts[0];
+        foreach ($this->_aFileExtBlacklist as $sBlacklistPattern) {
+            if (preg_match("/" . $sBlacklistPattern . "/", $sFileNameExt)) {
+                throw new Exception(Registry::getLang()->translateString('DD_MEDIA_EXCEPTION_INVALID_FILEEXT'));
             }
         }
         return true;

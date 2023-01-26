@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OXID eSales WYSIWYG module.
  *
@@ -29,7 +30,6 @@ namespace OxidEsales\WysiwygModule\Core;
  */
 class Utils extends Utils_parent
 {
-
     /**
      * @param null|mixed $mMsg
      */
@@ -52,7 +52,7 @@ class Utils extends Utils_parent
         } else {
             // Typecast for Objects
             if (is_object($mMsg)) {
-                $mMsg = ( array ) $mMsg;
+                $mMsg = (array)$mMsg;
             }
 
             $mMsg = $this->encodeUtf8Array($mMsg);
@@ -68,7 +68,11 @@ class Utils extends Utils_parent
      */
     public function isUtfString($sString = '')
     {
-        if (is_string($sString) && (function_exists('mb_detect_encoding') && mb_detect_encoding($sString, 'UTF-8', true) !== false)) {
+        if (
+            is_string($sString)
+            && (function_exists('mb_detect_encoding')
+                && mb_detect_encoding($sString, 'UTF-8', true) !== false)
+        ) {
             return true;
         }
 
@@ -82,7 +86,7 @@ class Utils extends Utils_parent
      */
     protected function encodeUtf8Array($aArray)
     {
-        $aRet = array();
+        $aRet = [];
 
         foreach ($aArray as $sKey => $mValue) {
             if (!$this->isUtfString($mValue)) {
