@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
+declare(strict_types=1);
+
+namespace OxidEsales\VisualCmsModule\Service;
+
+final class Media
+{
+    public function getMediaPath($filename = ''): string;
+    public function getDefaultThumbSize();
+    public function getMediaUrl($filename = '');
+    public function getThumbnailUrl($sFile = '', $iThumbSize = null);
+    public function createDirs();
+    public function uploadeMedia($sSourcePath, $sDestPath, $blCreateThumbs = false);
+}
