@@ -28,7 +28,7 @@ use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Module\Module;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\VisualCmsModule\Service\Media;
+use OxidEsales\WysiwygModule\Application\Model\Media;
 use OxidEsales\WysiwygModule\Traits\ServiceContainer;
 
 /**
