@@ -131,6 +131,7 @@ class WysiwygMedia extends AdminDetailsController
     public function upload()
     {
         $oConfig = Registry::getConfig();
+        $request = Registry::getRequest();
 
         $sId = null;
 
@@ -185,7 +186,7 @@ class WysiwygMedia extends AdminDetailsController
                 );
             }
 
-            if ($oConfig->getRequestParameter('src') == 'fallback') {
+            if ($request->getRequestParameter('src') == 'fallback') {
                 $this->fallback(true);
             } else {
                 header('Content-Type: application/json');
@@ -200,7 +201,7 @@ class WysiwygMedia extends AdminDetailsController
                 ]));
             }
         } catch (Exception $e) {
-            if ($oConfig->getRequestParameter('src') == 'fallback') {
+            if ($request->getRequestParameter('src') == 'fallback') {
                 $this->fallback(false, true);
             } else {
                 die(json_encode([
@@ -240,9 +241,9 @@ class WysiwygMedia extends AdminDetailsController
      */
     public function remove()
     {
-        $oConfig = Registry::getConfig();
+        $request = Registry::getRequest();
 
-        if ($aIDs = $oConfig->getRequestParameter('id')) {
+        if ($aIDs = $request->getRequestParameter('id')) {
             $oDb = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
 
             $inIds = implode(',', $oDb->quoteArray($aIDs));
@@ -278,8 +279,9 @@ class WysiwygMedia extends AdminDetailsController
     public function moreFiles()
     {
         $oConfig = Registry::getConfig();
-        $iStart = $oConfig->getRequestParameter('start') ? $oConfig->getRequestParameter('start') : 0;
-        //$iShopId = $oConfig->getRequestParameter( 'oxshopid' ) ? $oConfig->getRequestParameter( 'oxshopid' ) : null;
+        $request = Registry::getRequest();
+
+        $iStart = $request->getRequestParameter('start') ? $request->getRequestParameter('start') : 0;
         $iShopId = $oConfig->getConfigParam('blMediaLibraryMultiShopCapability')
             ? $oConfig->getActiveShop()->getShopId()
             : null;
