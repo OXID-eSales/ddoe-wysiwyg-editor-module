@@ -88,9 +88,7 @@ class WysiwygMedia extends AdminDetailsController
     public function render()
     {
         $oConfig = Registry::getConfig();
-        $iShopId = $oConfig->getConfigParam('blMediaLibraryMultiShopCapability')
-            ? $oConfig->getActiveShop()->getShopId()
-            : null;
+        $iShopId = $oConfig->getActiveShop()->getShopId();
 
         $this->_aViewData['aFiles'] = $this->getFiles(0, $iShopId);
         $this->_aViewData['iFileCount'] = $this->getFileCount($iShopId);
@@ -285,9 +283,7 @@ class WysiwygMedia extends AdminDetailsController
         $request = Registry::getRequest();
 
         $iStart = $request->getRequestParameter('start') ? $request->getRequestParameter('start') : 0;
-        $iShopId = $oConfig->getConfigParam('blMediaLibraryMultiShopCapability')
-            ? $oConfig->getActiveShop()->getShopId()
-            : null;
+        $iShopId = $oConfig->getActiveShop()->getShopId();
 
         $aFiles = $this->getFiles($iStart, $iShopId);
         $blLoadMore = ($iStart + 18 < $this->getFileCount($iShopId));

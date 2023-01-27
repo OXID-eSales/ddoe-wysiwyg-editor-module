@@ -18,11 +18,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Coding style issues
+- Media library limitations for multishop support
 
 ### Removed
-- Unnecessary parameters removed:
+- Unnecessary parameters and its usage removed:
   - `blModuleWasEnabled`
   - `iInstallledVersion`
+  - `blMediaLibraryMultiShopCapability`
 - PHP 7.3 and 7.4 support
 
 ## [2.4.1] - 2021-11-26
