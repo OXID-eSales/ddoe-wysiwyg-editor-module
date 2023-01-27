@@ -64,6 +64,7 @@ modules:
         paths:
           - Application/views/admin_smarty
           - Application/views/flow/translations
+          - ../vendor/ddoe/wysiwyg-editor-module/views/admin_smarty
     - \OxidEsales\Codeception\Module\OxideshopModules
 
 step_decorators:

@@ -14,7 +14,7 @@ use OxidEsales\WysiwygModule\Tests\Codeception\AcceptanceTester;
 /**
  * @group ddoe_wysiwyg
  */
-final class TextareaModifiedCest
+final class TextareaCheckCest
 {
     public function testCmsTextAreaModified(AcceptanceTester $I): void
     {
