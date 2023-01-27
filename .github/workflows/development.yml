@@ -229,7 +229,6 @@ jobs:
           name: StylesLog-${{ inputs.php }}
           path: |
             source/test-module/phpstan.report.json
-            source/test-module/phpmd.report.json
 
   integration_tests:
     needs: [ install_shop_with_module ]
