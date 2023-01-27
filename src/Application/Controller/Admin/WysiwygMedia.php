@@ -134,6 +134,12 @@ class WysiwygMedia extends AdminDetailsController
 
         $sId = null;
 
+        $sFileName = null;
+        $sDestPath = null;
+        $sFileType = null;
+        $sFileSize = null;
+        $sImageSize = null;
+
         try {
             if ($_FILES) {
                 $this->_oMedia->createDirs();
