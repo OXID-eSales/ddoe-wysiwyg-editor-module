@@ -12,3 +12,4 @@ jobs:
     with:
       php: '8.0'
       mysql: '5.7.37'
+      report_sonarcloud: true
