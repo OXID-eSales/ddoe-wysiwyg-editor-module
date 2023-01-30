@@ -39,7 +39,11 @@ class WysiwygMediaWrapper extends WysiwygMedia
 
     public function init()
     {
+        $request = Registry::getRequest();
+
         $this->_aViewData["oConf"] = Registry::getConfig();
+        $this->_aViewData["request"]["overlay"] = $request->getRequestParameter('overlay') ?: 0;
+        $this->_aViewData["request"]["popout"] = $request->getRequestParameter('popout') ?: 0;
 
         parent::init();
     }

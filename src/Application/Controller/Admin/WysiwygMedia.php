@@ -95,6 +95,9 @@ class WysiwygMedia extends AdminDetailsController
         $this->_aViewData['sResourceUrl'] = $this->_oMedia->getMediaUrl();
         $this->_aViewData['sThumbsUrl'] = $this->_oMedia->getThumbnailUrl();
 
+        $request = Registry::getRequest();
+        $this->_aViewData["request"]["overlay"] = $request->getRequestParameter('overlay') ?: 0;
+
         return parent::render();
     }
 
