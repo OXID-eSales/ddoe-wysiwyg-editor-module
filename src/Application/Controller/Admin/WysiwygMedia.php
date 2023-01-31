@@ -29,6 +29,7 @@ use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Module\Module;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\WysiwygModule\Application\Model\Media;
+use OxidEsales\VisualCmsModule\Service\Media as VCMSMedia;
 use OxidEsales\WysiwygModule\Traits\ServiceContainer;
 
 /**
@@ -66,10 +67,10 @@ class WysiwygMedia extends AdminDetailsController
             $oModule = oxNew(Module::class);
 
             if (
-                class_exists('\\OxidEsales\\VisualCmsModule\\Service')
+                class_exists(VCMSMedia::class)
                 && $oModule->load('ddoevisualcms') && $oModule->isActive()
             ) {
-                $this->_oMedia = $this->getServiceFromContainer('\OxidEsales\VisualCmsModule\Service\Media');
+                $this->_oMedia = $this->getServiceFromContainer('OxidEsales\VisualCmsModule\Service\Media');
             } else {
                 $this->_oMedia = oxNew(Media::class);
             }
