@@ -1,0 +1,56 @@
+<style type="text/css">
+    @import url('{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/css/font-awesome.min.css') }}');
+    @import url('{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/css/backend.min.css') }}');
+
+    #ddoew {
+        position: relative;
+    }
+</style>
+
+<div class="ddoe-wysiwyg" id="ddoew">
+    <div class="ddoe-wysiwyg-editor">
+        <textarea {% if blTextEditorDisabled  %}disabled {% endif %}id="editor_{{ sEditorField }}" name="{{ sEditorField }}" style="width: {% if iEditorWidth %}{{ iEditorWidth }}{% else %}100%{% endif %}; height: {% if iEditorheight %}{{ iEditorheight }}{% else %}300px{% endif %};">{{ sEditorValue|escape("html") }}</textarea>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var _win = top.basefrm;
+    var _doc = _win.document;
+
+    if( !_win.isOverlayLoaded )
+    {
+        _win.editorModuleUrl     = '{{ oViewConf.getModuleUrl('ddoewysiwyg') }}';
+        _win.editorControllerUrl = '{{ oViewConf.getSelfLink()|cat('cl=ddoewysiwygmedia_wrapper&overlay=1')|replace({'&amp;':'&'})|raw }}';
+        _win.isOverlayLoaded     = true;
+
+        var loadScript = function( src, cb )
+        {
+            var headElement   = _doc.getElementsByTagName( 'head' )[ 0 ];
+            var scriptElement = _doc.createElement( 'script' );
+
+            scriptElement.setAttribute( 'src', src );
+
+            if( typeof cb === 'function' )
+            {
+                scriptElement.addEventListener( 'load', function( e ) { cb( null, e ); }, false );
+            }
+
+            headElement.appendChild( scriptElement );
+        };
+
+
+        loadScript( '{{ oViewConf.getSelfLink()|cat('cl=ddoewysiwyglangjs')|replace({'&amp;':'&'})|raw }}', function() {
+            loadScript( '{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/js/overlay.min.js') }}' );
+        });
+    }
+</script>
+
+{{ script({ include: oViewConf.getSelfLink()|cat('cl=ddoewysiwyglangjs'), priority: 1, dynamic: __oxid_include_dynamic }) }}
+
+<script type="text/javascript" src="{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/js/jquery.min.js') }}"></script>
+<script type="text/javascript" src="{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/js/bootstrap.min.js') }}"></script>
+<script type="text/javascript" src="{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/js/backend.min.js') }}"></script>
+
+{% if langabbr == 'de' %}
+    <script type="text/javascript" src="{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/js/lang/summernote-de.min.js') }}"></script>
+{% endif %}

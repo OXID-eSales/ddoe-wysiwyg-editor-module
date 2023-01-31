@@ -18,12 +18,34 @@
             "email": "info@oxid-esales.com"
         }
     ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "prefer-dist": true,
     "require":     {
-        "php": ">=7.3"
+        "php": ">=8.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.8.11",
+        "squizlabs/php_codesniffer": "3.*",
+        "oxid-esales/oxideshop-ce": "dev-b-7.0.x"
     },
     "autoload":    {
         "psr-4": {
-            "OxidEsales\\WysiwygModule\\": "./"
+            "OxidEsales\\WysiwygModule\\": "./src",
+            "OxidEsales\\WysiwygModule\\Tests\\": "./tests"
+        }
+    },
+    "scripts": {
+        "phpcs": "phpcs --standard=tests/phpcs.xml",
+        "phpcbf": "phpcbf --standard=tests/phpcs.xml",
+
+        "phpstan": "phpstan --xdebug -ctests/PhpStan/phpstan.neon analyse src/",
+        "phpstan-report": "phpstan --xdebug -ctests/PhpStan/phpstan.neon analyse src/ --error-format=json > phpstan.report.json"
+    },
+    "config": {
+        "allow-plugins": {
+            "oxid-esales/oxideshop-unified-namespace-generator": true,
+            "oxid-esales/oxideshop-composer-plugin": true
         }
     }
 }
