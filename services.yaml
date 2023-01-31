@@ -3,3 +3,10 @@ services:
   _defaults:
     public: false
     autowire: true
+
+  OxidEsales\Eshop\Core\UtilsObject:
+    factory: [ 'OxidEsales\Eshop\Core\Registry', 'getUtilsObject' ]
+
+  OxidEsales\WysiwygModule\Service\:
+    resource: 'src/Service/*'
+    public: true

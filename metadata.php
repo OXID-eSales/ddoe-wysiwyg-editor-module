@@ -12,19 +12,19 @@ $sMetadataVersion = '2.0';
 /**
  * Module information
  */
-$aModule = array(
+$aModule = [
     'id'          => 'ddoewysiwyg',
     'title'       => 'WYSIWYG Editor + Mediathek',
-    'description' => array(
+    'description' => [
         'de' => '',
         'en' => '',
-    ),
+    ],
     'thumbnail'   => 'logo.png',
     'version'     => '2.4.1',
     'author'      => 'OXID eSales AG & digidesk - media solutions',
     'url'         => 'http://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
-    'extend'      => array(
+    'extend'      => [
 
         // Admin Controller
         \OxidEsales\Eshop\Application\Controller\TextEditorHandler::class => \OxidEsales\WysiwygModule\Application\Controller\TextEditorHandler::class,
@@ -34,8 +34,11 @@ $aModule = array(
         \OxidEsales\Eshop\Core\Language::class    => \OxidEsales\WysiwygModule\Core\Language::class,
         \OxidEsales\Eshop\Core\Utils::class       => \OxidEsales\WysiwygModule\Core\Utils::class,
 
-    ),
-    'controllers'       => array(
+        // Models
+        \OxidEsales\Eshop\Application\Model\Content::class => \OxidEsales\WysiwygModule\Application\Model\Content::class,
+
+    ],
+    'controllers'       => [
 
         // Lang
         'ddoewysiwyglangjs' => \OxidEsales\WysiwygModule\Application\Controller\WysiwygLangJs::class,
@@ -44,16 +47,18 @@ $aModule = array(
         'ddoewysiwygmedia_view'    => \OxidEsales\WysiwygModule\Application\Controller\Admin\WysiwygMedia::class,
         'ddoewysiwygmedia_wrapper' => \OxidEsales\WysiwygModule\Application\Controller\Admin\WysiwygMediaWrapper::class,
 
-    ),
-    'templates'   => array(
+    ],
+    'templates'   => [
         '@ddoewysiwyg/ddoewysiwyg.tpl'                     => 'views/admin_smarty/tpl/ddoewysiwyg.tpl',
         '@ddoewysiwyg/dialog/ddoewysiwygmedia.tpl'         => 'views/admin_smarty/tpl/dialog/ddoewysiwygmedia.tpl',
         '@ddoewysiwyg/dialog/ddoewysiwygmedia_wrapper.tpl' => 'views/admin_smarty/tpl/dialog/ddoewysiwygmedia_wrapper.tpl',
-    ),
-    'events'      => array(
+    ],
+    'events'      => [
         'onActivate'   => '\OxidEsales\WysiwygModule\Core\Events::onActivate',
         'onDeactivate' => '\OxidEsales\WysiwygModule\Core\Events::onDeactivate'
-    ),
-    'blocks'      => array(),
-    'settings'    => array()
-);
+    ],
+    'blocks'      => [],
+    'settings'    => [
+        // todo: add setting for AlternativeImageDirectory
+    ]
+];
