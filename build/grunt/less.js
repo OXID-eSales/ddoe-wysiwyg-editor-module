@@ -30,15 +30,15 @@ module.exports = {
 
     wysiwyg: {
         files: {
-            "out/src/css/wysiwyg.min.css": [
+            "assets/out/src/css/wysiwyg.min.css": [
                 "build/less/backend.less"
             ],
 
-            "out/src/css/medialibrary.min.css": [
+            "assets/out/src/css/medialibrary.min.css": [
                 "build/less/base/medialibrary.less"
             ],
 
-            "out/src/css/overlay.min.css": [
+            "assets/out/src/css/overlay.min.css": [
                 "build/less/overlay.less"
             ]
         }
@@ -46,13 +46,13 @@ module.exports = {
 
     bootstrap: {
         files: {
-            "out/src/css/bootstrap.min.css": "build/vendor/bootstrap/less/bootstrap.less"
+            "assets/out/src/css/bootstrap.min.css": "build/vendor/bootstrap/less/bootstrap.less"
         }
     },
 
     fontawesome: {
         files: {
-            "out/src/css/font-awesome.min.css": "build/vendor/font-awesome/less/font-awesome.less"
+            "assets/out/src/css/font-awesome.min.css": "build/vendor/font-awesome/less/font-awesome.less"
         }
     }
 
