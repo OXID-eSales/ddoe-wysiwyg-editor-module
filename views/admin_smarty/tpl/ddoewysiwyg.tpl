@@ -1,6 +1,7 @@
 <style type="text/css">
     @import url('[{$oViewConf->getModuleUrl('ddoewysiwyg','out/src/css/font-awesome.min.css')}]');
     @import url('[{$oViewConf->getModuleUrl('ddoewysiwyg','out/src/css/backend.min.css')}]');
+    @import url('[{$oViewConf->getModuleUrl('ddoewysiwyg','out/src/css/wysiwyg.min.css')}]');
 
     #ddoew {
         position: relative;
