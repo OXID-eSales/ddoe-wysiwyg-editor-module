@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.4.2] - 2023-02-03
+
+### Fixed
+- Update code edit textarea font color [PR-21](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/pull/21)
+- Incorrect variables for editor height used in template [PR-20](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/pull/20)
+
 ## [2.4.1] - 2021-11-26
 
 ### Fixed
@@ -48,6 +54,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
+[2.4.2]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.4.1...v2.4.2
 [2.4.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.4.0...v2.4.1
 [2.4.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.2.0...v2.3.0
