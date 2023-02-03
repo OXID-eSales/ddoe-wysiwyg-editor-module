@@ -9,7 +9,7 @@
 
 <div class="ddoe-wysiwyg" id="ddoew">
     <div class="ddoe-wysiwyg-editor">
-        <textarea {% if blTextEditorDisabled  %}disabled {% endif %}id="editor_{{ sEditorField }}" name="{{ sEditorField }}" style="width: {% if iEditorWidth %}{{ iEditorWidth }}{% else %}100%{% endif %}; height: {% if iEditorheight %}{{ iEditorheight }}{% else %}300px{% endif %};">{{ sEditorValue|escape("html") }}</textarea>
+        <textarea {% if blTextEditorDisabled  %}disabled {% endif %}id="editor_{{ sEditorField }}" name="{{ sEditorField }}" style="width: {% if iEditorWidth %}{{ iEditorWidth }}{% else %}100%{% endif %}; height: {% if iEditorHeight %}{{ iEditorHeight }}{% else %}300px{% endif %};">{{ sEditorValue|escape("html") }}</textarea>
     </div>
 </div>
 
