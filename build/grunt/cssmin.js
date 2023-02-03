@@ -7,7 +7,7 @@ module.exports = {
     wysiwyg: {
         files: {
             "assets/out/src/css/backend.min.css": [
-                "out/src/css/wysiwyg.min.css",
+                "assets/out/src/css/wysiwyg.min.css",
                 "build/vendor/summernote/css/summernote.min.css"
             ]
         }
