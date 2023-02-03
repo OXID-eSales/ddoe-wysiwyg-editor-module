@@ -13,6 +13,7 @@ $aLang = array(
     // 'charset' => 'ISO-8859-15',
 
     // Lang-Strings
+    'SHOP_MODULE_GROUP_main'                           => 'Allgemein',
     'SHOP_MODULE_ddoeWysiwygAlternativeImageDirectory' => 'Alternatives Bildverzeichnis',
 
     // Base Module

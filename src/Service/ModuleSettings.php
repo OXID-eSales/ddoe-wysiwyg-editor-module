@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\WysiwygModule\Service;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
-use OxidEsales\VisualCmsModule\Core\Module;
+use OxidEsales\WysiwygModule\Core\Module;
 
 /**
  * @extendable-class
@@ -31,7 +31,7 @@ class ModuleSettings
 
     public function getAlternativeImageDirectory(): string
     {
-        return $this->getStringSettingValue(self::VCMS_ALTERNATIVE_IMAGE_DIRECTORY);
+        return $this->getStringSettingValue(self::WYSIWYG_ALTERNATIVE_IMAGE_DIRECTORY);
     }
 
     protected function getStringSettingValue($key): string

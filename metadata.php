@@ -4,10 +4,12 @@
  * See LICENSE file for license details.
  */
 
+use OxidEsales\WysiwygModule\Service\ModuleSettings;
+
 /**
  * Metadata version
  */
-$sMetadataVersion = '2.0';
+$sMetadataVersion = '2.1';
 
 /**
  * Module information
@@ -59,6 +61,11 @@ $aModule = [
     ],
     'blocks'      => [],
     'settings'    => [
-        // todo: add setting for AlternativeImageDirectory
+        [
+            'group' => 'main',
+            'name' => ModuleSettings::WYSIWYG_ALTERNATIVE_IMAGE_DIRECTORY,
+            'type' => 'str',
+            'value' => ''
+        ],
     ]
 ];

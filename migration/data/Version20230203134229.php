@@ -19,6 +19,9 @@ final class Version20230203134229 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        $platform = $this->connection->getDatabasePlatform();
+        $platform->registerDoctrineTypeMapping('enum', 'string');
+
         $mediaTable = $schema->getTable('ddmedia');
 
         if (!$mediaTable->hasColumn('DDFOLDERID')) {

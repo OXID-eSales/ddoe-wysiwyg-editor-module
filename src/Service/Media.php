@@ -16,6 +16,7 @@ use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use Webmozart\Glob\Glob;
 use Webmozart\PathUtil\Path;
+use OxidEsales\WysiwygModule\Service\ModuleSettings;
 
 class Media
 {

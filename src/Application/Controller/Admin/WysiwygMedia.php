@@ -14,6 +14,7 @@ use OxidEsales\Eshop\Core\Module\Module;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\WysiwygModule\Traits\ServiceContainer;
 use Webmozart\PathUtil\Path;
+use OxidEsales\WysiwygModule\Service\Media;
 
 /**
  * Class WysiwygMedia

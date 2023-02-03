@@ -8,7 +8,7 @@
 
         <!-- Nav tabs -->
         {% set sActiveTab = "mediaUpload" %}
-        {% if iFileCount || sFolderId %}
+        {% if iFileCount or sFolderId %}
             {% set sActiveTab = "mediaList" %}
         {% endif %}
         {% if sTab %}
@@ -41,8 +41,8 @@
             <ol class="breadcrumb">
                 <li>{{ translate({ ident: "DD_MEDIA_BREADCRUMB_PATH" }) }}:</li>
 
-                {% for oPath in oView->getBreadcrumb() %}
-                    <li {% if oPath->active %}class="active"{% endif %}>{{ oPath->name }}</li>
+                {% for oPath in oView.getBreadcrumb() %}
+                    <li {% if oPath.active %}class="active"{% endif %}>{{ oPath.name }}</li>
                 {% endfor %}
             </ol>
 
