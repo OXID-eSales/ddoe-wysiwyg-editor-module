@@ -31,12 +31,6 @@ final class Version20230125141525 extends AbstractMigration
         if (!$mediaTable->hasColumn('OXSHOPID')) {
             $this->addSql('ALTER TABLE  `ddmedia` ADD `OXSHOPID` INT(10) UNSIGNED NOT NULL AFTER `OXID`;');
         }
-
-        if (!$mediaTable->hasColumn('DDFOLDERID')) {
-            $this->addSql(
-                "ALTER TABLE  `ddmedia` ADD  `DDFOLDERID` CHAR( 32 ) NOT NULL DEFAULT '' AFTER `DDIMAGESIZE`"
-            );
-        }
     }
 
     public function down(Schema $schema): void
