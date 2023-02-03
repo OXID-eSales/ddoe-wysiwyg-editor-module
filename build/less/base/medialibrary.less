@@ -37,6 +37,8 @@ html, body {
 
 // MediaLibrary
 
+@items-gutter-width: 12px;
+
 .dd-dialog {
 
     .modal-header {
@@ -90,14 +92,58 @@ html, body {
         overflow: hidden;
     }
 
-    .dd-media-list-items {
+    .dd-media-list-toolbar {
         width: percentage(( 8 / @grid-columns )); // ~ 8 Columns width
         position: absolute;
         top: 0;
         left: 0;
+        height: 40px;
+        border-bottom: 1px solid #eee;
+        padding: 9px 15px;
+    }
+
+    .dd-media-list-breadcrumb, .dd-media-upload-breadcrumb {
+        width: percentage(( 8 / @grid-columns )); // ~ 8 Columns width
+        position: absolute;
+        top: 40px;
+        left: 0;
+        font-size: 75%;
+        height: 31px;
+        border-bottom: 1px solid #eee;
+        overflow: hidden;
+
+        .breadcrumb {
+            margin: 0;
+        }
+
+        .dd-media-list-folder-up {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            padding: 6px 15px;
+
+            > .btn {
+                font-size: inherit;
+            }
+        }
+
+        &.dd-media-upload-breadcrumb {
+            width: 100%;
+            position: relative;
+            top: 0;
+        }
+    }
+
+    .dd-media-list-items {
+        width: percentage(( 8 / @grid-columns )); // ~ 8 Columns width
+        position: absolute;
+        top: 70px;
+        left: 0;
         bottom: 0;
-        padding: @grid-gutter-width @grid-gutter-width 0;
+        padding: @items-gutter-width;
         overflow: auto;
+        margin-bottom: @items-gutter-width * -1;
     }
 
     .dd-media-list-details {
@@ -111,6 +157,24 @@ html, body {
         background: #fafafa;
     }
 
+    .dd-media-list-items > .row {
+        margin-left: floor( @items-gutter-width / 2 ) * -1;
+        margin-right: floor( @items-gutter-width / 2 ) * -1;
+    }
+
+    .dd-media-col {
+        padding-left: floor( @items-gutter-width / 2 );
+        padding-right: floor( @items-gutter-width / 2 );
+    }
+
+    .dd-media-list-toolbar {
+
+        .btn-default {
+            background-color: #eee;
+        }
+
+    }
+
     .dd-media-item {
         position: relative;
         display: block;
@@ -120,9 +184,9 @@ html, body {
         color: @text-muted;
         transition: all 0.2s;
         padding: 3px;
-        box-shadow: 0 0 0 3px #fff inset, 0 0 0 5px rgba(0, 0, 0, 0);
+        box-shadow: 0 0 0 3px #fff inset, 0 0 0 4px rgba(0, 0, 0, 0);
         outline: 0;
-        margin-bottom: @grid-gutter-width;
+        margin-bottom: @items-gutter-width;
 
         &:before {
             content: '';
@@ -186,6 +250,9 @@ html, body {
             background: #fafafa;
             padding: 5px;
             text-overflow: ellipsis;
+            font-size: 70%;
+            height: 21px;
+            white-space: nowrap;
         }
 
         img {
@@ -193,11 +260,19 @@ html, body {
         }
 
         &:hover, &:focus {
-            box-shadow: 0 0 0 3px #fff inset, 0 0 0 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 0 3px #fff inset, 0 0 0 4px rgba(0, 0, 0, 0.1);
         }
 
-        &.active {
-            box-shadow: 0 0 0 3px #fff inset, 0 0 0 5px @brand-primary;
+        &.active, &.ui-state-hover {
+            box-shadow: 0 0 0 3px #fff inset, 0 0 0 4px @brand-primary;
+        }
+
+        &.no-thumb {
+
+            .dd-media-item-centered {
+                margin-top: -21px;
+            }
+
         }
 
     }
@@ -205,7 +280,7 @@ html, body {
     .dz-error {
 
         .dd-media-item {
-            box-shadow: 0 0 0 3px #fff inset, 0 0 0 5px @brand-danger;
+            box-shadow: 0 0 0 3px #fff inset, 0 0 0 4px @brand-danger;
         }
 
     }
