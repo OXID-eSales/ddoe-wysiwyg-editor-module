@@ -6,7 +6,7 @@ In order to install the module via composer run one of the following commands in
 (where the shop's composer.json file resides).
 * `composer require ddoe/wysiwyg-editor-module:^2.0.0`  
   to install the latest released version compatible with OXID eShop v6.0
-* `composer require ddoe/wysiwyg-editor-module:dev-master`  
+* `composer require ddoe/wysiwyg-editor-module:dev-b-7.0.x`  
   to install the latest unreleased version
 
 During the composer command you will be asked:

@@ -14,19 +14,13 @@ namespace OxidEsales\WysiwygModule\Core;
  */
 class Utils extends Utils_parent
 {
-    /**
-     * @param null|mixed $mMsg
-     */
     public function showJsonAndExit($mMsg = null)
     {
+        header('Content-Type: application/json');
         $this->showMessageAndExit($this->encodeJson($mMsg));
     }
 
-    /**
-     * @param null|mixed $mMsg
-     *
-     * @return string
-     */
+
     public function encodeJson($mMsg = null)
     {
         if (is_string($mMsg)) {
@@ -45,11 +39,7 @@ class Utils extends Utils_parent
         return json_encode($mMsg);
     }
 
-    /**
-     * @param string $sString
-     *
-     * @return bool
-     */
+
     public function isUtfString($sString = '')
     {
         if (
@@ -63,11 +53,7 @@ class Utils extends Utils_parent
         return false;
     }
 
-    /**
-     * @param array $aArray
-     *
-     * @return array
-     */
+
     protected function encodeUtf8Array($aArray)
     {
         $aRet = [];
