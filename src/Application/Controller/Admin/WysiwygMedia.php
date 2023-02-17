@@ -35,6 +35,7 @@ class WysiwygMedia extends AdminDetailsController
     protected $_sUploadDir = '';
     protected $_sThumbDir = '';
     protected $_iDefaultThumbnailSize = 0;
+    protected $_sFolderId = '';
 
 
     /**
@@ -89,6 +90,8 @@ class WysiwygMedia extends AdminDetailsController
         $request = Registry::getRequest();
 
         $sId = null;
+        $sFileName = '';
+        $sThumb = '';
 
         try {
             if ($_FILES) {
@@ -100,7 +103,11 @@ class WysiwygMedia extends AdminDetailsController
                 $sSourcePath = $_FILES['file']['tmp_name'];
                 $sDestPath = Path::join($this->mediaService->getMediaPath(), $_FILES['file']['name']);
 
-                $this->mediaService->uploadeMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, true);
+                $aResult = $this->mediaService->uploadeMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, true);
+                $sId = $aResult['id'];
+                $sFileName = $aResult['filename'];
+                $sImageSize = $aResult['imagesize'];
+                $sThumb = $aResult['thumb'];
             }
 
             if ($request->getRequestParameter('src') == 'fallback') {
@@ -112,10 +119,10 @@ class WysiwygMedia extends AdminDetailsController
                     'success'   => true,
                     'id'        => $sId,
                     'file'      => $sFileName ?? '',
-                    'filepath'  => $sDestPath ?? '',
                     'filetype'  => $sFileType ?? '',
                     'filesize'  => $sFileSize ?? '',
                     'imagesize' => $sImageSize ?? '',
+                    'thumb'     => $sThumb ?? '',
                 ])
                 );
             }
@@ -126,8 +133,9 @@ class WysiwygMedia extends AdminDetailsController
                 header('Content-Type: application/json');
                 die(
                 json_encode([
-                    'success' => false,
-                    'id'      => $sId,
+                    'success'      => false,
+                    'id'           => $sId,
+                    'errorMessage' => $e->getMessage(),
                 ])
                 );
             }
@@ -146,7 +154,7 @@ class WysiwygMedia extends AdminDetailsController
 
         $sFormHTML = '<html><head></head><body style="text-align:center;">
           <form action="' . $oViewConf->getSelfLink()
-            . 'cl=ddoewysiwygmedia_view&fnc=upload&src=fallback" method="post" enctype="multipart/form-data">
+                     . 'cl=ddoewysiwygmedia_view&fnc=upload&src=fallback" method="post" enctype="multipart/form-data">
               <input type="file" name="file" onchange="this.form.submit();" />
           </form>';
 
@@ -234,40 +242,20 @@ class WysiwygMedia extends AdminDetailsController
      */
     public function remove()
     {
-        $blReturn = true;
-        $sMsg = '';
+        $blReturn = false;
+        $sMsg = 'DD_MEDIA_REMOVE_ERR';
 
         $request = Registry::getRequest();
 
-        $sNames = $request->getRequestEscapedParameter('names');
-        $aFilesInUse = [];
-        if ($sNames && count($sNames)) {
-            foreach ($sNames as $iKey => $sName)
-            {
-                //check if image is in use before moving it to another place
-                $oContent = oxNew(Content::class);
-                $blFileInUse = $oContent->checkIfMediaFileOrFolderIsInUse($this->mediaService->getMediaPath() . $sName);
-
-                if (!$blFileInUse) {
-                    if ($aIDs = $request->getRequestParameter('ids')) {
-                        $this->mediaService->delete($aIDs);
-                    }
-                } else {
-                    $aFilesInUse[] = $sName;
-                }
-            }
-        }
-
-        if( count($aFilesInUse))
-        {
-            $blReturn = false;
-
-            // todo: output which files are in use and where
-            $sMsg = 'DD_MEDIA_RENAME_FILE_ERR';
+        $aIDs = $request->getRequestParameter('ids');
+        if ($aIDs && count($aIDs)) {
+            $this->mediaService->delete($aIDs);
+            $blReturn = true;
+            $sMsg = '';
         }
 
         header('Content-Type: application/json');
-        die(json_encode(['success' => $blReturn, 'msg' => $sMsg, 'in_use' => $aFilesInUse]));
+        die(json_encode(['success' => $blReturn, 'msg' => $sMsg]));
     }
 
     public function movefile()
@@ -281,14 +269,13 @@ class WysiwygMedia extends AdminDetailsController
         $sFileName = $oRequest->getRequestEscapedParameter('file');
         $sTargetFolderID = $oRequest->getRequestEscapedParameter('targetid');
         $sTargetFolderName = $oRequest->getRequestEscapedParameter('folder');
-        $sThumb = $oRequest->getRequestEscapedParameter('thumb');
 
         if ($sSourceFileID && $sFileName && $sTargetFolderID && $sTargetFolderName) {
             //check if image is in use before moving it to another place
             $oContent = oxNew(Content::class);
             $blFileInUse = $oContent->checkIfMediaFileOrFolderIsInUse($sFileName);
 
-            if (!$blFileInUse && $this->mediaService->moveFileToFolder($sSourceFileID, $sTargetFolderID, $sThumb)) {
+            if (!$blFileInUse && $this->mediaService->moveFileToFolder($sSourceFileID, $sTargetFolderID)) {
                 $blReturn = true;
             } else {
                 $sMsg = 'DD_MEDIA_MOVE_FILE_ERR';

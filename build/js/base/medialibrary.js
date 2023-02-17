@@ -568,7 +568,17 @@
                 tab = $( '.dd-media-tabs .tab-pane.active' ).attr( 'id' );
             }
 
-            $( '.modal-body', $dialog ).html( '<div class="dd-dialog-loader"></div>' );
+            if( $dialog.length )
+            {
+                $( '.modal-body', $dialog ).html( '<div class="dd-dialog-loader"></div>' );
+            }
+            else
+            {
+                $dialog = $( '.dd-media-wrapper' );
+
+                $( '.dd-content', $dialog ).html( '<div class="dd-dialog-loader"></div>' );
+            }
+
             this._loadMediaContent( $dialog, id, tab );
         }
     };
@@ -726,34 +736,47 @@
                                     $item.addClass( 'dd-media-item-removing' );
 
                                     var deleteIDs = [];
-                                    var deleteNames = [];
 
                                     $item.each( function ()
                                         {
                                             deleteIDs.push( $( this ).data( 'id' ) );
-                                            deleteNames.push( $( this ).data( 'file' ) );
                                         }
                                     );
 
-                                    $.get( actionLink + 'cl=ddoewysiwygmedia_view&fnc=remove&id[]=' + deleteIDs.join( '&ids[]=' ) + '&folderid=' + folderId + deleteNames.join( '&names[]=' ), function ()
+                                    var folderId = $( '.dd-media', $dialog ).data( 'folderid' );
+
+                                    $.get( actionLink + 'cl=ddoewysiwygmedia_view&fnc=remove&ids[]=' + deleteIDs.join( '&ids[]=' ) + '&folderid=' + folderId, function ( response )
                                         {
-                                            $( '.dd-media-file-count', $dialog ).text( parseInt( $( '.dd-media-file-count', $dialog ).text() ) - $item.length );
-
-                                            $item.each( function ()
-                                                {
-                                                    $( this ).parent().remove();
-                                                }
-                                            );
-
-                                            $( $btn ).prop( 'disabled', true );
-
-                                            if ( !$( '.dd-media-list-items > .row > .dd-media-col', $dialog ).length )
+                                            if( response.success )
                                             {
-                                                $( '.dd-media-list', $dialog ).addClass( 'empty' );
+                                                $( '.dd-media-file-count', $dialog ).text( parseInt( $( '.dd-media-file-count', $dialog ).text(), 10 ) - $item.length );
+
+                                                $item.each( function ()
+                                                    {
+                                                        $( this ).parent().remove();
+                                                    }
+                                                );
+
+                                                $( $btn ).prop( 'disabled', true );
+
+                                                if ( !$( '.dd-media-list-items > .row > .dd-media-col', $dialog ).length )
+                                                {
+                                                    $( '.dd-media-list', $dialog ).addClass( 'empty' );
+                                                }
+
+
+                                                $( '.dd-media-details-form', $dialog ).hide();
                                             }
+                                            else if ( response.msg )
+                                            {
+                                                $item.each( function ()
+                                                    {
+                                                        $( this ).removeClass( 'dd-media-item-removing' );
+                                                    }
+                                                );
 
-
-                                            $( '.dd-media-details-form', $dialog ).hide();
+                                                ddh.alert( ddh.translate( response.msg ) );
+                                            }
                                         }
                                     );
                                 }
@@ -784,7 +807,8 @@
                                             + 'cl=ddoewysiwygmedia_view&fnc=rename', {
                                                 oldname: $_item.data( 'file' ),
                                                 newname: val, id: $_item.data( 'id' ),
-                                                filetype: $_item.data( 'filetype' )
+                                                filetype: $_item.data( 'filetype' ),
+                                                folderid: $( '.dd-media', $dialog ).data( 'folderid' )
                                             },
                                             function( _res )
                                             {
@@ -942,6 +966,7 @@
 
                             this.on( 'success', function ( file, response )
                                 {
+                                    $( '.dd-media-item', file.previewElement ).find('.dd-media-thumb').attr('src', response.thumb);
                                     $( '.dd-media-item', file.previewElement ).data(
                                         {
                                             'id': response.id,

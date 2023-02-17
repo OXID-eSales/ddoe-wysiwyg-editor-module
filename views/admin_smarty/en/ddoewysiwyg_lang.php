@@ -30,6 +30,7 @@ $aLang = array(
     'DD_MEDIA_UPLOAD'                 => 'Upload',
     'DD_MEDIA_REMOVE'                 => '<i class="fa fa-times-circle"></i> Delete data irrevocably',
     'DD_MEDIA_REMOVE_CONFIRM'         => 'Do you really want to delete this file?',
+    'DD_MEDIA_REMOVE_ERR'             => 'Deletion failed',
     'DD_MEDIA_REMOVE_MANY_CONFIRM'    => 'Do you really want to delete the selected files?',
     'DD_MEDIA_REMOVE_FOLDER_CONFIRM'  => 'Do you really want to delete this folder?',
     'DD_MEDIA_FALLBACK_INFO'          => 'Choose data <strong>for upload</strong>',

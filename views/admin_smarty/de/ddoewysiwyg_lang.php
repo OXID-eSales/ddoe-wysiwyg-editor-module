@@ -29,6 +29,7 @@ $aLang = array(
     'DD_MEDIA_LIST'                   => 'Medien',
     'DD_MEDIA_UPLOAD'                 => 'Upload',
     'DD_MEDIA_REMOVE'                 => '<i class="fa fa-times-circle"></i> Datei unwiderruflich l&ouml;schen',
+    'DD_MEDIA_REMOVE_ERR'             => 'Löschen fehlgeschlagen',
     'DD_MEDIA_REMOVE_CONFIRM'         => 'M&ouml;chten Sie die Datei wirklich l&ouml;schen?',
     'DD_MEDIA_REMOVE_MANY_CONFIRM'    => 'M&ouml;chten Sie die Dateien wirklich l&ouml;schen?',
     'DD_MEDIA_REMOVE_FOLDER_CONFIRM'  => 'M&ouml;chten Sie den Ordner wirklich l&ouml;schen?',

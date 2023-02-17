@@ -144,6 +144,8 @@ class Media
         $sFileName = basename($sDestPath);
         $iFileCount = 0;
 
+        $aResult = [];
+
         if ($this->validateFilename($sFileName)) {
             while (file_exists($sDestPath)) {
                 $aFileParts = explode('.', $sFileName);
@@ -218,9 +220,14 @@ class Media
                 $sImageSize,
                 $this->_sFolderId,
             ]);
+
+            $aResult['id'] = $sId;
+            $aResult['filename'] = $sFileName;
+            $aResult['thumb'] = $this->getThumbnailUrl($sFileName);
+            $aResult['imagesize'] = $sImageSize;
         }
 
-        return false;
+        return $aResult;
     }
 
 
@@ -436,7 +443,7 @@ class Media
         return $blReturn;
     }
 
-    public function moveFileToFolder($sSourceFileID, $sTargetFolderID, $sThumb)
+    public function moveFileToFolder($sSourceFileID, $sTargetFolderID)
     {
         $blReturn = false;
 
@@ -444,11 +451,15 @@ class Media
             $sSelect = "SELECT DDFILENAME FROM ddmedia WHERE OXID = ?";
             $sTargetFolderName = $this->connection->fetchOne($sSelect, [$sTargetFolderID]);
 
-            $sSelect = "SELECT DDFILENAME FROM ddmedia WHERE OXID = ?";
-            $sSourceFileName = $this->connection->fetchOne($sSelect, [$sSourceFileID]);
-
-            if( $sTargetFolderName )
+            $sSelect = "SELECT DDFILENAME, DDTHUMB FROM ddmedia WHERE OXID = ?";
+            $aData = $this->connection->fetchAllAssociative($sSelect, [$sSourceFileID]);
+            if( count( $aData ) )
             {
+                $sSourceFileName = $aData[0]['DDFILENAME'];
+                $sThumb = $aData[0]['DDTHUMB'];
+            }
+
+            if ($sTargetFolderName && $sSourceFileName) {
                 $sOldName = $this->getMediaPath() . $sSourceFileName;
                 $sNewName = $this->getMediaPath() . $sTargetFolderName . '/' . $sSourceFileName;
 
@@ -636,8 +647,7 @@ class Media
         if ($aReplaceChars = \OxidEsales\Eshop\Core\Registry::getLang()->getSeoReplaceChars($iLang)) {
             $sNewName = str_replace(array_keys($aReplaceChars), array_values($aReplaceChars), $sNewName);
         }
-        if( pathinfo($sNewName, PATHINFO_EXTENSION) )
-        {
+        if (pathinfo($sNewName, PATHINFO_EXTENSION)) {
             $sNewName = preg_replace('/[^a-zA-Z0-9-_]+/', '-', pathinfo($sNewName, PATHINFO_FILENAME)) .
                         '.' .
                         pathinfo($sNewName, PATHINFO_EXTENSION);
@@ -675,7 +685,7 @@ class Media
                    ($iShopId != null ? "AND `OXSHOPID` = " . $this->connection->quote($iShopId) . " " : "") .
                    "AND `DDFOLDERID` = ?";
 
-        $fileCount = $this->connection->fetchOne($sSelect, [$this->_sFolderId]);
+        $fileCount = $this->connection->fetchOne($sSelect, [$this->_sFolderId ?: '']);
 
         return $fileCount ?: 0;
     }
@@ -689,13 +699,12 @@ class Media
                    "AND `DDFOLDERID` = ? " .
                    "ORDER BY `OXTIMESTAMP` DESC LIMIT " . $iStart . ", " . self::AMOUNT_OF_FILES . " ";
 
-        return $this->connection->fetchAllAssociative($sSelect, [$this->_sFolderId]);
+        return $this->connection->fetchAllAssociative($sSelect, [$this->_sFolderId ?: '']);
     }
 
     public function delete($aIds)
     {
-        foreach ($aIds as $iKey => $sId)
-        {
+        foreach ($aIds as $iKey => $sId) {
             $aIds[$iKey] = $this->connection->quote($sId);
         }
         $sIds = implode(",", $aIds);
