@@ -428,3 +428,21 @@ html, body {
     }
 
 }
+
+.dd-modal-confirm {
+    &.dd-warn {
+        .modal-header {
+            color: @brand-danger;
+        }
+
+        .modal-body {
+            color: @brand-danger;
+        }
+
+        .modal-footer {
+            .btn-primary {
+                .button-variant(@btn-primary-color; @brand-danger; darken(@brand-danger, 5%));
+            }
+        }
+    }
+}

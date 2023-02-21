@@ -123,11 +123,17 @@
             return $modal;
 
         },
-        confirm: function ( msg, callback, title )
+        confirm: function ( msg, callback, title, warn )
         {
-            if ( typeof title === 'undefined' )
+            if ( typeof title === 'undefined' || title === null )
             {
                 title = ddh.translate( 'DD_CONFIRM' );
+            }
+
+            var cssWarn = '';
+            if ( typeof warn !== 'undefined' && warn )
+            {
+                cssWarn = ' dd-warn';
             }
 
             var buttons = [
@@ -144,7 +150,7 @@
                 }
             ];
 
-            this._dialog( msg, title, buttons, 'sm', 'dd-modal-confirm' );
+            this._dialog( msg, title, buttons, 'sm', 'dd-modal-confirm' + cssWarn );
 
         },
         prompt: function ( msg, callback, title, value )

@@ -723,19 +723,25 @@ class Media
 
         foreach ($aData as $aRow) {
             if ($aRow['DDFILETYPE'] != 'directory') {
-                @unlink(Path::join($this->getMediaPath(), $aRow['DDFILENAME']));
+                $sFolderName = '';
+                if( $aRow['DDFOLDERID'] && isset($aFolders[$aRow['DDFOLDERID']]) )
+                {
+                    $sFolderName = $aFolders[$aRow['DDFOLDERID']];
+                }
+                unlink(Path::join($this->getMediaPath(), $sFolderName, $aRow['DDFILENAME']));
 
                 if ($aRow['DDTHUMB']) {
                     $thumbFilename = 'thumb_' . $this->getDefaultThumbnailSize() . '.jpg';
                     $thumbs = Glob::glob(
                         Path::join(
                             $this->getMediaPath(),
+                            $sFolderName,
                             'thumbs',
                             str_replace($thumbFilename, '*', $aRow['DDTHUMB'])
                         )
                     );
                     foreach ($thumbs as $sThumb) {
-                        @unlink($sThumb);
+                        unlink($sThumb);
                     }
                 }
 
@@ -746,8 +752,8 @@ class Media
 
         // remove folder
         foreach ($aFolders as $sOxid => $sFolderName) {
-            @rmdir($this->getMediaPath() . $sFolderName . '/thumbs');
-            @rmdir($this->getMediaPath() . $sFolderName);
+            @rmdir(Path::join($this->getMediaPath(), $sFolderName, 'thumbs'));
+            @rmdir(Path::join($this->getMediaPath(), $sFolderName));
             $sDelete = "DELETE FROM `ddmedia` WHERE `OXID` = '" . $sOxid . "'; ";
             $this->connection->executeQuery($sDelete);
         }
