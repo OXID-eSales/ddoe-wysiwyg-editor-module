@@ -292,7 +292,10 @@ class MediaTest extends TestCase
             ]);
 
         $sSelect = "SELECT DDFILENAME FROM ddmedia WHERE OXID = ?";
-        $connectionMock = $this->createPartialMock(Connection::class, ['fetchOne', 'fetchAllAssociative', 'executeQuery']);
+        $connectionMock = $this->createPartialMock(
+            Connection::class,
+            ['fetchOne', 'fetchAllAssociative', 'executeQuery']
+        );
         $connectionMock->expects($this->exactly(1))
             ->method('fetchOne')
             ->willReturn($sTargetFolderName);
@@ -302,8 +305,8 @@ class MediaTest extends TestCase
             ->willReturn([
                 0 => [
                     'DDFILENAME' => $sSourceFileName,
-                    'DDTHUMB' => $sThumbName,
-                ]
+                    'DDTHUMB'    => $sThumbName,
+                ],
             ]);
 
         $connectionMock->expects($this->once())
@@ -349,10 +352,10 @@ class MediaTest extends TestCase
             ]);
 
         $connectionMock = $this->createPartialMock(Connection::class, [
-                'fetchAllAssociative',
-                'executeQuery',
-                'quote',
-            ]);
+            'fetchAllAssociative',
+            'executeQuery',
+            'quote',
+        ]);
         $connectionMock->expects($this->once())
             ->method('fetchAllAssociative')
             ->willReturn($aDBData);
