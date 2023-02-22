@@ -104,6 +104,7 @@
                 $( '.dd-media-details-preview-icon', $detailForm ).hide();
                 $( '.dd-media-details-dir-icon', $detailForm ).hide();
                 $( '.dd-media-details-preview', $detailForm ).attr( 'src', file.preview ).show();
+                $( '.dd-media-url', $detailForm ).show();
             }
             else
             {
@@ -111,11 +112,13 @@
                 {
                     $( '.dd-media-details-dir-icon', $detailForm ).show();
                     $( '.dd-media-details-preview-icon', $detailForm ).hide();
+                    $( '.dd-media-url', $detailForm ).hide();
                 }
                 else
                 {
                     $( '.dd-media-details-dir-icon', $detailForm ).hide();
                     $( '.dd-media-details-preview-icon', $detailForm ).show();
+                    $( '.dd-media-url', $detailForm ).show();
                 }
                 $( '.dd-media-details-preview', $detailForm ).hide();
             }

@@ -155,7 +155,7 @@
 
                             <div class="clearfix" style="height: 30px;"></div>
 
-                            <div class="form-group">
+                            <div class="form-group dd-media-url">
                                 <label>Bild-URL</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control dd-media-details-input-url" name="media[url]" value="" readonly="readonly" />
