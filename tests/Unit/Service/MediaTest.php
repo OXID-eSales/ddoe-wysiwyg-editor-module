@@ -292,14 +292,19 @@ class MediaTest extends TestCase
             ]);
 
         $sSelect = "SELECT DDFILENAME FROM ddmedia WHERE OXID = ?";
-        $connectionMock = $this->createPartialMock(Connection::class, ['fetchOne', 'executeQuery']);
-        $connectionMock->expects($this->exactly(2))
+        $connectionMock = $this->createPartialMock(Connection::class, ['fetchOne', 'fetchAllAssociative', 'executeQuery']);
+        $connectionMock->expects($this->exactly(1))
             ->method('fetchOne')
-            ->withConsecutive(
-                [$this->equalTo($sSelect), $this->equalTo([$sTargetFolderID])],
-                [$this->equalTo($sSelect), $this->equalTo([$sSourceFileID])],
-            )
-            ->willReturnOnConsecutiveCalls($sTargetFolderName, $sSourceFileName);
+            ->willReturn($sTargetFolderName);
+
+        $connectionMock->expects($this->exactly(1))
+            ->method('fetchAllAssociative')
+            ->willReturn([
+                0 => [
+                    'DDFILENAME' => $sSourceFileName,
+                    'DDTHUMB' => $sThumbName,
+                ]
+            ]);
 
         $connectionMock->expects($this->once())
             ->method('executeQuery');
@@ -480,7 +485,7 @@ class MediaTest extends TestCase
             'DDFOLDERID' => '2222',
         ];
 
-        // scenario 2 - empty folder
+        // scenario 3 - empty folder
         $structure2['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER] = [];
         $structure2['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'] = [];
         $structureExpected2['root']['out']['pictures']['ddmedia'] = [];
@@ -493,7 +498,7 @@ class MediaTest extends TestCase
             'DDFOLDERID' => '',
         ];
 
-        // scenario 3 - folder with files
+        // scenario 4 - folder with files
         $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER][self::FIXTURE_FILE] = 'some file';
         $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'][$sThumbName] = 'some file';
         $structureExpected3['root']['out']['pictures']['ddmedia'] = [];
@@ -504,6 +509,13 @@ class MediaTest extends TestCase
             'DDTHUMB'    => '',
             'DDFILETYPE' => 'directory',
             'DDFOLDERID' => '',
+        ];
+        $aDBData3[] = [
+            'OXID'       => '222',
+            'DDFILENAME' => self::FIXTURE_FILE,
+            'DDTHUMB'    => $sThumbName,
+            'DDFILETYPE' => 'image/jpeg',
+            'DDFOLDERID' => '111',
         ];
 
         return [
