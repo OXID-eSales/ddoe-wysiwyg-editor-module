@@ -453,8 +453,7 @@ class Media
 
             $sSelect = "SELECT DDFILENAME, DDTHUMB FROM ddmedia WHERE OXID = ?";
             $aData = $this->connection->fetchAllAssociative($sSelect, [$sSourceFileID]);
-            if( count( $aData ) )
-            {
+            if (count($aData)) {
                 $sSourceFileName = $aData[0]['DDFILENAME'];
                 $sThumb = $aData[0]['DDTHUMB'];
             }
@@ -724,8 +723,7 @@ class Media
         foreach ($aData as $aRow) {
             if ($aRow['DDFILETYPE'] != 'directory') {
                 $sFolderName = '';
-                if( $aRow['DDFOLDERID'] && isset($aFolders[$aRow['DDFOLDERID']]) )
-                {
+                if ($aRow['DDFOLDERID'] && isset($aFolders[$aRow['DDFOLDERID']])) {
                     $sFolderName = $aFolders[$aRow['DDFOLDERID']];
                 }
                 unlink(Path::join($this->getMediaPath(), $sFolderName, $aRow['DDFILENAME']));

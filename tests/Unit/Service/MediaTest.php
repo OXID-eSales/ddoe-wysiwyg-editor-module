@@ -352,8 +352,7 @@ class MediaTest extends TestCase
                 'fetchAllAssociative',
                 'executeQuery',
                 'quote',
-            ]
-        );
+            ]);
         $connectionMock->expects($this->once())
             ->method('fetchAllAssociative')
             ->willReturn($aDBData);
