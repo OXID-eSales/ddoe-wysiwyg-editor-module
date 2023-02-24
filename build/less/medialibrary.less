@@ -3,64 +3,14 @@
  * See LICENSE file for license details.
  */
 
-@import '../../vendor/bootstrap/less/variables';
-@import '../../vendor/bootstrap/less/mixins';
-@import '../../vendor/font-awesome/less/variables';
-@import '../../vendor/font-awesome/less/mixins';
-
-html, body {
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-// Wrapper
-
-.dd-navbar {
-    margin: 0;
-    border-bottom-color: #ddd;
-}
-
-.dd-content {
-    position: absolute;
-    top: 52px;
-    left: 0;
-    bottom: 0;
-    right: 0;
-
-    .dd-overlay & {
-        top: 0;
-    }
-}
+@import '../vendor/bootstrap/less/variables';
+@import '../vendor/bootstrap/less/mixins';
+@import '../vendor/font-awesome/less/variables';
+@import '../vendor/font-awesome/less/mixins';
 
 // MediaLibrary
 
 @items-gutter-width: 12px;
-
-.dd-dialog {
-
-    .modal-header {
-        color: #fff;
-        background: @brand-primary;
-        border-color: @brand-primary;
-
-        .close {
-            color: #ddd;
-            opacity: 1;
-            text-shadow: none;
-            margin-top: 0;
-
-            &:hover {
-                opacity: 1;
-                color: #fff;
-            }
-        }
-
-    }
-
-}
 
 .dd-dialog-loader {
     width: 100%;
@@ -348,7 +298,7 @@ html, body {
         background: fade(@brand-info, 80%);
         z-index: 5;
         opacity: 0;
-        //transition: all 0.2s;
+        transition: all 0.2s;
 
         span {
             position: absolute;
@@ -442,6 +392,57 @@ html, body {
         .modal-footer {
             .btn-primary {
                 .button-variant(@btn-primary-color; @brand-danger; darken(@brand-danger, 5%));
+            }
+        }
+    }
+}
+
+.dd-dialog {
+
+    .modal-header {
+        color: #fff;
+        background: @brand-primary;
+        border-color: @brand-primary;
+
+        .close {
+            color: #ddd;
+            opacity: 1;
+            text-shadow: none;
+            margin-top: 0;
+
+            &:hover {
+                opacity: 1;
+                color: #fff;
+            }
+        }
+    }
+
+    .dd-media {
+        height: auto;
+        margin: ((@grid-gutter-width/2) * -1);
+
+        .dd-media-list {
+            height: 460px;
+        }
+
+        .dd-media-tabs {
+            .tab-content {
+                max-height: 460px;
+                position: relative;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: auto;
+            }
+
+            .nav-tabs {
+                position: relative;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: auto;
+                z-index: auto;
             }
         }
     }

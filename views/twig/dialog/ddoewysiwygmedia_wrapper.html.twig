@@ -11,6 +11,7 @@
 
     {{ style({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/css/bootstrap.min.css') }) }}
     {{ style({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/css/font-awesome.min.css') }) }}
+    {{ style({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/css/base.min.css') }) }}
     {{ style({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/css/medialibrary.min.css') }) }}
 
     {{ style() }}
@@ -46,7 +47,7 @@
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery-ui.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/bootstrap.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
-{{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/medialibrary.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
+{{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/base.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 
 {% set sActionLink = oViewConf.getSelfLink()|replace({'&amp;':'&'})|cat('overlay=' ~ request.overlay ~ '&') %}
 {% set sMediaLink = oConf.getCurrentShopUrl(true)|regex_replace('/([^\/])(\/admin)/', '$1')|regex_replace('/http(s)?\, /', '')|trim('/', 'right')|cat('/out/pictures/ddmedia/') %}

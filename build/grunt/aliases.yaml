@@ -1,5 +1,6 @@
 development:
   - "jshint:development"
+  - "less:base"
   - "less:wysiwyg"
   - "cssmin:wysiwyg"
   - "uglify:wysiwyg"

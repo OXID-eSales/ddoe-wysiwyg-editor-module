@@ -11,6 +11,7 @@
 
     [{oxstyle include=$oViewConf->getModuleUrl('ddoewysiwyg','out/src/css/bootstrap.min.css')}]
     [{oxstyle include=$oViewConf->getModuleUrl('ddoewysiwyg','out/src/css/font-awesome.min.css')}]
+    [{oxstyle include=$oViewConf->getModuleUrl('ddoewysiwyg','out/src/css/base.min.css')}]
     [{oxstyle include=$oViewConf->getModuleUrl('ddoewysiwyg','out/src/css/medialibrary.min.css')}]
 
     [{oxstyle}]
@@ -45,7 +46,7 @@
 
 [{oxscript include=$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/jquery.min.js') priority=1}]
 [{oxscript include=$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/bootstrap.min.js') priority=1}]
-[{oxscript include=$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/medialibrary.min.js') priority=1}]
+[{oxscript include=$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/base.min.js') priority=1}]
 
 [{assign var="sActionLink" value=$oViewConf->getSelfLink()|html_entity_decode|cat:"overlay=`$smarty.get.overlay`&"}]
 [{assign var="sMediaLink" value=$oConf->getCurrentShopUrl(true)|regex_replace:'/([^\/])(\/admin)/':'$1'|regex_replace:'/http(s)?\:/':''|rtrim:'/'|cat:'/out/pictures/ddmedia/'|html_entity_decode}]

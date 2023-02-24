@@ -20,7 +20,7 @@ module.exports = {
                 "build/js/backend.js"
             ],
 
-            "assets/out/src/js/medialibrary.min.js": [
+            "assets/out/src/js/base.min.js": [
                 "build/vendor/dropzone/js/dropzone.js",
                 "build/js/base/helper.js",
                 "build/js/base/medialibrary.js"
