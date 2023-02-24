@@ -451,6 +451,7 @@ class Media
             $sSelect = "SELECT DDFILENAME FROM ddmedia WHERE OXID = ?";
             $sTargetFolderName = $this->connection->fetchOne($sSelect, [$sTargetFolderID]);
 
+            $sSourceFileName = $sThumb = '';
             $sSelect = "SELECT DDFILENAME, DDTHUMB FROM ddmedia WHERE OXID = ?";
             $aData = $this->connection->fetchAllAssociative($sSelect, [$sSourceFileID]);
             if (count($aData)) {
@@ -584,6 +585,7 @@ class Media
             $aBaseParts = explode('_', $sBaseName);
             $aBaseParts = array_reverse($aBaseParts);
 
+            $iFileCount = 0;
             if (strlen($aBaseParts[0]) && is_numeric($aBaseParts[0])) {
                 $iFileCount = (int)$aBaseParts[0];
                 unset($aBaseParts[0]);

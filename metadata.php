@@ -35,10 +35,6 @@ $aModule = [
         \OxidEsales\Eshop\Core\ViewConfig::class  => \OxidEsales\WysiwygModule\Core\ViewConfig::class,
         \OxidEsales\Eshop\Core\Language::class    => \OxidEsales\WysiwygModule\Core\Language::class,
         \OxidEsales\Eshop\Core\Utils::class       => \OxidEsales\WysiwygModule\Core\Utils::class,
-
-        // Models
-        \OxidEsales\Eshop\Application\Model\Content::class => \OxidEsales\WysiwygModule\Application\Model\Content::class,
-
     ],
     'controllers'       => [
 

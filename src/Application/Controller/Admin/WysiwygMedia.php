@@ -217,20 +217,12 @@ class WysiwygMedia extends AdminDetailsController
         $sFiletype = $oRequest->getRequestEscapedParameter('filetype');
 
         if ($sId && $sOldName && $sNewName) {
-            //check if image is in use before moving it to another place
-            $oContent = oxNew(Content::class);
-            $blFileInUse = $oContent->checkIfMediaFileOrFolderIsInUse($this->mediaService->getMediaPath() . $sOldName);
-
-            if (!$blFileInUse) {
-                $blReturn = $this->mediaService->rename(
-                    $sOldName,
-                    $sNewName,
-                    $sId,
-                    $sFiletype
-                );
-            } else {
-                $sMsg = 'DD_MEDIA_RENAME_FILE_ERR';
-            }
+            $blReturn = $this->mediaService->rename(
+                $sOldName,
+                $sNewName,
+                $sId,
+                $sFiletype
+            );
         }
 
         header('Content-Type: application/json');
@@ -271,11 +263,7 @@ class WysiwygMedia extends AdminDetailsController
         $sTargetFolderName = $oRequest->getRequestEscapedParameter('folder');
 
         if ($sSourceFileID && $sFileName && $sTargetFolderID && $sTargetFolderName) {
-            //check if image is in use before moving it to another place
-            $oContent = oxNew(Content::class);
-            $blFileInUse = $oContent->checkIfMediaFileOrFolderIsInUse($sFileName);
-
-            if (!$blFileInUse && $this->mediaService->moveFileToFolder($sSourceFileID, $sTargetFolderID)) {
+            if ($this->mediaService->moveFileToFolder($sSourceFileID, $sTargetFolderID)) {
                 $blReturn = true;
             } else {
                 $sMsg = 'DD_MEDIA_MOVE_FILE_ERR';
