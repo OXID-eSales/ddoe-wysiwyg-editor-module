@@ -405,7 +405,10 @@ class Media
 
     public function rename($sOldName, $sNewName, $sId, $sType = 'file')
     {
-        $blReturn = false;
+        $aResult = [
+            'success' => false,
+            'filename' => '',
+        ];
 
         // sanitize filename
         $sNewName = $this->_sanitizeFilename($sNewName);
@@ -437,10 +440,13 @@ class Media
                 ]
             );
 
-            $blReturn = true;
+            $aResult = [
+                'success' => true,
+                'filename' => $sNewName,
+            ];
         }
 
-        return $blReturn;
+        return $aResult;
     }
 
     public function moveFileToFolder($sSourceFileID, $sTargetFolderID)
