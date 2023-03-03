@@ -115,7 +115,7 @@ class WysiwygMedia extends AdminDetailsController
             } else {
                 header('Content-Type: application/json');
                 die(
-                json_encode([
+                    json_encode([
                     'success'   => true,
                     'id'        => $sId,
                     'file'      => $sFileName ?? '',
@@ -123,7 +123,7 @@ class WysiwygMedia extends AdminDetailsController
                     'filesize'  => $sFileSize ?? '',
                     'imagesize' => $sImageSize ?? '',
                     'thumb'     => $sThumb ?? '',
-                ])
+                    ])
                 );
             }
         } catch (\Exception $e) {
@@ -132,11 +132,11 @@ class WysiwygMedia extends AdminDetailsController
             } else {
                 header('Content-Type: application/json');
                 die(
-                json_encode([
+                    json_encode([
                     'success'      => false,
                     'id'           => $sId,
                     'errorMessage' => $e->getMessage(),
-                ])
+                    ])
                 );
             }
         }
@@ -182,16 +182,16 @@ class WysiwygMedia extends AdminDetailsController
 
             header('Content-Type: application/json');
             die(
-            json_encode(
-                [
+                json_encode(
+                    [
                     'success'   => true,
                     'id'        => $aCustomDir['id'],
                     'file'      => $aCustomDir['dir'],
                     'filetype'  => 'directory',
                     'filesize'  => 0,
                     'imagesize' => '',
-                ]
-            )
+                    ]
+                )
             );
         } else {
             header('Content-Type: application/json');
