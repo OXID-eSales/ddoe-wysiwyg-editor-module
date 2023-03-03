@@ -239,7 +239,7 @@ class MediaTest extends TestCase
     /**
      * @dataProvider getRenameDataProvider
      */
-    public function testRename($structure, $oldName, $newName, $structureExpected, $folder)
+    public function testRename($structure, $oldName, $newName, $structureExpected, $folder, $expectedNewName, $type)
     {
         $directory = vfsStream::setup('root', 0777, $structure);
 
@@ -261,9 +261,9 @@ class MediaTest extends TestCase
         if ($folder) {
             $sut->setFolderName($folder);
         }
-        $success = $sut->rename($oldName, $newName, '');
+        $aSuccess = $sut->rename($oldName, $newName, '', $type);
 
-        $this->assertEquals(true, $success);
+        $this->assertEquals(['success' => true, 'filename' => $expectedNewName], $aSuccess);
 
         $this->assertEquals(
             $structureExpected,
@@ -415,16 +415,29 @@ class MediaTest extends TestCase
 
     public function getRenameDataProvider(): array
     {
-        $structure['out']['pictures']['ddmedia'][self::FIXTURE_FILE] = 'some file';
-        $structureExpected['root']['out']['pictures']['ddmedia']['new.jpg'] = 'some file';
+        $oMedia = new Media(
+            $this->createStub(ModuleSettings::class),
+            $this->createStub(Config::class),
+            $this->createStub(ConnectionProviderInterface::class),
+            $this->createStub(UtilsObject::class)
+        );
 
+        $sThumbName = md5(self::FIXTURE_FILE) . '_thumb_' . $oMedia->getDefaultThumbnailSize() . '.jpg';
+        $sThumbNameNew = md5('new.jpg') . '_thumb_' . $oMedia->getDefaultThumbnailSize() . '.jpg';
+
+        $structure['out']['pictures']['ddmedia'][self::FIXTURE_FILE] = 'some file';
+        $structure['out']['pictures']['ddmedia']['thumbs'][$sThumbName] = 'some file';
+        $structureExpected['root']['out']['pictures']['ddmedia']['new.jpg'] = 'some file';
+        $structureExpected['root']['out']['pictures']['ddmedia']['thumbs'][$sThumbNameNew] = 'some file';
+
+        $sThumbName = md5(self::FIXTURE_FILE) . '_thumb_' . $oMedia->getDefaultThumbnailSize() . '.jpg';
         $structure1['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER][self::FIXTURE_FILE] = 'some file';
+        $structure1['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'][$sThumbName] = 'some file';
         $structureExpected1['root']['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['new.jpg'] = 'some file';
+        $structureExpected1['root']['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'][$sThumbNameNew] = 'some file';
 
         $structure2['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER] = [];
         $structureExpected2['root']['out']['pictures']['ddmedia']['folderNew'] = [];
-
-        // todo: check if renaming is stopped if images in folder are already in use
 
         return [
             [
@@ -433,6 +446,8 @@ class MediaTest extends TestCase
                 'newName'           => 'new.jpg',
                 'structureExpected' => $structureExpected,
                 'folder'            => '',
+                'expectedNewName'   => 'new.jpg',
+                'type'              => 'file',
             ],
             [
                 'structure'         => $structure1,
@@ -440,6 +455,8 @@ class MediaTest extends TestCase
                 'newName'           => 'new.jpg',
                 'structureExpected' => $structureExpected1,
                 'folder'            => self::FIXTURE_FOLDER,
+                'expectedNewName'   => 'new.jpg',
+                'type'              => 'file',
             ],
             [
                 'structure'         => $structure2,
@@ -447,6 +464,8 @@ class MediaTest extends TestCase
                 'newName'           => 'folderNew',
                 'structureExpected' => $structureExpected2,
                 'folder'            => '',
+                'expectedNewName'   => 'folderNew',
+                'type'              => 'folder',
             ],
         ];
     }

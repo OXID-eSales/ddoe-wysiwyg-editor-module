@@ -424,17 +424,44 @@ class Media
             $sNewPath = $this->_checkAndGetFileName($sNewPath);
         }
 
+        if( $sType == 'file' )
+        {
+            $iThumbSize = $this->getDefaultThumbnailSize();
+            $sOldThumbName = $this->getThumbName(basename($sOldPath));
+            $sOldThumbHash = str_replace('_thumb_' . $iThumbSize . '.jpg', '', $sOldThumbName);
+            $sNewThumbName = $this->getThumbName(basename($sNewPath));
+            $sNewThumbHash = str_replace('_thumb_' . $iThumbSize . '.jpg', '', $sNewThumbName);
+        }
+
         if (rename($sOldPath, $sNewPath)) {
+
+            if( $sType == 'file' )
+            {
+                $thumbs = Glob::glob(
+                    Path::join(
+                        $this->getMediaPath(),
+                        'thumbs',
+                        $sOldThumbHash . '*'
+                    )
+                );
+                foreach ($thumbs as $sThumb) {
+                    $sNewName = str_replace($sOldThumbHash, $sNewThumbHash, $sThumb);
+                    rename($sThumb, $sNewName);
+                }
+            }
+
             $sNewName = basename($sNewPath);
             $iShopId = $this->shopConfig->getActiveShop()->getShopId();
 
             $sUpdate = "UPDATE `ddmedia`
-                              SET `DDFILENAME` = '$sNewName' 
+                              SET `DDFILENAME` = ?, `DDTHUMB` = ? 
                             WHERE `OXID` = ? AND `OXSHOPID` = ?;";
 
             $this->connection->executeQuery(
                 $sUpdate,
                 [
+                    $sNewName,
+                    $sType == 'file' ? basename($sNewThumbName) : '',
                     $sId,
                     $iShopId,
                 ]
