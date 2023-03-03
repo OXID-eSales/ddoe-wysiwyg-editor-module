@@ -114,30 +114,32 @@ class WysiwygMedia extends AdminDetailsController
                 $this->fallback(true);
             } else {
                 header('Content-Type: application/json');
-                die(
-                    json_encode([
-                    'success'   => true,
-                    'id'        => $sId,
-                    'file'      => $sFileName ?? '',
-                    'filetype'  => $sFileType ?? '',
-                    'filesize'  => $sFileSize ?? '',
-                    'imagesize' => $sImageSize ?? '',
-                    'thumb'     => $sThumb ?? '',
-                    ])
+                $sReturn = json_encode(
+                    [
+                        'success'   => true,
+                        'id'        => $sId,
+                        'file'      => $sFileName ?? '',
+                        'filetype'  => $sFileType ?? '',
+                        'filesize'  => $sFileSize ?? '',
+                        'imagesize' => $sImageSize ?? '',
+                        'thumb'     => $sThumb ?? '',
+                    ]
                 );
+                die($sReturn);
             }
         } catch (\Exception $e) {
             if ($request->getRequestParameter('src') == 'fallback') {
                 $this->fallback(false, true);
             } else {
                 header('Content-Type: application/json');
-                die(
-                    json_encode([
-                    'success'      => false,
-                    'id'           => $sId,
-                    'errorMessage' => $e->getMessage(),
-                    ])
+                $sReturn = json_encode(
+                    [
+                        'success'      => false,
+                        'id'           => $sId,
+                        'errorMessage' => $e->getMessage(),
+                    ]
                 );
+                die($sReturn);
             }
         }
     }
@@ -181,18 +183,17 @@ class WysiwygMedia extends AdminDetailsController
             $aCustomDir = $this->mediaService->createCustomDir($sName);
 
             header('Content-Type: application/json');
-            die(
-                json_encode(
-                    [
+            $sReturn = json_encode(
+                [
                     'success'   => true,
                     'id'        => $aCustomDir['id'],
                     'file'      => $aCustomDir['dir'],
                     'filetype'  => 'directory',
                     'filesize'  => 0,
                     'imagesize' => '',
-                    ]
-                )
+                ]
             );
+            die($sReturn);
         } else {
             header('Content-Type: application/json');
             die(json_encode(['success' => false]));
@@ -228,7 +229,16 @@ class WysiwygMedia extends AdminDetailsController
         }
 
         header('Content-Type: application/json');
-        die(json_encode(['success' => $blReturn, 'msg' => $sMsg, 'name' => $sNewName, 'id' => $sNewId]));
+        $sReturn = json_encode(
+            [
+                'success' => $blReturn,
+                'msg'     => $sMsg,
+                'name'    => $sNewName,
+                'id'      => $sNewId,
+                'thumb'   => $this->mediaService->getThumbnailUrl($sNewName),
+            ]
+        );
+        die($sReturn);
     }
 
     /**

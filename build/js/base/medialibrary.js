@@ -822,6 +822,9 @@
                                                     $_item.data( 'file', _res.name );
                                                     $_item.data( 'id', _res.id );
                                                     $_item.data( 'url', resourceLink + _res.name );
+                                                    $_item.data( 'thumb', _res.thumb );
+                                                    $_item.data( 'preview', _res.thumb );
+                                                    $( '.dd-media-thumb', $_item ).attr( 'src', _res.thumb );
                                                     $( '.dd-media-item-label span', $_item ).text( _res.name );
                                                     ui._loadItemDetails( $_item.data(), $dialog );
                                                 }

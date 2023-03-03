@@ -28,9 +28,12 @@ class MediaTest extends TestCase
      */
     public function testGetMediaPathNoAlternativeUrl($file)
     {
-        $moduleSettingsMock = $this->createConfiguredMock(ModuleSettings::class, [
-            'getAlternativeImageDirectory' => '',
-        ]);
+        $moduleSettingsMock = $this->createConfiguredMock(
+            ModuleSettings::class,
+            [
+                'getAlternativeImageDirectory' => '',
+            ]
+        );
 
         $shopConfigMock = $this->createPartialMock(Config::class, ['getConfigParam']);
         $shopConfigMock->expects($this->any())
@@ -50,9 +53,12 @@ class MediaTest extends TestCase
     public function testGetMediaPathWithAlternativeUrl($file)
     {
         $externalUrl = 'https://some-cdn-url.com';
-        $moduleSettingsMock = $this->createConfiguredMock(ModuleSettings::class, [
-            'getAlternativeImageDirectory' => $externalUrl,
-        ]);
+        $moduleSettingsMock = $this->createConfiguredMock(
+            ModuleSettings::class,
+            [
+                'getAlternativeImageDirectory' => $externalUrl,
+            ]
+        );
 
         $sut = $this->getSut($moduleSettingsMock);
         $mediaPath = $sut->getMediaPath($file);
@@ -87,16 +93,21 @@ class MediaTest extends TestCase
         ];
         $directory = vfsStream::setup('root', 0777, $structure);
 
-        $moduleSettingsMock = $this->createConfiguredMock(ModuleSettings::class, [
-            'getAlternativeImageDirectory' => '',
-        ]);
+        $moduleSettingsMock = $this->createConfiguredMock(
+            ModuleSettings::class,
+            [
+                'getAlternativeImageDirectory' => '',
+            ]
+        );
 
         $shopConfigMock = $this->createPartialMock(Config::class, ['getConfigParam', 'getSslShopUrl']);
         $shopConfigMock->expects($this->any())
             ->method('getConfigParam')
-            ->willReturnMap([
-                ['sShopDir', null, $directory->url()],
-            ]);
+            ->willReturnMap(
+                [
+                    ['sShopDir', null, $directory->url()],
+                ]
+            );
         $shopConfigMock->expects($this->any())
             ->method('getSslShopUrl')
             ->willReturn($externalUrl);
@@ -111,16 +122,21 @@ class MediaTest extends TestCase
      */
     public function testGetMediaUrlNotExistingFile($file)
     {
-        $moduleSettingsMock = $this->createConfiguredMock(ModuleSettings::class, [
-            'getAlternativeImageDirectory' => '',
-        ]);
+        $moduleSettingsMock = $this->createConfiguredMock(
+            ModuleSettings::class,
+            [
+                'getAlternativeImageDirectory' => '',
+            ]
+        );
 
         $shopConfigMock = $this->createPartialMock(Config::class, ['getConfigParam']);
         $shopConfigMock->expects($this->any())
             ->method('getConfigParam')
-            ->willReturnMap([
-                ['sShopDir', null, ''],
-            ]);
+            ->willReturnMap(
+                [
+                    ['sShopDir', null, ''],
+                ]
+            );
 
         $sut = $this->getSut($moduleSettingsMock, $shopConfigMock);
 
@@ -133,9 +149,12 @@ class MediaTest extends TestCase
     public function testGetMediaUrlWithAlternativeUrl($file)
     {
         $externalUrl = 'https://some-cdn-url.com';
-        $moduleSettingsMock = $this->createConfiguredMock(ModuleSettings::class, [
-            'getAlternativeImageDirectory' => $externalUrl,
-        ]);
+        $moduleSettingsMock = $this->createConfiguredMock(
+            ModuleSettings::class,
+            [
+                'getAlternativeImageDirectory' => $externalUrl,
+            ]
+        );
 
         $sut = $this->getSut($moduleSettingsMock);
         $mediaPath = $sut->getMediaUrl($file);
@@ -170,16 +189,21 @@ class MediaTest extends TestCase
         $shopConfigMock = $this->createPartialMock(Config::class, ['getConfigParam']);
         $shopConfigMock->expects($this->any())
             ->method('getConfigParam')
-            ->willReturnMap([
-                ['sShopDir', null, $directory->url()],
-            ]);
+            ->willReturnMap(
+                [
+                    ['sShopDir', null, $directory->url()],
+                ]
+            );
 
         $connectionMock = $this->createPartialMock(Connection::class, ['executeQuery']);
         $connectionMock->expects($this->once())
             ->method('executeQuery');
-        $connectionProviderStub = $this->createConfiguredMock(ConnectionProviderInterface::class, [
-            'get' => $connectionMock,
-        ]);
+        $connectionProviderStub = $this->createConfiguredMock(
+            ConnectionProviderInterface::class,
+            [
+                'get' => $connectionMock,
+            ]
+        );
 
         $sId = md5('FolderTest');
         $utilsObjectMock = $this->createPartialMock(UtilsObject::class, ['generateUId']);
@@ -211,16 +235,21 @@ class MediaTest extends TestCase
         $shopConfigMock = $this->createPartialMock(Config::class, ['getConfigParam']);
         $shopConfigMock->expects($this->any())
             ->method('getConfigParam')
-            ->willReturnMap([
-                ['sShopDir', null, $directory->url()],
-            ]);
+            ->willReturnMap(
+                [
+                    ['sShopDir', null, $directory->url()],
+                ]
+            );
 
         $connectionMock = $this->createPartialMock(Connection::class, ['executeQuery']);
         $connectionMock->expects($this->once())
             ->method('executeQuery');
-        $connectionProviderStub = $this->createConfiguredMock(ConnectionProviderInterface::class, [
-            'get' => $connectionMock,
-        ]);
+        $connectionProviderStub = $this->createConfiguredMock(
+            ConnectionProviderInterface::class,
+            [
+                'get' => $connectionMock,
+            ]
+        );
 
         $sId = md5('FolderTest_1');
         $utilsObjectMock = $this->createPartialMock(UtilsObject::class, ['generateUId']);
@@ -246,16 +275,21 @@ class MediaTest extends TestCase
         $shopConfigMock = $this->createPartialMock(Config::class, ['getConfigParam']);
         $shopConfigMock->expects($this->any())
             ->method('getConfigParam')
-            ->willReturnMap([
-                ['sShopDir', null, $directory->url()],
-            ]);
+            ->willReturnMap(
+                [
+                    ['sShopDir', null, $directory->url()],
+                ]
+            );
 
         $connectionMock = $this->createPartialMock(Connection::class, ['executeQuery']);
         $connectionMock->expects($this->once())
             ->method('executeQuery');
-        $connectionProviderStub = $this->createConfiguredMock(ConnectionProviderInterface::class, [
-            'get' => $connectionMock,
-        ]);
+        $connectionProviderStub = $this->createConfiguredMock(
+            ConnectionProviderInterface::class,
+            [
+                'get' => $connectionMock,
+            ]
+        );
 
         $sut = $this->getSut(null, $shopConfigMock, $connectionProviderStub);
         if ($folder) {
@@ -287,9 +321,11 @@ class MediaTest extends TestCase
         $shopConfigMock = $this->createPartialMock(Config::class, ['getConfigParam']);
         $shopConfigMock->expects($this->any())
             ->method('getConfigParam')
-            ->willReturnMap([
-                ['sShopDir', null, $directory->url()],
-            ]);
+            ->willReturnMap(
+                [
+                    ['sShopDir', null, $directory->url()],
+                ]
+            );
 
         $sSelect = "SELECT DDFILENAME FROM ddmedia WHERE OXID = ?";
         $connectionMock = $this->createPartialMock(
@@ -302,19 +338,24 @@ class MediaTest extends TestCase
 
         $connectionMock->expects($this->exactly(1))
             ->method('fetchAllAssociative')
-            ->willReturn([
-                0 => [
-                    'DDFILENAME' => $sSourceFileName,
-                    'DDTHUMB'    => $sThumbName,
-                ],
-            ]);
+            ->willReturn(
+                [
+                    0 => [
+                        'DDFILENAME' => $sSourceFileName,
+                        'DDTHUMB'    => $sThumbName,
+                    ],
+                ]
+            );
 
         $connectionMock->expects($this->once())
             ->method('executeQuery');
 
-        $connectionProviderStub = $this->createConfiguredMock(ConnectionProviderInterface::class, [
-            'get' => $connectionMock,
-        ]);
+        $connectionProviderStub = $this->createConfiguredMock(
+            ConnectionProviderInterface::class,
+            [
+                'get' => $connectionMock,
+            ]
+        );
 
         $sut = $this->getSut(null, $shopConfigMock, $connectionProviderStub);
 
@@ -347,15 +388,20 @@ class MediaTest extends TestCase
         $shopConfigMock = $this->createPartialMock(Config::class, ['getConfigParam']);
         $shopConfigMock->expects($this->any())
             ->method('getConfigParam')
-            ->willReturnMap([
-                ['sShopDir', null, $directory->url()],
-            ]);
+            ->willReturnMap(
+                [
+                    ['sShopDir', null, $directory->url()],
+                ]
+            );
 
-        $connectionMock = $this->createPartialMock(Connection::class, [
-            'fetchAllAssociative',
-            'executeQuery',
-            'quote',
-        ]);
+        $connectionMock = $this->createPartialMock(
+            Connection::class,
+            [
+                'fetchAllAssociative',
+                'executeQuery',
+                'quote',
+            ]
+        );
         $connectionMock->expects($this->once())
             ->method('fetchAllAssociative')
             ->willReturn($aDBData);
@@ -366,9 +412,12 @@ class MediaTest extends TestCase
         $connectionMock->expects($this->any())
             ->method('quote');
 
-        $connectionProviderStub = $this->createConfiguredMock(ConnectionProviderInterface::class, [
-            'get' => $connectionMock,
-        ]);
+        $connectionProviderStub = $this->createConfiguredMock(
+            ConnectionProviderInterface::class,
+            [
+                'get' => $connectionMock,
+            ]
+        );
 
         $sut = $this->getSut(null, $shopConfigMock, $connectionProviderStub);
         if ($startFolder) {
@@ -382,9 +431,41 @@ class MediaTest extends TestCase
         );
     }
 
-    /*public function testDeleteFolderWithImages()
+    public function testGetMediaUrl()
     {
-    }*/
+        $sThumbName = md5(self::FIXTURE_FILE) . '_thumb_' . $this->getSut()->getDefaultThumbnailSize() . '.jpg';
+        $structure['out']['pictures']['ddmedia'][self::FIXTURE_FILE] = 'some file';
+        $structure['out']['pictures']['ddmedia']['thumbs'][$sThumbName] = 'some file';
+        $anotherFile = 'file2.jpg';
+        $sThumbName = md5($anotherFile) . '_thumb_' . $this->getSut()->getDefaultThumbnailSize() . '.jpg';
+        $structure['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER][$anotherFile] = 'some file';
+        $structure['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'][$sThumbName] = 'some file';
+
+        $directory = vfsStream::setup('root', 0777, $structure);
+
+        $shopConfigMock = $this->createPartialMock(Config::class, ['getConfigParam']);
+        $shopConfigMock->expects($this->any())
+            ->method('getConfigParam')
+            ->willReturnMap(
+                [
+                    ['sShopDir', null, $directory->url()],
+                    ['sSSLShopURL', null, 'https://test.com'],
+                ]
+            );
+        $sut = $this->getSut(null, $shopConfigMock);
+
+        $sMediaUrl = $sut->getMediaUrl(self::FIXTURE_FOLDER . '/' . $anotherFile);
+        $this->assertEquals(
+            'https://test.com/out/pictures/ddmedia/' . self::FIXTURE_FOLDER . '/' . $anotherFile,
+            $sMediaUrl
+        );
+
+        $sMediaUrl = $sut->getMediaUrl(self::FIXTURE_FILE);
+        $this->assertEquals(
+            'https://test.com/out/pictures/ddmedia/' . self::FIXTURE_FILE,
+            $sMediaUrl
+        );
+    }
 
 
     public function getThumbnailPathDataProvider(): array
@@ -433,8 +514,22 @@ class MediaTest extends TestCase
         $sThumbName = md5(self::FIXTURE_FILE) . '_thumb_' . $oMedia->getDefaultThumbnailSize() . '.jpg';
         $structure1['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER][self::FIXTURE_FILE] = 'some file';
         $structure1['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'][$sThumbName] = 'some file';
-        $structureExpected1['root']['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['new.jpg'] = 'some file';
-        $structureExpected1['root']['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'][$sThumbNameNew] = 'some file';
+        $structureExpected1 = [
+            'root' => [
+                'out' => [
+                    'pictures' => [
+                        'ddmedia' => [
+                            self::FIXTURE_FOLDER => [
+                                'new.jpg' => 'some file',
+                                'thumbs'  => [
+                                    $sThumbNameNew => 'some file',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
 
         $structure2['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER] = [];
         $structureExpected2['root']['out']['pictures']['ddmedia']['folderNew'] = [];

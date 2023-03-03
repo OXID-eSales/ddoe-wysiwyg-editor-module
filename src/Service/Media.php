@@ -183,7 +183,7 @@ class Media
             }
 
             $aFile = [
-                'filename' => $sFileName,
+                'filename'  => $sFileName,
                 'thumbnail' => $sThumbName,
             ];
 
@@ -210,16 +210,19 @@ class Media
                                `DDFOLDERID` )
                             VALUES
                               ( ?, ?, ?, ?, ?, ?, ?, ? );";
-            $this->connection->executeQuery($sInsert, [
-                $sId,
-                $iShopId,
-                $sFileName,
-                $sFileSize,
-                $sFileType,
-                $sThumbName,
-                $sImageSize,
-                $this->_sFolderId,
-            ]);
+            $this->connection->executeQuery(
+                $sInsert,
+                [
+                    $sId,
+                    $iShopId,
+                    $sFileName,
+                    $sFileSize,
+                    $sFileType,
+                    $sThumbName,
+                    $sImageSize,
+                    $this->_sFolderId,
+                ]
+            );
 
             $aResult['id'] = $sId;
             $aResult['filename'] = $sFileName;
@@ -406,7 +409,7 @@ class Media
     public function rename($sOldName, $sNewName, $sId, $sType = 'file')
     {
         $aResult = [
-            'success' => false,
+            'success'  => false,
             'filename' => '',
         ];
 
@@ -418,14 +421,15 @@ class Media
         $sOldPath = $sPath . $sOldName;
         $sNewPath = $sPath . $sNewName;
 
-        if ($sType == 'directory') {
+        $blDirectory = $sType == 'directory';
+        if ($blDirectory) {
             $sNewPath = $this->_checkAndGetFolderName($sNewPath, $sPath);
         } else {
             $sNewPath = $this->_checkAndGetFileName($sNewPath);
         }
 
-        if( $sType == 'file' )
-        {
+        $sOldThumbHash = $sNewThumbHash = $sNewThumbName = '';
+        if (!$blDirectory) {
             $iThumbSize = $this->getDefaultThumbnailSize();
             $sOldThumbName = $this->getThumbName(basename($sOldPath));
             $sOldThumbHash = str_replace('_thumb_' . $iThumbSize . '.jpg', '', $sOldThumbName);
@@ -434,9 +438,7 @@ class Media
         }
 
         if (rename($sOldPath, $sNewPath)) {
-
-            if( $sType == 'file' )
-            {
+            if (!$blDirectory) {
                 $thumbs = Glob::glob(
                     Path::join(
                         $this->getMediaPath(),
@@ -461,14 +463,14 @@ class Media
                 $sUpdate,
                 [
                     $sNewName,
-                    $sType == 'file' ? basename($sNewThumbName) : '',
+                    !$blDirectory ? basename($sNewThumbName) : '',
                     $sId,
                     $iShopId,
                 ]
             );
 
             $aResult = [
-                'success' => true,
+                'success'  => true,
                 'filename' => $sNewName,
             ];
         }
@@ -524,11 +526,14 @@ class Media
                                       SET `DDFOLDERID` = ?  
                                     WHERE `OXID` = ? AND `OXSHOPID` = ?;";
 
-                    $this->connection->executeQuery($sUpdate, [
-                        $sTargetFolderID,
-                        $sSourceFileID,
-                        $iShopId,
-                    ]);
+                    $this->connection->executeQuery(
+                        $sUpdate,
+                        [
+                            $sTargetFolderID,
+                            $sSourceFileID,
+                            $iShopId,
+                        ]
+                    );
 
                     $blReturn = true;
                 }
@@ -596,10 +601,14 @@ class Media
      */
     protected function _checkAndSetFolderName($sFile)
     {
-        if ($sFile && ($iPos = strpos($sFile, '/')) !== false) {
-            $sFolderName = substr($sFile, 0, $iPos);
-            if ($sFolderName != 'thumbs') {
-                $this->_sFolderName = substr($sFile, 0, $iPos);
+        if ($sFile) {
+            if (($iPos = strpos($sFile, '/')) !== false) {
+                $sFolderName = substr($sFile, 0, $iPos);
+                if ($sFolderName != 'thumbs') {
+                    $this->_sFolderName = substr($sFile, 0, $iPos);
+                }
+            } else {
+                $this->_sFolderName = '';
             }
         }
     }
