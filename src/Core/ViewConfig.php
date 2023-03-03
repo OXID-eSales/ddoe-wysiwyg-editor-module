@@ -7,14 +7,14 @@
  * Any unauthorized use of this software will be prosecuted by
  * civil and criminal law.
  *
- * @link      http://www.oxid-esales.com
+ * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
- * @version   OXID eSales Visual CMS
+ * @version       OXID eSales Visual CMS
  */
 
 namespace OxidEsales\WysiwygModule\Core;
 
-use OxidEsales\WysiwygModule\Application\Model\Media;
+use OxidEsales\WysiwygModule\Traits\ServiceContainer;
 
 /**
  * Class ViewConfig
@@ -23,10 +23,12 @@ use OxidEsales\WysiwygModule\Application\Model\Media;
  */
 class ViewConfig extends ViewConfig_parent
 {
+    use ServiceContainer;
+
     public function getMediaUrl($sFile = '')
     {
-        /** @var Media $oMedia */
-        $oMedia = oxNew(Media::class);
+        $oMedia = $this->getServiceFromContainer(\OxidEsales\WysiwygModule\Service\Media::class);
+
         return $oMedia->getMediaUrl($sFile);
     }
 }
