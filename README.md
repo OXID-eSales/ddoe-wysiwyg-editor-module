@@ -24,6 +24,7 @@ After installation, please, activate the module in OXID eShop Admin
 ### Compatibility
 - master branch is compatible with OXID eShop compilations: master
 - b-2.x branch is compatible with OXID eShop compilations: 6.2.x, 6.3.x, 6.4.x and 6.5.x
+- b-7.0.x branch is compatible with OXID eShop compilations: 7.0.x
 
 ## Bugs and Issues
 
