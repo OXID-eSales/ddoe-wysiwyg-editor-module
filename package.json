@@ -5,7 +5,7 @@
   "main": "Gruntfile.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/OXID-eSales/visual_cms_module/tree/master/modules/ddoe/visualcms"
+    "url": "https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module"
   },
   "keywords": [],
   "author": "digidesk - media solutions",
