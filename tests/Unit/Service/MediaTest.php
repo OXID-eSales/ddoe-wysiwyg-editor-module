@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\VisualCmsModule\Tests\Unit\Service;
+namespace OxidEsales\WysiwygModule\Tests\Unit\Service;
 
 use Doctrine\DBAL\Connection;
 use org\bovigo\vfs\vfsStream;
@@ -179,9 +179,7 @@ class MediaTest extends TestCase
     {
         $structure = [
             'out' => [
-                'pictures' => [
-                    'ddmedia' => [],
-                ],
+                'pictures' => [],
             ],
         ];
         $directory = vfsStream::setup('root', 0777, $structure);
@@ -242,7 +240,7 @@ class MediaTest extends TestCase
             );
 
         $connectionMock = $this->createPartialMock(Connection::class, ['executeQuery']);
-        $connectionMock->expects($this->once())
+        $connectionMock->expects($this->exactly(2))
             ->method('executeQuery');
         $connectionProviderStub = $this->createConfiguredMock(
             ConnectionProviderInterface::class,
@@ -253,7 +251,7 @@ class MediaTest extends TestCase
 
         $sId = md5('FolderTest_1');
         $utilsObjectMock = $this->createPartialMock(UtilsObject::class, ['generateUId']);
-        $utilsObjectMock->expects($this->once())
+        $utilsObjectMock->expects($this->exactly(2))
             ->method('generateUId')
             ->willReturn($sId);
 
@@ -262,6 +260,10 @@ class MediaTest extends TestCase
 
         $aExpected = ['id' => $sId, 'dir' => 'FolderTest_1'];
 
+        $this->assertSame($aExpected, $aCustomDir);
+
+        $aCustomDir = $sut->createCustomDir('FolderTest', '');
+        $aExpected = ['id' => $sId, 'dir' => 'FolderTest_2'];
         $this->assertSame($aExpected, $aCustomDir);
     }
 
@@ -467,6 +469,33 @@ class MediaTest extends TestCase
         );
     }
 
+    /**
+     * @dataProvider getThumbnailUrlProvider
+     *
+     * @return void
+     */
+    public function testGetThumbnailUrl($sFile, $iThumbSize, $expected)
+    {
+        $sThumbName = md5(self::FIXTURE_FILE) . '_thumb_' . $this->getSut()->getDefaultThumbnailSize() . '.jpg';
+        $structure['out']['pictures']['ddmedia']['thumbs'] = [];
+        $structure['out']['pictures']['ddmedia'][self::FIXTURE_FILE] = 'some file';
+        $structure['out']['pictures']['ddmedia']['thumbs'][$sThumbName] = 'some file';
+        $directory = vfsStream::setup('root', 0777, $structure);
+        $shopConfigMock = $this->createPartialMock(Config::class, ['getConfigParam']);
+        $shopConfigMock->expects($this->any())
+            ->method('getConfigParam')
+            ->willReturnMap(
+                [
+                    ['sShopDir', null, $directory->url()],
+                    ['sSSLShopURL', null, 'https://test.com'],
+                ]
+            );
+        $sut = $this->getSut(null, $shopConfigMock);
+
+        $result = $sut->getThumbnailUrl($sFile, $iThumbSize);
+
+        $this->assertEquals($expected ? ('https://test.com/out/pictures/ddmedia/' . $expected) : $expected, $result);
+    }
 
     public function getThumbnailPathDataProvider(): array
     {
@@ -534,6 +563,37 @@ class MediaTest extends TestCase
         $structure2['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER] = [];
         $structureExpected2['root']['out']['pictures']['ddmedia']['folderNew'] = [];
 
+        $sThumbName = md5(self::FIXTURE_FILE) . '_thumb_' . $oMedia->getDefaultThumbnailSize() . '.jpg';
+        $sThumbName2 = md5('new_1.jpg') . '_thumb_' . $oMedia->getDefaultThumbnailSize() . '.jpg';
+        $sThumbName3 = md5('new_1.jpg') . '_thumb_' . $oMedia->getDefaultThumbnailSize() . '.jpg';
+        $sThumbNameNew2 = md5('new_2.jpg') . '_thumb_' . $oMedia->getDefaultThumbnailSize() . '.jpg';
+        $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER][self::FIXTURE_FILE] = 'some file';
+        $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['new.jpg'] = 'some file';
+        $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['new_1.jpg'] = 'some file';
+        $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'][$sThumbName] = 'some file';
+        $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'][$sThumbName3] = 'some file';
+        $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'][$sThumbName2] = 'some file';
+        $structureExpected3 = [
+            'root' => [
+                'out' => [
+                    'pictures' => [
+                        'ddmedia' => [
+                            self::FIXTURE_FOLDER => [
+                                'new.jpg' => 'some file',
+                                'new_1.jpg' => 'some file',
+                                'new_2.jpg' => 'some file',
+                                'thumbs'  => [
+                                    $sThumbName2 => 'some file',
+                                    $sThumbName3 => 'some file',
+                                    $sThumbNameNew2 => 'some file',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
         return [
             [
                 'structure'         => $structure,
@@ -561,6 +621,15 @@ class MediaTest extends TestCase
                 'folder'            => '',
                 'expectedNewName'   => 'folderNew',
                 'type'              => 'folder',
+            ],
+            [
+                'structure'         => $structure3,
+                'oldName'           => self::FIXTURE_FILE,
+                'newName'           => 'new.jpg',
+                'structureExpected' => $structureExpected3,
+                'folder'            => self::FIXTURE_FOLDER,
+                'expectedNewName'   => 'new_2.jpg',
+                'type'              => 'file',
             ],
         ];
     }
@@ -662,6 +731,35 @@ class MediaTest extends TestCase
                 'aIds'              => $aIds3,
                 'aDBData'           => $aDBData3,
                 'startFolder'       => '',
+            ],
+        ];
+    }
+
+    public function getThumbnailUrlProvider()
+    {
+        $oMedia = new Media(
+            $this->createStub(ModuleSettings::class),
+            $this->createStub(Config::class),
+            $this->createStub(ConnectionProviderInterface::class),
+            $this->createStub(UtilsObject::class)
+        );
+        $sThumbName = md5(self::FIXTURE_FILE) . '_thumb_' . $oMedia->getDefaultThumbnailSize() . '.jpg';
+
+        return [
+            [
+                'sFile'      => '',
+                'iThumbSize' => null,
+                'expected'   => 'thumbs',
+            ],
+            [
+                'sFile'      => self::FIXTURE_FILE,
+                'iThumbSize' => null,
+                'expected'   => 'thumbs/' . $sThumbName,
+            ],
+            [
+                'sFile'      => '111.jpg',
+                'iThumbSize' => null,
+                'expected'   => false,
             ],
         ];
     }

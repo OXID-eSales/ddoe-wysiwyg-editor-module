@@ -113,7 +113,7 @@ class Media
 
             $sThumbName = $this->getThumbName($sFile, $iThumbSize);
 
-            if ($sThumbName) {
+            if (file_exists($this->getThumbnailPath($sThumbName))) {
                 return $this->getMediaUrl('thumbs/' . $sThumbName);
             }
         } else {
