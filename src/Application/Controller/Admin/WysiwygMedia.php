@@ -103,7 +103,7 @@ class WysiwygMedia extends AdminDetailsController
                 $sSourcePath = $_FILES['file']['tmp_name'];
                 $sDestPath = Path::join($this->mediaService->getMediaPath(), $_FILES['file']['name']);
 
-                $aResult = $this->mediaService->uploadeMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, true);
+                $aResult = $this->mediaService->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, true);
                 $sId = $aResult['id'];
                 $sFileName = $aResult['filename'];
                 $sImageSize = $aResult['imagesize'];

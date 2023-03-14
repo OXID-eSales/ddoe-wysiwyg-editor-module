@@ -497,6 +497,88 @@ class MediaTest extends TestCase
         $this->assertEquals($expected ? ('https://test.com/out/pictures/ddmedia/' . $expected) : $expected, $result);
     }
 
+    public function testUploadMedia()
+    {
+        $sThumbName = md5(self::FIXTURE_FILE) . '_thumb_' . $this->getSut()->getDefaultThumbnailSize() . '.jpg';
+        $sFile2 = 'file_1.jpg';
+        $sThumbName1 = md5($sFile2) . '_thumb_' . $this->getSut()->getDefaultThumbnailSize() . '.jpg';
+        $sThumbName2 = md5($sFile2) . '_thumb_300.jpg';
+        $sThumbName3 = md5($sFile2) . '_thumb_800.jpg';
+        $structure['out']['pictures']['ddmedia'] = [
+            self::FIXTURE_FILE => 'some file',
+            'thumbs'           => [$sThumbName => 'some file'],
+        ];
+        $structure['tmp'] = ['uploaded.jpg' => 'some file'];
+        $directory = vfsStream::setup('root', 0777, $structure);
+        $shopConfigMock = $this->createPartialMock(Config::class, ['getConfigParam']);
+        $shopConfigMock->expects($this->any())
+            ->method('getConfigParam')
+            ->willReturnMap(
+                [
+                    ['sShopDir', null, $directory->url()],
+                    ['sSSLShopURL', null, 'https://test.com'],
+                ]
+            );
+
+        $connectionMock = $this->createPartialMock(
+            Connection::class,
+            [
+                'executeQuery',
+            ]
+        );
+
+        $connectionMock->expects($this->any())
+            ->method('executeQuery');
+
+        $connectionProviderStub = $this->createConfiguredMock(
+            ConnectionProviderInterface::class,
+            [
+                'get' => $connectionMock,
+            ]
+        );
+
+        $sId = md5(self::FIXTURE_FILE);
+        $utilsObjectMock = $this->createPartialMock(UtilsObject::class, ['generateUId']);
+        $utilsObjectMock->expects($this->once())
+            ->method('generateUId')
+            ->willReturn($sId);
+
+        $sut = $this->getSut(null, $shopConfigMock, $connectionProviderStub, $utilsObjectMock);
+
+        $sSourcePath = $directory->url() . '/tmp/uploaded.jpg';
+        $sDestPath = $sut->getMediaPath() . self::FIXTURE_FILE;
+        $sFileSize = '1024';
+        $sFileType = 'image/jpeg';
+        $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, true);
+
+        $structureExpected['root'] = [
+            'tmp' => [],
+            'out' => [
+                'pictures' => [
+                    'ddmedia' => [
+                        self::FIXTURE_FILE => 'some file',
+                        $sFile2            => 'some file',
+                        'thumbs'           => [
+                            $sThumbName  => 'some file',
+                            $sThumbName1 => 'some file',
+                            $sThumbName2 => 'some file',
+                            $sThumbName3 => 'some file',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $this->assertEquals(
+            $structureExpected,
+            vfsStream::inspect(new vfsStreamStructureVisitor(), $directory)->getStructure()
+        );
+
+        $sDestPath = $sut->getMediaPath() . 'test.js';
+        $sFileType = 'text/javascript';
+        $this->expectException(\Exception::class);
+        $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, true);
+    }
+
     public function getThumbnailPathDataProvider(): array
     {
         return [
@@ -579,12 +661,12 @@ class MediaTest extends TestCase
                     'pictures' => [
                         'ddmedia' => [
                             self::FIXTURE_FOLDER => [
-                                'new.jpg' => 'some file',
+                                'new.jpg'   => 'some file',
                                 'new_1.jpg' => 'some file',
                                 'new_2.jpg' => 'some file',
-                                'thumbs'  => [
-                                    $sThumbName2 => 'some file',
-                                    $sThumbName3 => 'some file',
+                                'thumbs'    => [
+                                    $sThumbName2    => 'some file',
+                                    $sThumbName3    => 'some file',
                                     $sThumbNameNew2 => 'some file',
                                 ],
                             ],
@@ -770,7 +852,7 @@ class MediaTest extends TestCase
         ?ConnectionProviderInterface $connectionProvider = null,
         UtilsObject $utilsObject = null
     ) {
-        return new Media(
+        return new MediaMock(
             $moduleSettings ?: $this->createStub(ModuleSettings::class),
             $shopConfig ?: $this->createStub(Config::class),
             $connectionProvider ?: $this->createStub(ConnectionProviderInterface::class),

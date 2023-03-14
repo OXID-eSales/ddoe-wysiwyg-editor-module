@@ -133,7 +133,7 @@ class Media
         return str_replace('.', '_', md5(basename($sFile))) . '_thumb_' . $iThumbSize . '.jpg';
     }
 
-    public function uploadeMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, $blCreateThumbs = false)
+    public function uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, $blCreateThumbs = false)
     {
         $this->createDirs();
 
@@ -147,30 +147,7 @@ class Media
         $aResult = [];
 
         if ($this->validateFilename($sFileName)) {
-            while (file_exists($sDestPath)) {
-                $aFileParts = explode('.', $sFileName);
-                $aFileParts = array_reverse($aFileParts);
-
-                $sFileExt = $aFileParts[0];
-                unset($aFileParts[0]);
-
-                $sBaseName = implode('.', array_reverse($aFileParts));
-
-                $aBaseParts = explode('_', $sBaseName);
-                $aBaseParts = array_reverse($aBaseParts);
-
-                if (strlen($aBaseParts[0]) == 1 && is_numeric($aBaseParts[0])) {
-                    $iFileCount = (int)$aBaseParts[0];
-                    unset($aBaseParts[0]);
-                }
-
-                $sBaseName = implode('_', array_reverse($aBaseParts));
-
-                $sFileName = $sBaseName . '_' . (++$iFileCount) . '.' . $sFileExt;
-                $sDestPath = dirname($sDestPath) . '/' . $sFileName;
-            }
-
-            move_uploaded_file($sSourcePath, $sDestPath);
+            $this->moveUploadedFile($sSourcePath, $sDestPath);
 
             if ($blCreateThumbs) {
                 try {
@@ -193,7 +170,7 @@ class Media
 
             $sImageSize = '';
             if (is_readable($sDestPath) && preg_match("/image\//", $sFileType)) {
-                $aImageSize = getimagesize($sDestPath);
+                $aImageSize = $this->getImageSize($sDestPath);
                 $sImageSize = ($aImageSize ? $aImageSize[0] . 'x' . $aImageSize[1] : '');
             }
 
@@ -260,7 +237,7 @@ class Media
                 $iThumbSize = $this->getDefaultThumbnailSize();
             }
 
-            [$iImageWidth, $iImageHeight, $iImageType] = getimagesize($sFilePath);
+            [$iImageWidth, $iImageHeight, $iImageType] = $this->getImageSize($sFilePath);
 
             switch ($iImageType) {
                 case 1:
@@ -815,5 +792,26 @@ class Media
     public function getDefaultThumbnailSize(): int
     {
         return $this->_iDefaultThumbnailSize;
+    }
+
+    /**
+     * @param              $sSourcePath
+     * @param array|string $sDestPath
+     *
+     * @return bool
+     */
+    protected function moveUploadedFile($sSourcePath, array|string $sDestPath): bool
+    {
+        return move_uploaded_file($sSourcePath, $sDestPath);
+    }
+
+    /**
+     * @param array|string $sDestPath
+     *
+     * @return array|false
+     */
+    protected function getImageSize(array|string $sDestPath): array|false
+    {
+        return getimagesize($sDestPath);
     }
 }
