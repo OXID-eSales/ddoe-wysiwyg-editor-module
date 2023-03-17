@@ -18,7 +18,6 @@ class MediaMock extends \OxidEsales\WysiwygModule\Service\Media
 {
     protected function moveUploadedFile($sSourcePath, array|string $sDestPath): bool
     {
-
         $sSourcePath = realpath($sSourcePath);
 
         $result = rename($sSourcePath, $sDestPath);

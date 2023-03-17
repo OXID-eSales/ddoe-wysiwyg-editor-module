@@ -23,7 +23,8 @@
     "prefer-dist": true,
     "require":     {
         "php": ">=8.0",
-        "webmozart/glob": "^4.6.0"
+        "webmozart/glob": "^4.6.0",
+        "ext-gd": "*"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.8.11",

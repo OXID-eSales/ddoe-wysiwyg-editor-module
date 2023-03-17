@@ -23,7 +23,7 @@ trait ServiceContainer
      *
      * @return T
      */
-    protected function getServiceFromContainer(string $serviceName)
+    public static function getServiceFromContainer(string $serviceName)
     {
         return ContainerFactory::getInstance()
             ->getContainer()

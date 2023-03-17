@@ -145,7 +145,6 @@ class Media
         $iFileCount = 0;
 
         $aResult = [];
-
         if ($this->validateFilename($sFileName)) {
             $this->moveUploadedFile($sSourcePath, $sDestPath);
 
