@@ -26,8 +26,7 @@ class IntegrationTestCase extends \OxidEsales\EshopCommunity\Tests\Integration\I
             __DIR__ . '/../fixtures/testdata_'
             . strtolower($facts->getEdition()) . '.sql'
         );
-        if( trim($testdata) )
-        {
+        if (trim($testdata)) {
             $connection->executeStatement(
                 $testdata
             );

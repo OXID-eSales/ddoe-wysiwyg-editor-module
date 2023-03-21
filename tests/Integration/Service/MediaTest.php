@@ -98,8 +98,7 @@ class MediaTest extends IntegrationTestCase
 
         $this->assertGreaterThan(0, $this->count($aFiles));
 
-        foreach( $aFiles as $aRow )
-        {
+        foreach ($aFiles as $aRow) {
             $aFilesResult[] = $aRow['DDFILENAME'];
         }
 
