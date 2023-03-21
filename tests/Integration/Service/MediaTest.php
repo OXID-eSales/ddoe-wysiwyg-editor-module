@@ -24,18 +24,28 @@ use OxidEsales\WysiwygModule\Tests\Integration\IntegrationTestCase;
 use OxidEsales\WysiwygModule\Tests\Integration\Service\MediaMock;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 
 class MediaTest extends IntegrationTestCase
 {
     private const FIXTURE_FILE = 'file.jpg';
 
+    /**
+     * @return mixed
+     */
+    protected static function getConnection()
+    {
+        return ContainerFactory::getInstance()
+            ->getContainer()->get(QueryBuilderFactoryInterface::class)
+            ->create()
+            ->getConnection();
+    }
+
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
-        $connection = self::getServiceFromContainer(QueryBuilderFactoryInterface::class)
-            ->create()
-            ->getConnection();
+        $connection = self::getConnection();
         $connection->executeStatement(
             'TRUNCATE ddmedia;'
         );
@@ -189,9 +199,7 @@ class MediaTest extends IntegrationTestCase
             unlink($file);
         }
 
-        $connection = self::getServiceFromContainer(QueryBuilderFactoryInterface::class)
-            ->create()
-            ->getConnection();
+        $connection = $connection = self::getConnection();
         $connection->executeStatement(
             'TRUNCATE ddmedia;'
         );
