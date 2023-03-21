@@ -21,7 +21,7 @@ class ViewConfigTest extends IntegrationTestCase
         $mediaMock->method('getMediaUrl')->with('someFile')->willReturn('someFilePath');
 
         $sut = $this->createPartialMock(
-            \OxidEsales\VisualCmsModule\Core\ViewConfig::class,
+            \OxidEsales\WysiwygModule\Core\ViewConfig::class,
             ['getServiceFromContainer']
         );
         $sut->expects($this->any())->method('getServiceFromContainer')
