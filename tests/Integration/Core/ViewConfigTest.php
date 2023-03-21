@@ -7,7 +7,7 @@
 
 namespace OxidEsales\WysiwygModule\Tests\Integration\Core;
 
-use OxidEsales\VisualCmsModule\Tests\Integration\IntegrationTestCase;
+use OxidEsales\WysiwygModule\Tests\Integration\IntegrationTestCase;
 use OxidEsales\WysiwygModule\Service\Media;
 
 /**

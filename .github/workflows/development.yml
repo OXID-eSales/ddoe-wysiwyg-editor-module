@@ -300,6 +300,7 @@ jobs:
             php php vendor/bin/phpunit \
               -c /var/www/vendor/${{ env.PACKAGE_NAME }}/tests/phpunit.xml \
               --testsuite=Unit \
+              --bootstrap=/var/www/source/bootstrap.php \
               --coverage-text \
               --coverage-php=/var/www/unit.cov
 
