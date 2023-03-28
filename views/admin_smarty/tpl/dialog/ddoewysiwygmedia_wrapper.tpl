@@ -45,6 +45,7 @@
 [{oxscript include=$oViewConf->getSelfLink()|cat:'cl=ddoewysiwyglangjs' priority=1}]
 
 [{oxscript include=$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/jquery.min.js') priority=1}]
+[{oxscript include=$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/jquery-ui.min.js') priority=1}]
 [{oxscript include=$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/bootstrap.min.js') priority=1}]
 [{oxscript include=$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/base.min.js') priority=1}]
 

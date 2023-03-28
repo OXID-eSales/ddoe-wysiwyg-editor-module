@@ -1,4 +1,4 @@
-<div class="dd-media" data-foldername="[{$sFoldername}]" data-folderid="[{$sFolderId}]" data-medialink="[{$sResourceUrl}]">
+<div class="dd-media[{if !$smarty.get.overlay}] dd-media-overview[{/if}]" data-foldername="[{$sFoldername}]" data-folderid="[{$sFolderId}]" data-medialink="[{$sResourceUrl}]">
 
     <div class="dd-media-drag-helper">
         <span>[{oxmultilang ident="DD_MEDIA_DRAG_INFO"}]</span>
@@ -156,7 +156,7 @@
                             <div class="clearfix" style="height: 30px;"></div>
 
                             <div class="form-group dd-media-url">
-                                <label>Bild-URL</label>
+                                <label>[{oxmultilang ident="DD_MEDIA_IMG_URL"}]</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control dd-media-details-input-url" name="media[url]" value="" readonly="readonly" />
                                     <span class="input-group-btn">

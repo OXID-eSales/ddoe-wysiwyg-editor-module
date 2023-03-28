@@ -49,6 +49,7 @@
 [{oxscript include=$oViewConf->getSelfLink()|cat:'cl=ddoewysiwyglangjs' priority=1}]
 
 <script type="text/javascript" src="[{$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/jquery.min.js')}]"></script>
+<script type="text/javascript" src="[{$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/jquery-ui.min.js')}]"></script>
 <script type="text/javascript" src="[{$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/bootstrap.min.js')}]"></script>
 <script type="text/javascript" src="[{$oViewConf->getModuleUrl('ddoewysiwyg','out/src/js/backend.min.js')}]"></script>
 
