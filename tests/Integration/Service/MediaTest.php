@@ -29,6 +29,7 @@ use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 class MediaTest extends IntegrationTestCase
 {
     private const FIXTURE_FILE = 'file.jpg';
+    private const FIXTURE_FOLDER = 'Folder';
 
     /**
      * @return mixed
@@ -79,8 +80,53 @@ class MediaTest extends IntegrationTestCase
         $sFileType = $fileType;
         $blCreateThumbs = true;
 
-        $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, $blCreateThumbs);
+        $aResult = $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, $blCreateThumbs);
+
         $this->assertTrue(file_exists($sDestPath));
+        $this->assertNotEmpty($aResult['id']);
+        $this->assertNotFalse($aResult['thumb']);
+    }
+
+    /**
+     * @dataProvider getUploadMediaDataProvider
+     * @param $imageName
+     * @param $destFileName
+     * @param $fileType
+     *
+     * @return void
+     */
+    public function testUploadMediaInFolder($imageName, $destFileName, $fileType)
+    {
+        $sut = $this->getSut();
+
+        $aResult = $sut->createCustomDir(self::FIXTURE_FOLDER);
+        $sFolderId = $aResult['id'];
+        $sFolderName = $aResult['dir'];
+
+        $this->assertNotEmpty($sFolderId);
+
+        $sut->setFolder($sFolderId);
+
+        $sSourcePath = Registry::getConfig()->getConfigParam('sShopDir') . 'tmp/' . $imageName;
+        $sDestPath = $sut->getMediaPath() . $destFileName;
+        $sFileSize = filesize($sSourcePath);
+        $sFileType = $fileType;
+        $blCreateThumbs = true;
+
+        $this->assertStringContainsString($sFolderName, $sDestPath);
+
+        $aResult = $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, $blCreateThumbs);
+
+        $this->assertTrue(file_exists($sDestPath));
+        $this->assertNotEmpty($aResult['id']);
+        $this->assertNotFalse($aResult['thumb']);
+        $this->assertStringContainsString($sFolderName, $aResult['thumb']);
+        $sThumbFile = str_replace(
+            Registry::getConfig()->getConfigParam('sShopURL'),
+            Registry::getConfig()->getConfigParam('sShopDir'),
+            $aResult['thumb']
+        );
+        $this->assertTrue(file_exists($sThumbFile));
     }
 
     /**
@@ -92,7 +138,7 @@ class MediaTest extends IntegrationTestCase
     {
         $sut = $this->getSut();
         $sut->setFolder();
-        $this->assertEquals(5, $sut->getFileCount()); // 4 uploads and 1 folder
+        $this->assertEquals(9, $sut->getFileCount()); // 4 uploads and 1 folder
     }
 
     /**
@@ -190,16 +236,28 @@ class MediaTest extends IntegrationTestCase
     {
         parent::tearDownAfterClass();
 
-        $sMediaPath = Registry::getConfig()->getConfigParam('sShopDir') . '/out/pictures/ddmedia/';
+        $sMediaPath = Registry::getConfig()->getConfigParam('sShopDir') . 'out/pictures/ddmedia/';
         $sMediaThumbPath = $sMediaPath . '/thumbs/';
+
         foreach (glob($sMediaPath . '*') as $file) {
+            if(is_dir($file))
+            {
+                foreach (glob($file . '/*') as $file2) {
+                    unlink($file2);
+                }
+                foreach (glob($file . '/thumbs/*') as $file2) {
+                    unlink($file2);
+                }
+                rmdir($file . '/thumbs');
+                rmdir($file);
+            }
             unlink($file);
         }
         foreach (glob($sMediaThumbPath . '*') as $file) {
             unlink($file);
         }
 
-        $connection = $connection = self::getConnection();
+        $connection = self::getConnection();
         $connection->executeStatement(
             'TRUNCATE ddmedia;'
         );

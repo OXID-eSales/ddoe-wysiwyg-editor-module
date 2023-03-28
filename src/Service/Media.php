@@ -59,9 +59,11 @@ class Media
         }
     }
 
-    public function getMediaPath($filename = ''): string
+    public function getMediaPath($filename = '', $blDoNotSetFolder = false): string
     {
-        $this->_checkAndSetFolderName($filename);
+        if (!$blDoNotSetFolder) {
+            $this->_checkAndSetFolderName($filename);
+        }
 
         $sPath = $this->getPathToMediaFiles() . '/' . ($this->_sFolderName ? $this->_sFolderName . '/' : '');
 
@@ -229,7 +231,7 @@ class Media
 
     public function createThumbnail($sFileName, $iThumbSize = null, $blCrop = true)
     {
-        $sFilePath = $this->getMediaPath($sFileName);
+        $sFilePath = $this->getMediaPath($sFileName, true);
 
         if (is_readable($sFilePath)) {
             if (!$iThumbSize) {
@@ -355,29 +357,37 @@ class Media
             mkdir($sNewPath);
         }
 
+        // todo: before adding entry into db the existence should be checked
+
         $sFolderName = basename($sNewPath);
 
-        $sId = $this->generateUId();
+        $sSelect = "SELECT OXID FROM `ddmedia` WHERE `DDFILENAME` = ? AND `DDFILETYPE` = ?";
+        $sId = $this->connection->fetchOne($sSelect, [$sFolderName, 'directory']);
 
-        $iShopId = $this->shopConfig->getActiveShop()->getShopId();
+        if (!$sId) {
+            $sId = $this->generateUId();
 
-        $sInsert = "REPLACE INTO `ddmedia`
-                          ( `OXID`, `OXSHOPID`, `DDFILENAME`, `DDFILESIZE`, `DDFILETYPE`, `DDTHUMB`, `DDIMAGESIZE` )
-                        VALUES
-                          ( ?, ?, ?, ?, ?, ?, ? );";
+            $iShopId = $this->shopConfig->getActiveShop()->getShopId();
 
-        $this->connection->executeQuery(
-            $sInsert,
-            [
-                $sId,
-                $iShopId,
-                $sFolderName,
-                0,
-                'directory',
-                '',
-                '',
-            ]
-        );
+            $sInsert = "INSERT INTO `ddmedia`
+                              ( `OXID`, `OXSHOPID`, `DDFILENAME`, `DDFILESIZE`, `DDFILETYPE`, `DDTHUMB`, `DDIMAGESIZE` )
+                            VALUES
+                              ( ?, ?, ?, ?, ?, ?, ? );";
+
+            $this->connection->executeQuery(
+                $sInsert,
+                [
+                    $sId,
+                    $iShopId,
+                    $sFolderName,
+                    0,
+                    'directory',
+                    '',
+                    '',
+                ]
+            );
+        }
+
 
         return ['id' => $sId, 'dir' => $sFolderName];
     }

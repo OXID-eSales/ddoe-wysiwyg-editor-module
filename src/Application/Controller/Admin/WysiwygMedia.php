@@ -182,6 +182,8 @@ class WysiwygMedia extends AdminDetailsController
         if (($sName = $oRequest->getRequestEscapedParameter('name'))) {
             $aCustomDir = $this->mediaService->createCustomDir($sName);
 
+            // todo: catch exception and return appropriate result
+
             header('Content-Type: application/json');
             $sReturn = json_encode(
                 [

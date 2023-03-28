@@ -193,7 +193,10 @@ class MediaTest extends TestCase
                 ]
             );
 
-        $connectionMock = $this->createPartialMock(Connection::class, ['executeQuery']);
+        $connectionMock = $this->createPartialMock(Connection::class, ['fetchOne', 'executeQuery']);
+        $connectionMock->expects($this->once())
+            ->method('fetchOne')
+            ->willReturn(null);
         $connectionMock->expects($this->once())
             ->method('executeQuery');
         $connectionProviderStub = $this->createConfiguredMock(
@@ -239,7 +242,10 @@ class MediaTest extends TestCase
                 ]
             );
 
-        $connectionMock = $this->createPartialMock(Connection::class, ['executeQuery']);
+        $connectionMock = $this->createPartialMock(Connection::class, ['fetchOne', 'executeQuery']);
+        $connectionMock->expects($this->any())
+            ->method('fetchOne')
+            ->willReturn(null);
         $connectionMock->expects($this->exactly(2))
             ->method('executeQuery');
         $connectionProviderStub = $this->createConfiguredMock(
