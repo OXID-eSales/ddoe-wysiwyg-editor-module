@@ -240,8 +240,7 @@ class MediaTest extends IntegrationTestCase
         $sMediaThumbPath = $sMediaPath . '/thumbs/';
 
         foreach (glob($sMediaPath . '*') as $file) {
-            if(is_dir($file))
-            {
+            if (is_dir($file)) {
                 foreach (glob($file . '/*') as $file2) {
                     unlink($file2);
                 }
