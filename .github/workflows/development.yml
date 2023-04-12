@@ -9,9 +9,6 @@ on:
       mysql:
         required: true
         type: string
-      template_engine:
-        type: string
-        default: 'both'
       module_codecept_test_group:
         type: string
         default: 'ddoe_wysiwyg'
@@ -37,15 +34,6 @@ on:
         options:
           - '5.7.37'
           - '8.0'
-      template_engine:
-        description: 'Template engine - smarty with flow theme, twig with twig theme'
-        required: true
-        default: 'twig'
-        type: choice
-        options:
-          - 'both'
-          - 'twig'
-          - 'smarty'
       module_codecept_test_group:
         description: 'Module codeception test group'
         required: true
@@ -72,7 +60,6 @@ jobs:
           echo "Running job with:\
             PHP version: ${{ inputs.php }}\
             MySQL version: ${{ inputs.mysql }}\
-            Template engine: ${{ inputs.template_engine }}\
             Tests group: ${{ inputs.module_codecept_test_group }}\
             Trigger event: ${{ github.event_name }}"
 
@@ -87,7 +74,7 @@ jobs:
         with:
           path: |
             ./*
-          key: installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+          key: installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
 
       - name: Prepare container configuration
         run: |
@@ -163,7 +150,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: Configs-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.template_engine }}
+          name: Configs-${{ inputs.php }}-${{ inputs.mysql }}
           path: |
             docker-compose.yml
             source/composer.json
@@ -179,9 +166,10 @@ jobs:
         with:
           path: |
             ./*
-          key: installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+          key: installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
           restore-keys: |
-            installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+            installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+            installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}
 
       - name: Start containers
         run: |
@@ -239,9 +227,10 @@ jobs:
         with:
           path: |
             ./*
-          key: installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+          key: installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
           restore-keys: |
-            installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+            installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+            installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}
 
       - name: Start containers
         run: |
@@ -263,7 +252,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: ModuleIntegrationTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.template_engine }}
+          name: ModuleIntegrationTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
           path: |
             source/integration.cov
             source/source/log/oxideshop.log
@@ -284,9 +273,10 @@ jobs:
         with:
           path: |
             ./*
-          key: installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+          key: installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
           restore-keys: |
-            installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+            installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+            installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}
 
       - name: Start containers
         run: |
@@ -307,7 +297,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: ModuleUnitTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.template_engine }}
+          name: ModuleUnitTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
           path: |
             source/unit.cov
             source/source/log/oxideshop.log
@@ -321,7 +311,6 @@ jobs:
 
   codeception_twig:
     needs: [ install_shop_with_module ]
-    if: ${{ inputs.template_engine == 'both' || inputs.template_engine == 'twig' }}
     runs-on: ubuntu-latest
     steps:
       - name: Load current installation from cache
@@ -329,9 +318,10 @@ jobs:
         with:
           path: |
             ./*
-          key: installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+          key: installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
           restore-keys: |
-            installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+            installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+            installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}
 
       - name: Start containers
         run: |
@@ -359,75 +349,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: ModuleCodeceptionTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.template_engine }}
-          path: |
-            docker-compose.yml
-            source/composer.json
-            source/composer.lock
-            source/source/config.inc.php
-            source/source/log/oxideshop.log
-            data/php/logs/error_log.txt
-            source/tests/Codeception/_output
-
-      - name: Stop containers
-        if: always()
-        run: |
-          make down
-          sleep 2
-
-  codeception_smarty:
-    needs: [ install_shop_with_module ]
-    if: ${{ inputs.template_engine == 'both' || inputs.template_engine == 'smarty' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Load current installation from cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ./*
-          key: installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
-          restore-keys: |
-            installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
-
-      - name: Reconfigure codeception for smarty themes
-        run: |
-          perl -pi \
-          -e 's#admin_twig#admin_smarty#g;' \
-          source/test-module/tests/Codeception/acceptance.suite.yml
-          perl -pi \
-          -e 's#views/twig#views/flow/translations#g;' \
-          source/test-module/tests/Codeception/acceptance.suite.yml
-          perl -pi \
-          -e 's#theme_id:\s?twig#theme_id: flow#g;' \
-          source/test-module/tests/Codeception/acceptance.suite.yml
-
-      - name: Start containers
-        run: |
-          make up
-          sleep 2
-
-      - name: Install smarty template engine and flow theme
-        run: |
-          docker-compose exec -T php composer require oxid-esales/smarty-component:dev-b-7.0.x --no-update
-          docker-compose exec -T php composer require oxid-esales/smarty-admin-theme:dev-b-7.0.x --no-update
-          docker-compose exec -T php composer require oxid-esales/flow-theme:dev-b-7.0.x --no-update
-          docker-compose exec -T php composer update --no-interaction
-
-      - name: Run tests
-        run: |
-          docker-compose exec -T \
-            -e SELENIUM_SERVER_HOST=selenium \
-            -e BROWSER_NAME=chrome \
-            -e THEME_ID=flow \
-            -e MODULE_IDS=${{ env.MODULE_IDS }} \
-            php vendor/bin/codecept run acceptance \
-                -c /var/www/vendor/${{ env.PACKAGE_NAME }}/tests/codeception.yml -g ${{ inputs.module_codecept_test_group }}
-
-      - name: Upload log artifact
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: sModuleCodeceptionTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.template_engine }}
+          name: ModuleCodeceptionTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
           path: |
             docker-compose.yml
             source/composer.json
@@ -453,20 +375,21 @@ jobs:
         with:
           path: |
             ./*
-          key: installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+          key: installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
           restore-keys: |
-            installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+            installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+            installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}
 
       - name: Download unit artifacts
         uses: actions/download-artifact@v3
         with:
-          name: ModuleUnitTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.template_engine }}
+          name: ModuleUnitTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
           path: ./source/coverage/
 
       - name: Download integration artifacts
         uses: actions/download-artifact@v3
         with:
-          name: ModuleIntegrationTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.template_engine }}
+          name: ModuleIntegrationTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
           path: ./source/coverage/
 
       - name: Start containers

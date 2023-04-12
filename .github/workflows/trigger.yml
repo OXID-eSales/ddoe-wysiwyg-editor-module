@@ -3,6 +3,9 @@ name: Trigger
 on:
   pull_request:
   push:
+    branches:
+      - 'b-7.0.x*'
+      - 'b-7.1.x*'
 
 jobs:
   p80m57both:
