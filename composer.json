@@ -24,6 +24,7 @@
     "require":     {
         "php": ">=8.0",
         "webmozart/glob": "^4.6.0",
+        "webmozart/path-util": "^2.3.0",
         "ext-gd": "*"
     },
     "require-dev": {
