@@ -1080,7 +1080,7 @@
         var start      = page * 18;
         var ui         = this;
 
-        $.get( actionLink + 'cl=ddoewysiwygmedia_view&fnc=moreFiles&start=' + start, function ( data )
+        $.get( actionLink + 'cl=ddoewysiwygmedia_view&fnc=moreFiles&start=' + start + '&folderid=' + $( '.dd-media-wrapper .dd-media' ).data( 'folderid' ), function ( data )
             {
                 if ( data.files && data.files.length )
                 {
