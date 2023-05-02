@@ -3,9 +3,12 @@ services:
   _defaults:
     public: false
     autowire: true
+    bind:
+      OxidEsales\Eshop\Core\UtilsObject: '@=service("OxidEsales\\WysiwygModule\\Core\\Registry").getUtilsObject()'
 
-  OxidEsales\Eshop\Core\UtilsObject:
-    factory: [ 'OxidEsales\Eshop\Core\Registry', 'getUtilsObject' ]
+  OxidEsales\WysiwygModule\Core\Registry:
+    class: 'OxidEsales\Eshop\Core\Registry'
+    public: true
 
   OxidEsales\WysiwygModule\Service\:
     resource: 'src/Service/*'
