@@ -109,18 +109,31 @@
                 }
             ).one( 'shown.bs.modal', function ()
                 {
-                    $( '.modal-footer .btn-primary', this ).focus();
+                    if ( $( '.modal-body input[type="text"]', this ).length )
+                    {
+                        $( '.modal-body input[type="text"]', this ).focus();
+                    }
+                    else
+                    {
+                        $( '.modal-footer .btn-primary', this ).focus();
+                    }
                 }
             );
 
             return $modal;
 
         },
-        confirm: function ( msg, callback, title )
+        confirm: function ( msg, callback, title, warn )
         {
-            if ( typeof title === 'undefined' )
+            if ( typeof title === 'undefined' || title === null )
             {
                 title = ddh.translate( 'DD_CONFIRM' );
+            }
+
+            var cssWarn = '';
+            if ( typeof warn !== 'undefined' && warn )
+            {
+                cssWarn = ' dd-warn';
             }
 
             var buttons = [
@@ -137,8 +150,44 @@
                 }
             ];
 
-            this._dialog( msg, title, buttons, 'sm', 'dd-modal-confirm' );
+            this._dialog( msg, title, buttons, 'sm', 'dd-modal-confirm' + cssWarn );
 
+        },
+        prompt: function ( msg, callback, title, value )
+        {
+            if ( typeof title === 'undefined' )
+            {
+                title = ddh.translate( 'DD_CONFIRM' );
+            }
+
+            value = value || '';
+
+            msg += '<div class="clearfix" style="margin-top: 10px;"><input type="text" name="prompt" class="form-control" value="' + value + '" /></div>';
+
+            var buttons = [
+                {
+                    html: '<button type="button" class="btn btn-default" data-dismiss="modal">' + ddh.translate( 'DD_CANCEL' ) + '</button>'
+                },
+                {
+                    html: '<button type="button" class="btn btn-primary" autofocus>' + ddh.translate( 'DD_OK' ) + '</button>',
+                    action: function ( $modal )
+                    {
+                        $modal.modal( 'hide' );
+                        callback.call( this, $( 'input[name=prompt]', $modal ).val() );
+                    }
+                }
+            ];
+
+            var $modal = this._dialog( msg, title, buttons, 'sm', 'dd-modal-confirm' );
+
+            $( 'input[name=prompt]', $modal ).on( 'keypress', function( e )
+                {
+                    if( e.keyCode === 13 )
+                    {
+                        $( '.btn-primary', $modal ).click();
+                    }
+                }
+            );
         },
         alert: function ( msg, title )
         {

@@ -15,11 +15,11 @@ module.exports = {
     wysiwyg: {
         files: {
             "assets/out/src/css/wysiwyg.min.css": [
-                "build/less/backend.less"
+                "build/less/backend_editor.less"
             ],
 
             "assets/out/src/css/medialibrary.min.css": [
-                "build/less/base/medialibrary.less"
+                "build/less/medialibrary.less"
             ],
 
             "assets/out/src/css/overlay.min.css": [
@@ -37,6 +37,12 @@ module.exports = {
     fontawesome: {
         files: {
             "assets/out/src/css/font-awesome.min.css": "build/vendor/font-awesome/less/font-awesome.less"
+        }
+    },
+
+    base: {
+        files: {
+            "assets/out/src/css/base.min.css": "build/less/base.less"
         }
     }
 

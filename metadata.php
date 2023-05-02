@@ -4,27 +4,29 @@
  * See LICENSE file for license details.
  */
 
+use OxidEsales\WysiwygModule\Service\ModuleSettings;
+
 /**
  * Metadata version
  */
-$sMetadataVersion = '2.0';
+$sMetadataVersion = '2.1';
 
 /**
  * Module information
  */
-$aModule = array(
+$aModule = [
     'id'          => 'ddoewysiwyg',
     'title'       => 'WYSIWYG Editor + Mediathek',
-    'description' => array(
+    'description' => [
         'de' => '',
         'en' => '',
-    ),
+    ],
     'thumbnail'   => 'logo.png',
     'version'     => '3.0.0',
     'author'      => 'OXID eSales AG & digidesk - media solutions',
     'url'         => 'http://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
-    'extend'      => array(
+    'extend'      => [
 
         // Admin Controller
         \OxidEsales\Eshop\Application\Controller\TextEditorHandler::class => \OxidEsales\WysiwygModule\Application\Controller\TextEditorHandler::class,
@@ -33,9 +35,8 @@ $aModule = array(
         \OxidEsales\Eshop\Core\ViewConfig::class  => \OxidEsales\WysiwygModule\Core\ViewConfig::class,
         \OxidEsales\Eshop\Core\Language::class    => \OxidEsales\WysiwygModule\Core\Language::class,
         \OxidEsales\Eshop\Core\Utils::class       => \OxidEsales\WysiwygModule\Core\Utils::class,
-
-    ),
-    'controllers'       => array(
+    ],
+    'controllers'       => [
 
         // Lang
         'ddoewysiwyglangjs' => \OxidEsales\WysiwygModule\Application\Controller\WysiwygLangJs::class,
@@ -44,16 +45,23 @@ $aModule = array(
         'ddoewysiwygmedia_view'    => \OxidEsales\WysiwygModule\Application\Controller\Admin\WysiwygMedia::class,
         'ddoewysiwygmedia_wrapper' => \OxidEsales\WysiwygModule\Application\Controller\Admin\WysiwygMediaWrapper::class,
 
-    ),
-    'templates'   => array(
+    ],
+    'templates'   => [
         '@ddoewysiwyg/ddoewysiwyg.tpl'                     => 'views/admin_smarty/tpl/ddoewysiwyg.tpl',
         '@ddoewysiwyg/dialog/ddoewysiwygmedia.tpl'         => 'views/admin_smarty/tpl/dialog/ddoewysiwygmedia.tpl',
         '@ddoewysiwyg/dialog/ddoewysiwygmedia_wrapper.tpl' => 'views/admin_smarty/tpl/dialog/ddoewysiwygmedia_wrapper.tpl',
-    ),
-    'events'      => array(
+    ],
+    'events'      => [
         'onActivate'   => '\OxidEsales\WysiwygModule\Core\Events::onActivate',
         'onDeactivate' => '\OxidEsales\WysiwygModule\Core\Events::onDeactivate'
-    ),
-    'blocks'      => array(),
-    'settings'    => array()
-);
+    ],
+    'blocks'      => [],
+    'settings'    => [
+        [
+            'group' => 'main',
+            'name' => ModuleSettings::WYSIWYG_ALTERNATIVE_IMAGE_DIRECTORY,
+            'type' => 'str',
+            'value' => ''
+        ],
+    ]
+];

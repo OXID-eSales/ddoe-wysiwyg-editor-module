@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Simple codeception test to check module is functioning
 - Code quality tools - phpcs
+- Folder functionality for media library
+- Possibility to rename of images
 
 ### Changed
 - Migrations are used during module activation to install and update module related database parts

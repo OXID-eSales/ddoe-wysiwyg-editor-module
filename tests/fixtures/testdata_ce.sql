@@ -1,0 +1,4 @@
+
+REPLACE INTO `ddmedia` (`OXID`, `OXSHOPID`, `DDFILENAME`, `DDFILESIZE`, `DDFILETYPE`, `DDTHUMB`, `DDIMAGESIZE`,
+    `DDFOLDERID`, `OXTIMESTAMP`) VALUES
+    ('f256df3c2343b7e24ef5273c15f11e1b',	1,	'Folder1',	0,	'directory',	'',	'',	'',	NOW());

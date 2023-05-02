@@ -7,14 +7,14 @@
 
 namespace OxidEsales\WysiwygModule\Application\Controller\Admin;
 
-use Exception;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
+use OxidEsales\Eshop\Application\Model\Content;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Module\Module;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\WysiwygModule\Application\Model\Media;
-use OxidEsales\VisualCmsModule\Service\Media as VCMSMedia;
 use OxidEsales\WysiwygModule\Traits\ServiceContainer;
+use Webmozart\PathUtil\Path;
+use OxidEsales\WysiwygModule\Service\Media;
 
 /**
  * Class WysiwygMedia
@@ -23,6 +23,8 @@ class WysiwygMedia extends AdminDetailsController
 {
     use ServiceContainer;
 
+    protected ?Media $mediaService = null;
+
     /**
      * Current class template name.
      *
@@ -30,14 +32,10 @@ class WysiwygMedia extends AdminDetailsController
      */
     protected $_sThisTemplate = '@ddoewysiwyg/dialog/ddoewysiwygmedia';
 
-    /**
-     * @var Media
-     */
-    protected $_oMedia = null;
-
     protected $_sUploadDir = '';
     protected $_sThumbDir = '';
     protected $_iDefaultThumbnailSize = 0;
+    protected $_sFolderId = '';
 
 
     /**
@@ -47,22 +45,17 @@ class WysiwygMedia extends AdminDetailsController
     {
         parent::init();
 
-        if ($this->_oMedia === null) {
-            $oModule = oxNew(Module::class);
-
-            if (
-                class_exists(VCMSMedia::class)
-                && $oModule->load('ddoevisualcms') && $oModule->isActive()
-            ) {
-                $this->_oMedia = $this->getServiceFromContainer('OxidEsales\VisualCmsModule\Service\Media');
-            } else {
-                $this->_oMedia = oxNew(Media::class);
-            }
+        if (Registry::getRequest()->getRequestEscapedParameter('folderid')) {
+            $this->_sFolderId = Registry::getRequest()->getRequestEscapedParameter('folderid');
         }
 
-        $this->_sUploadDir = $this->_oMedia->getMediaPath();
-        $this->_sThumbDir = $this->_oMedia->getMediaPath();
-        $this->_iDefaultThumbnailSize = $this->_oMedia->getDefaultThumbSize();
+        $this->mediaService = $this->getServiceFromContainer(Media::class);
+
+        $this->mediaService->setFolder($this->_sFolderId);
+
+        $this->_sUploadDir = $this->mediaService->getMediaPath();
+        $this->_sThumbDir = $this->mediaService->getThumbnailPath();
+        $this->_iDefaultThumbnailSize = $this->mediaService->getDefaultThumbnailSize();
     }
 
     /**
@@ -75,10 +68,13 @@ class WysiwygMedia extends AdminDetailsController
         $oConfig = Registry::getConfig();
         $iShopId = $oConfig->getActiveShop()->getShopId();
 
-        $this->_aViewData['aFiles'] = $this->getFiles(0, $iShopId);
-        $this->_aViewData['iFileCount'] = $this->getFileCount($iShopId);
-        $this->_aViewData['sResourceUrl'] = $this->_oMedia->getMediaUrl();
-        $this->_aViewData['sThumbsUrl'] = $this->_oMedia->getThumbnailUrl();
+        $this->_aViewData['aFiles'] = $this->mediaService->getFiles(0, $iShopId);
+        $this->_aViewData['iFileCount'] = $this->mediaService->getFileCount($iShopId);
+        $this->_aViewData['sResourceUrl'] = $this->mediaService->getMediaUrl();
+        $this->_aViewData['sThumbsUrl'] = $this->mediaService->getThumbnailUrl();
+        $this->_aViewData['sFoldername'] = $this->mediaService->getFolderName();
+        $this->_aViewData['sFolderId'] = $this->_sFolderId;
+        $this->_aViewData['sTab'] = Registry::getRequest()->getRequestEscapedParameter('tab');
 
         $request = Registry::getRequest();
         $this->_aViewData["request"]["overlay"] = $request->getRequestParameter('overlay') ?: 0;
@@ -87,121 +83,70 @@ class WysiwygMedia extends AdminDetailsController
     }
 
     /**
-     * @param int $iStart
-     * @param null $iShopId
-     *
-     * @return array
-     */
-    protected function getFiles($iStart = 0, $iShopId = null)
-    {
-        $sSelect = "SELECT * FROM `ddmedia` WHERE 1 "
-            . ($iShopId != null ? "AND `OXSHOPID` = '" . $iShopId . "' " : "")
-            . "ORDER BY `OXTIMESTAMP` DESC LIMIT " . $iStart . ", 18 ";
-
-        return DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC)->getAll($sSelect);
-    }
-
-    /**
-     * @param null $iShopId
-     *
-     * @return false|string
-     */
-    protected function getFileCount($iShopId = null)
-    {
-        $sSelect = "SELECT COUNT(*) AS 'count' FROM `ddmedia` WHERE 1 "
-            . ($iShopId != null ? "AND `OXSHOPID` = '" . $iShopId . "' " : "");
-
-        return DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC)->getOne($sSelect);
-    }
-
-    /**
      * Upload files
      */
     public function upload()
     {
-        $oConfig = Registry::getConfig();
         $request = Registry::getRequest();
 
         $sId = null;
-
-        $sFileName = null;
-        $sDestPath = null;
-        $sFileType = null;
-        $sFileSize = null;
-        $sImageSize = null;
+        $sFileName = '';
+        $sThumb = '';
 
         try {
             if ($_FILES) {
-                $this->_oMedia->createDirs();
+                $this->mediaService->createDirs();
 
                 $sFileSize = $_FILES['file']['size'];
                 $sFileType = $_FILES['file']['type'];
 
                 $sSourcePath = $_FILES['file']['tmp_name'];
-                $sDestPath = $this->_sUploadDir . $_FILES['file']['name'];
+                $sDestPath = Path::join($this->mediaService->getMediaPath(), $_FILES['file']['name']);
 
-                $aFile = $this->_oMedia->uploadeMedia($sSourcePath, $sDestPath, true);
-
-                $sId = md5($aFile['filename']);
-                $sThumbName = $aFile['thumbnail'];
-                $sFileName = $aFile['filename'];
-
-                $aImageSize = null;
-                $sImageSize = '';
-
-                if (is_readable($sDestPath) && preg_match("/image\//", $sFileType)) {
-                    $aImageSize = getimagesize($sDestPath);
-                    $sImageSize = ($aImageSize ? $aImageSize[0] . 'x' . $aImageSize[1] : '');
-                }
-
-                $iShopId = $oConfig->getActiveShop()->getShopId();
-
-                $sInsert = 'REPLACE INTO `ddmedia`
-                              (`OXID`, `OXSHOPID`, `DDFILENAME`, `DDFILESIZE`, `DDFILETYPE`, `DDTHUMB`, `DDIMAGESIZE`)
-                            VALUES
-                              (?, ?, ?, ?, ?, ?, ?);';
-
-                DatabaseProvider::getDb()->execute(
-                    $sInsert,
-                    [
-                        $sId,
-                        $iShopId,
-                        $sFileName,
-                        $sFileSize,
-                        $sFileType,
-                        $sThumbName,
-                        $sImageSize,
-                    ]
-                );
+                $aResult = $this->mediaService->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, true);
+                $sId = $aResult['id'];
+                $sFileName = $aResult['filename'];
+                $sImageSize = $aResult['imagesize'];
+                $sThumb = $aResult['thumb'];
             }
 
             if ($request->getRequestParameter('src') == 'fallback') {
                 $this->fallback(true);
             } else {
                 header('Content-Type: application/json');
-                die(json_encode([
-                    'success' => true,
-                    'id' => $sId,
-                    'file' => $sFileName,
-                    'filepath' => $sDestPath,
-                    'filetype' => $sFileType,
-                    'filesize' => $sFileSize,
-                    'imagesize' => $sImageSize,
-                ]));
+                $sReturn = json_encode(
+                    [
+                        'success'   => true,
+                        'id'        => $sId,
+                        'file'      => $sFileName ?? '',
+                        'filetype'  => $sFileType ?? '',
+                        'filesize'  => $sFileSize ?? '',
+                        'imagesize' => $sImageSize ?? '',
+                        'thumb'     => $sThumb ?? '',
+                    ]
+                );
+                die($sReturn);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if ($request->getRequestParameter('src') == 'fallback') {
                 $this->fallback(false, true);
             } else {
-                die(json_encode([
-                    'success' => false,
-                    'id' => $sId,
-                ]));
+                header('Content-Type: application/json');
+                $sReturn = json_encode(
+                    [
+                        'success'      => false,
+                        'id'           => $sId,
+                        'errorMessage' => $e->getMessage(),
+                    ]
+                );
+                die($sReturn);
             }
         }
     }
 
     /**
+     * todo: extract template
+     *
      * @param bool $blComplete
      * @param bool $blError
      */
@@ -211,7 +156,7 @@ class WysiwygMedia extends AdminDetailsController
 
         $sFormHTML = '<html><head></head><body style="text-align:center;">
           <form action="' . $oViewConf->getSelfLink()
-            . 'cl=ddoewysiwygmedia_view&fnc=upload&src=fallback" method="post" enctype="multipart/form-data">
+                     . 'cl=ddoewysiwygmedia_view&fnc=upload&src=fallback" method="post" enctype="multipart/form-data">
               <input type="file" name="file" onchange="this.form.submit();" />
           </form>';
 
@@ -226,40 +171,121 @@ class WysiwygMedia extends AdminDetailsController
     }
 
     /**
+     * @return void
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseErrorException
+     */
+    public function addFolder()
+    {
+        $oRequest = Registry::getRequest();
+
+        if (($sName = $oRequest->getRequestEscapedParameter('name'))) {
+            $aCustomDir = $this->mediaService->createCustomDir($sName);
+
+            // todo: catch exception and return appropriate result
+
+            header('Content-Type: application/json');
+            $sReturn = json_encode(
+                [
+                    'success'   => true,
+                    'id'        => $aCustomDir['id'],
+                    'file'      => $aCustomDir['dir'],
+                    'filetype'  => 'directory',
+                    'filesize'  => 0,
+                    'imagesize' => '',
+                ]
+            );
+            die($sReturn);
+        } else {
+            header('Content-Type: application/json');
+            die(json_encode(['success' => false]));
+        }
+    }
+
+    /**
+     * @return void
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseErrorException
+     */
+    public function rename()
+    {
+        $blReturn = false;
+        $sMsg = '';
+
+        $oRequest = Registry::getRequest();
+
+        $sNewId = $sId = $oRequest->getRequestEscapedParameter('id');
+        $sOldName = $oRequest->getRequestEscapedParameter('oldname');
+        $sNewName = $oRequest->getRequestEscapedParameter('newname');
+        $sFiletype = $oRequest->getRequestEscapedParameter('filetype');
+
+        if ($sId && $sOldName && $sNewName) {
+            $aResult = $this->mediaService->rename(
+                $sOldName,
+                $sNewName,
+                $sId,
+                $sFiletype
+            );
+            $blReturn = $aResult['success'];
+            $sNewName = $aResult['filename'];
+        }
+
+        header('Content-Type: application/json');
+        $sReturn = json_encode(
+            [
+                'success' => $blReturn,
+                'msg'     => $sMsg,
+                'name'    => $sNewName,
+                'id'      => $sNewId,
+                'thumb'   => $this->mediaService->getThumbnailUrl($sNewName),
+            ]
+        );
+        die($sReturn);
+    }
+
+    /**
      * Remove file
      */
     public function remove()
     {
+        $blReturn = false;
+        $sMsg = 'DD_MEDIA_REMOVE_ERR';
+
         $request = Registry::getRequest();
 
-        if ($aIDs = $request->getRequestParameter('id')) {
-            $oDb = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
+        $aIDs = $request->getRequestParameter('ids');
+        if ($aIDs && count($aIDs)) {
+            $this->mediaService->delete($aIDs);
+            $blReturn = true;
+            $sMsg = '';
+        }
 
-            $inIds = implode(',', $oDb->quoteArray($aIDs));
-            $sSelect = "SELECT `OXID`, `DDFILENAME`, `DDTHUMB` FROM `ddmedia` WHERE `OXID` IN($inIds);";
-            $aData = $oDb->getAll($sSelect);
+        header('Content-Type: application/json');
+        die(json_encode(['success' => $blReturn, 'msg' => $sMsg]));
+    }
 
-            foreach ($aData as $aRow) {
-                @unlink($this->_sUploadDir . $aRow['DDFILENAME']);
+    public function movefile()
+    {
+        $blReturn = false;
+        $sMsg = '';
 
-                if ($aRow['DDTHUMB']) {
-                    foreach (
-                        glob($this->_sThumbDir . str_replace(
-                            'thumb_' . $this->_iDefaultThumbnailSize . '.jpg',
-                            '*',
-                            $aRow['DDTHUMB']
-                        )) as $sThumb
-                    ) {
-                        @unlink($sThumb);
-                    }
-                }
+        $oRequest = Registry::getRequest();
 
-                $sDelete = "DELETE FROM `ddmedia` WHERE `OXID` = '" . $aRow['OXID'] . "'; ";
-                $oDb->execute($sDelete);
+        $sSourceFileID = $oRequest->getRequestEscapedParameter('sourceid');
+        $sFileName = $oRequest->getRequestEscapedParameter('file');
+        $sTargetFolderID = $oRequest->getRequestEscapedParameter('targetid');
+        $sTargetFolderName = $oRequest->getRequestEscapedParameter('folder');
+
+        if ($sSourceFileID && $sFileName && $sTargetFolderID && $sTargetFolderName) {
+            if ($this->mediaService->moveFileToFolder($sSourceFileID, $sTargetFolderID)) {
+                $blReturn = true;
+            } else {
+                $sMsg = 'DD_MEDIA_MOVE_FILE_ERR';
             }
         }
 
-        exit();
+        header('Content-Type: application/json');
+        die(json_encode(['success' => $blReturn, 'msg' => $sMsg]));
     }
 
     /**
@@ -273,10 +299,32 @@ class WysiwygMedia extends AdminDetailsController
         $iStart = $request->getRequestParameter('start') ? $request->getRequestParameter('start') : 0;
         $iShopId = $oConfig->getActiveShop()->getShopId();
 
-        $aFiles = $this->getFiles($iStart, $iShopId);
-        $blLoadMore = ($iStart + 18 < $this->getFileCount($iShopId));
+        $aFiles = $this->mediaService->getFiles($iStart, $iShopId);
+        $blLoadMore = ($iStart + 18 < $this->mediaService->getFileCount($iShopId));
 
         header('Content-Type: application/json');
         die(json_encode(['files' => $aFiles, 'more' => $blLoadMore]));
+    }
+
+    /**
+     * @return array
+     */
+    public function getBreadcrumb()
+    {
+        $aBreadcrumb = [];
+
+        $oPath = new \stdClass();
+        $oPath->active = ($this->mediaService->getFolderName() ? false : true);
+        $oPath->name = 'Root';
+        $aBreadcrumb[] = $oPath;
+
+        if ($this->mediaService->getFolderName()) {
+            $oPath = new \stdClass();
+            $oPath->active = true;
+            $oPath->name = $this->mediaService->getFolderName();
+            $aBreadcrumb[] = $oPath;
+        }
+
+        return $aBreadcrumb;
     }
 }
