@@ -110,7 +110,7 @@
                                     <div class="dd-media-col {% if not request.overlay %}col-md-2{% else %}col-md-3{% endif %} col-sm-3 col-xs-4">
                                         <a class="dd-media-item{% if not file.DDTHUMB %}{% endif %}"
                                            href="javascript:void(null);" data-id="{{ file.OXID }}"
-                                           data-file="{{ sFoldername ? sFoldername ~ '/' : '' }}{{ file.DDFILENAME }}" data-filetype="{{ file.DDFILETYPE }}"
+                                           data-file="{{ file.DDFILENAME }}" data-filetype="{{ file.DDFILETYPE }}"
                                            data-filesize="{{ file.DDFILESIZE }}"
                                                 {% if file.DDIMAGESIZE %}
                                                     data-imagesize="{{ file.DDIMAGESIZE }}"
