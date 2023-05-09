@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [3.0.0] - 2023-04-25
+## [3.0.0] - 2023-05-09
 
 ### Added
 - Simple codeception test to check module is functioning
@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Php code moved to 'src' folder
 - Template access keys changed in metadata.php; New keys used in controllers and template includes
 - TemplateRenderer used to load templates
+- License updated - OXID Module and Component License instead of GPL
 
 ### Fixed
 - Coding style issues
