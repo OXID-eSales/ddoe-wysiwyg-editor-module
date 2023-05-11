@@ -348,8 +348,6 @@ jobs:
       - name: Run tests
         run: |
           docker-compose exec -T \
-            -e SELENIUM_SERVER_HOST=selenium \
-            -e BROWSER_NAME=chrome \
             -e THEME_ID=twig \
             -e MODULE_IDS=${{ env.MODULE_IDS }} \
             php vendor/bin/codecept run acceptance \
@@ -416,8 +414,6 @@ jobs:
       - name: Run tests
         run: |
           docker-compose exec -T \
-            -e SELENIUM_SERVER_HOST=selenium \
-            -e BROWSER_NAME=chrome \
             -e THEME_ID=flow \
             -e MODULE_IDS=${{ env.MODULE_IDS }} \
             php vendor/bin/codecept run acceptance \

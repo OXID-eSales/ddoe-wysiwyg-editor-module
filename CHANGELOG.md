@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Use Symfony filesystem instead of deprecated Webmozart
 - Fix phpstan running composer alias
+- Respect 'THEME_ID' environment variable for codeception test run
 
 ## [3.0.0] - 2023-05-09
 
