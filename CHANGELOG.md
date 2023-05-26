@@ -6,22 +6,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [4.0.0] - Unreleased
 
+### Added
+- Folder functionality for media library
+- Possibility to rename of images
+
 ### Removed
 - Legacy Smarty engine variant is not supported anymore, and will not work with this release.
 
-## [3.0.0] - 2023-04-25
+## [3.0.1] - 2023-05-11
+
+### Fixed
+- Use Symfony filesystem instead of deprecated Webmozart
+- Fix phpstan running composer alias
+- Respect 'THEME_ID' environment variable for codeception test run
+- Coverage report preparation step in the workflow
+
+## [3.0.0] - 2023-05-09
 
 ### Added
 - Simple codeception test to check module is functioning
 - Code quality tools - phpcs
-- Folder functionality for media library
-- Possibility to rename of images
 
 ### Changed
 - Migrations are used during module activation to install and update module related database parts
 - Php code moved to 'src' folder
 - Template access keys changed in metadata.php; New keys used in controllers and template includes
 - TemplateRenderer used to load templates
+- License updated - OXID Module and Component License instead of GPL
 
 ### Fixed
 - Coding style issues
@@ -84,7 +95,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
-[4.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v3.0.0...b-7.1.x
+[4.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v3.0.1...b-7.1.x
+[3.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.4.2...v3.0.0
 [2.4.2]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.4.1...v2.4.2
 [2.4.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.4.0...v2.4.1

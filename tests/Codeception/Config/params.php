@@ -10,7 +10,7 @@ declare(strict_types=1);
 use OxidEsales\Facts\Config\ConfigFile;
 use OxidEsales\Facts\Facts;
 use OxidEsales\Codeception\Module\Database\DatabaseDefaultsFileGenerator;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 $facts                = new Facts();
 return [
@@ -31,6 +31,7 @@ return [
     'BROWSER_NAME'         => getenv('BROWSER_NAME') ?: 'chrome',
     'PHP_BIN'              => getenv('PHPBIN') ?: 'php',
     'SCREEN_SHOT_URL'      => getenv('CC_SCREEN_SHOTS_PATH') ?: '',
+    'THEME_ID'             => getenv('THEME_ID') ?: 'twig'
 ];
 
 function getTestDataDumpFilePath(): string

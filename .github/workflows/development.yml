@@ -339,8 +339,6 @@ jobs:
       - name: Run tests
         run: |
           docker-compose exec -T \
-            -e SELENIUM_SERVER_HOST=selenium \
-            -e BROWSER_NAME=chrome \
             -e THEME_ID=twig \
             -e MODULE_IDS=${{ env.MODULE_IDS }} \
             php vendor/bin/codecept run acceptance \
@@ -402,8 +400,8 @@ jobs:
         continue-on-error: true
         run: |
           ls -alh source/coverage
-          wget https://phar.phpunit.de/phpcov.phar
-          mv phpcov.phar source/phpcov.phar
+          wget https://phar.phpunit.de/phpcov-8.2.1.phar
+          mv phpcov-8.2.1.phar source/phpcov.phar
           docker-compose exec -T php php phpcov.phar merge --clover coverage.xml ./coverage
           sed -i 's+/var/www/test-module/+./+' source/coverage.xml
 
