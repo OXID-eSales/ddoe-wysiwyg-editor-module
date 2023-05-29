@@ -14,9 +14,8 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
-use Webmozart\Glob\Glob;
 use Symfony\Component\Filesystem\Path;
-use OxidEsales\WysiwygModule\Service\ModuleSettings;
+use Webmozart\Glob\Glob;
 
 class Media
 {

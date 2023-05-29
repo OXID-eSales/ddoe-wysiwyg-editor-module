@@ -8,13 +8,10 @@
 namespace OxidEsales\WysiwygModule\Application\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
-use OxidEsales\Eshop\Application\Model\Content;
-use OxidEsales\Eshop\Core\DatabaseProvider;
-use OxidEsales\Eshop\Core\Module\Module;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\WysiwygModule\Service\Media;
 use OxidEsales\WysiwygModule\Traits\ServiceContainer;
 use Symfony\Component\Filesystem\Path;
-use OxidEsales\WysiwygModule\Service\Media;
 
 /**
  * Class WysiwygMedia
@@ -104,7 +101,7 @@ class WysiwygMedia extends AdminDetailsController
                 if (!in_array($extension, $allowedExtensions)) {
                     header('HTTP/1.1 415 Invalid File Type Upload');
                     header('Content-Type: application/json; charset=UTF-8');
-                    die(json_encode(array('error' => "Invalid file type")));
+                    die(json_encode(['error' => "Invalid file type"]));
                 }
 
                 $this->mediaService->createDirs();
