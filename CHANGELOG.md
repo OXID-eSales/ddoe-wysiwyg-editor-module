@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Folder functionality for media library
 - Possibility to rename of images
+- Check for allowed file types during upload [PR-19](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/pull/19)
 
 ### Removed
 - Legacy Smarty engine variant is not supported anymore, and will not work with this release.
