@@ -95,6 +95,18 @@ class WysiwygMedia extends AdminDetailsController
 
         try {
             if ($_FILES) {
+                $aAllowedUploadTypes = (array) Registry::getConfig()->getConfigParam('aAllowedUploadTypes');
+                $allowedExtensions = array_map("strtolower", $aAllowedUploadTypes);
+
+                $sSourcePath = $_FILES['file']['name'];
+                $path_parts = pathinfo($sSourcePath);
+                $extension = strtolower($path_parts['extension']);
+                if (!in_array($extension, $allowedExtensions)) {
+                    header('HTTP/1.1 415 Invalid File Type Upload');
+                    header('Content-Type: application/json; charset=UTF-8');
+                    die(json_encode(array('error' => "Invalid file type")));
+                }
+
                 $this->mediaService->createDirs();
 
                 $sFileSize = $_FILES['file']['size'];
