@@ -13,7 +13,7 @@ use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Module\Module;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\WysiwygModule\Traits\ServiceContainer;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 use OxidEsales\WysiwygModule\Service\Media;
 
 /**
