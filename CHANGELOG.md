@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Possibility to rename of images
 - Check for allowed file types during upload [PR-19](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/pull/19)
 
+### Changed
+- Media library functionality is used from Wysiwyg module only, no switch to visualcms extension done anymore
+
 ### Removed
 - Legacy Smarty engine variant is not supported anymore, and will not work with this release.
 
