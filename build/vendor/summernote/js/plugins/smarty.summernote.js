@@ -81,15 +81,15 @@
                     markup = $.trim( markup );
                 }
 
-                // set media smarty tags
+                // set media twig tags
                 markup = markup.replace( /<img[^>]*src=\s*"([^"]+)"[^>]*data-filename=\s*"([^">]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi, function( tag, src, filename )
                     {
-                        return tag.replace( src, '[{$oViewConf->getMediaUrl()}]' + filename );
+                        return tag.replace( src, '{{ oViewConf.getMediaUrl() }}' + filename );
                     }
                 );
 
-                // replace html entities in smarty tags
-                markup = markup.replace( /\[\{(([^\}\]]|\}[^\]]|[^\}]\])*)\}\]/gi, function( tag, smarty, char )
+                // replace html entities in twig tags
+                markup = markup.replace( /\{\{(([^}])*)}}/gi, function( tag, twig, char )
                     {
                         return $( '<textarea />' ).html( tag ).text();
                     }

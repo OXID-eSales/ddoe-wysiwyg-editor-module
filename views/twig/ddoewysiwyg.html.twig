@@ -13,14 +13,15 @@
     </div>
 </div>
 
+{#todo: Overlay-Script should be loaded only if media library is active#}
 <script type="text/javascript">
     var _win = top.basefrm;
     var _doc = _win.document;
 
     if( !_win.isOverlayLoaded )
     {
-        _win.editorModuleUrl     = '{{ oViewConf.getModuleUrl('ddoewysiwyg') }}';
-        _win.editorControllerUrl = '{{ oViewConf.getSelfLink()|cat('cl=ddoewysiwygmedia_wrapper&overlay=1')|replace({'&amp;':'&'})|raw }}';
+        _win.MediaLibraryModuleUrl     = '{{ oViewConf.getModuleUrl('ddoemedialibrary') }}';
+        _win.editorControllerUrl = '{{ oViewConf.getSelfLink()|cat('cl=ddoemedia_wrapper&overlay=1')|replace({'&amp;':'&'})|raw }}';
         _win.isOverlayLoaded     = true;
 
         var loadScript = function( src, cb )
@@ -40,17 +41,18 @@
 
 
         loadScript( '{{ oViewConf.getSelfLink()|cat('cl=ddoewysiwyglangjs')|replace({'&amp;':'&'})|raw }}', function() {
-            loadScript( '{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/js/overlay.min.js') }}' );
+            loadScript( '{{ oViewConf.getModuleUrl('ddoemedialibrary','out/src/js/overlay.min.js') }}' );
         });
     }
 </script>
 
 {{ script({ include: oViewConf.getSelfLink()|cat('cl=ddoewysiwyglangjs'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 
-<script type="text/javascript" src="{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/js/jquery.min.js') }}"></script>
-<script type="text/javascript" src="{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/js/jquery-ui.min.js') }}"></script>
-<script type="text/javascript" src="{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/js/bootstrap.min.js') }}"></script>
-<script type="text/javascript" src="{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/js/backend.min.js') }}"></script>
+{{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
+{{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery-ui.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
+{{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/bootstrap.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
+{{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/backend.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
+{#{{ script({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/base.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}#}
 
 {% if langabbr == 'de' %}
     <script type="text/javascript" src="{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/js/lang/summernote-de.min.js') }}"></script>

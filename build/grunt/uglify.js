@@ -18,17 +18,6 @@ module.exports = {
                 "build/vendor/summernote/js/plugins/ddmedia.summernote.js",
                 "build/vendor/summernote/js/plugins/smarty.summernote.js",
                 "build/js/backend.js"
-            ],
-
-            "assets/out/src/js/base.min.js": [
-                "build/vendor/dropzone/js/dropzone.js",
-                "build/js/base/helper.js",
-                "build/js/base/medialibrary.js"
-            ],
-
-            "assets/out/src/js/overlay.min.js": [
-                "build/vendor/jquery/js/jquery-1.12.0.js",
-                "build/js/overlay.js"
             ]
 
         }
