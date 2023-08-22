@@ -1,6 +1,7 @@
 <style type="text/css">
     @import url('{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/css/font-awesome.min.css') }}');
     @import url('{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/css/backend.min.css') }}');
+    @import url('{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/css/summernote.min.css') }}');
 
     #ddoew {
         position: relative;
@@ -51,8 +52,8 @@
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery-ui.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/bootstrap.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
+{{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/ddoesummernote.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/backend.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
-{#{{ script({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/base.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}#}
 
 {% if langabbr == 'de' %}
     <script type="text/javascript" src="{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/js/lang/summernote-de.min.js') }}"></script>

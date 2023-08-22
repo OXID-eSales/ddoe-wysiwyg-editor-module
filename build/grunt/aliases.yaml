@@ -3,8 +3,10 @@ development:
   - "less:wysiwyg"
   - "cssmin:wysiwyg"
   - "uglify:wysiwyg"
+  - "copy:ddvisualeditor"
 
 production:
+#  - "exec:summernote_build"
   - "development"
   - "less:fontawesome"
   - "uglify:bootstrap"

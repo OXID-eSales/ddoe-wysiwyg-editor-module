@@ -37,36 +37,9 @@ $.noConflict();
 
                             var iHeight = $( this ).height();
 
-                            var $editor = $( this ).summernote(
-                                {
-                                    lang: 'de-DE',
-                                    minHeight: iHeight || 100,
-
-                                    toolbar: [
-
-                                        [ 'style', [ 'style' ] ],
-                                        [ 'formatting', [ 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'clear' ] ],
-                                        //[ 'fontname', [ 'fontname' ] ],
-                                        [ 'fontsize', [ 'fontsize' ] ],
-                                        [ 'color', [ 'color' ] ],
-                                        [ 'layout', [ 'ul', 'ol', 'paragraph' ] ],
-                                        [ 'height', [ 'height' ] ],
-                                        [ 'table', [ 'table' ] ],
-                                        [ 'insert', [ 'link', 'video', 'hr' ] ],
-                                        [ 'misc', [ 'codeview' ] ]
-
-                                    ],
-
-                                    dialogsInBody: false,
-
-                                    buttons: {
-                                        ddmedia: 'ddmedia'
-                                    },
-
-                                    disableDragAndDrop: true
-
-                                }
-                            );
+                            var $editor = $(this).ddoeInitSummernote({
+                                minHeight: iHeight
+                            });
 
                             if ('disabled' === $(this).attr('disabled')) {
                                 $(this).summernote('disable');
