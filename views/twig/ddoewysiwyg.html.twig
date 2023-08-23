@@ -41,8 +41,10 @@
         };
 
 
-        loadScript( '{{ oViewConf.getSelfLink()|cat('cl=ddoewysiwyglangjs')|replace({'&amp;':'&'})|raw }}', function() {
-            loadScript( '{{ oViewConf.getModuleUrl('ddoemedialibrary','out/src/js/overlay.min.js') }}' );
+        document.addEventListener('DOMContentLoaded', function () {
+            loadScript('{{ oViewConf.getSelfLink()|cat('cl=ddoewysiwyglangjs')|replace({'&amp;':'&'})|raw }}', function () {
+                loadScript('{{ oViewConf.getModuleUrl('ddoemedialibrary','out/src/js/overlay.min.js') }}');
+            });
         });
     }
 </script>
