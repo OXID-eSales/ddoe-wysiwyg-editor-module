@@ -20,7 +20,8 @@
     "grunt-exec": "^3.0.0",
     "less-plugin-autoprefix": "^1.5.1",
     "load-grunt-config": "^0.19.2",
-    "time-grunt": "^1.4.0"
+    "time-grunt": "^1.4.0",
+    "yarn": "^1.22.19"
   },
   "scripts": {
     "start": "grunt",
