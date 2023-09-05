@@ -24,7 +24,8 @@
     "require":     {
         "php": ">=8.0",
         "symfony/filesystem": "*",
-        "ext-gd": "*"
+        "ext-gd": "*",
+        "ddoe/media-library-module": "dev-b-7.1.x"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.8.11",
@@ -52,6 +53,12 @@
         "allow-plugins": {
             "oxid-esales/oxideshop-unified-namespace-generator": true,
             "oxid-esales/oxideshop-composer-plugin": true
+        }
+    },
+    "repositories": {
+        "ddoe/media-library-module": {
+            "type": "git",
+            "url": "https://github.com/OXID-eSales/media-library-module"
         }
     }
 }

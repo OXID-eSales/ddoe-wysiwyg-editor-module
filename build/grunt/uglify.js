@@ -13,22 +13,17 @@ module.exports = {
         },
 
         files: {
+            "assets/out/src/js/ddoesummernote.min.js": [
+                "build/vendor/summernote/dist/summernote.js",
+                "build/vendor/summernote/plugin/ddmedia.summernote.js",
+                "build/vendor/summernote/plugin/summernote.js",
+                "build/js/plugins/summernote-video-responsive/summernote-video-responsive.js",
+                "build/js/plugins/summernote-lang-extends/summernote-de-DE.js",
+                "build/js/plugins/summernote-lang-extends/summernote-en-US.js",
+                "build/js/summernote.js"
+            ],
             "assets/out/src/js/backend.min.js": [
-                "build/vendor/summernote/js/summernote.js",
-                "build/vendor/summernote/js/plugins/ddmedia.summernote.js",
-                "build/vendor/summernote/js/plugins/smarty.summernote.js",
                 "build/js/backend.js"
-            ],
-
-            "assets/out/src/js/base.min.js": [
-                "build/vendor/dropzone/js/dropzone.js",
-                "build/js/base/helper.js",
-                "build/js/base/medialibrary.js"
-            ],
-
-            "assets/out/src/js/overlay.min.js": [
-                "build/vendor/jquery/js/jquery-1.12.0.js",
-                "build/js/overlay.js"
             ]
 
         }
@@ -37,7 +32,7 @@ module.exports = {
     wysiwyglang: {
 
         files: {
-            "assets/out/src/js/lang/summernote-de.min.js": "build/vendor/summernote/js/lang/summernote-de-DE.js"
+            "assets/out/src/js/lang/summernote-de.min.js": "build/vendor/summernote/dist/lang/summernote-de-DE.js"
         }
 
     },

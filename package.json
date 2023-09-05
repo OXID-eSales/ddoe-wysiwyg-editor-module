@@ -16,12 +16,15 @@
     "grunt-contrib-less": "^1.0.0",
     "grunt-contrib-uglify": "^2.3.0",
     "grunt-contrib-watch": "^1.0.0",
+    "grunt-contrib-copy": "^1.0.0",
     "grunt-exec": "^3.0.0",
     "less-plugin-autoprefix": "^1.5.1",
     "load-grunt-config": "^0.19.2",
-    "time-grunt": "^1.4.0"
+    "time-grunt": "^1.4.0",
+    "yarn": "^1.22.19"
   },
   "scripts": {
-    "start": "grunt"
+    "start": "grunt",
+    "postinstall": "node_modules/yarn/bin/yarn --cwd build/vendor/summernote install"
   }
 }

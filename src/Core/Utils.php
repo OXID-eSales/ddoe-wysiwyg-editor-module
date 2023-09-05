@@ -14,13 +14,6 @@ namespace OxidEsales\WysiwygModule\Core;
  */
 class Utils extends Utils_parent
 {
-    public function showJsonAndExit($mMsg = null)
-    {
-        header('Content-Type: application/json');
-        $this->showMessageAndExit($this->encodeJson($mMsg));
-    }
-
-
     public function encodeJson($mMsg = null)
     {
         if (is_string($mMsg)) {
