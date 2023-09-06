@@ -12,10 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Check for allowed file types during upload [PR-19](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/pull/19)
 
 ### Changed
-- Media library functionality is used from Wysiwyg module only, no switch to visualcms extension done anymore
+- Media library extracted to [separate module](https://github.com/OXID-eSales/media-library-module) and can be used separatly
+- Media library module added as dependency
 
 ### Removed
 - Legacy Smarty engine variant is not supported anymore, and will not work with this release.
+- PHP 8.0 support
 
 ## [3.0.1] - 2023-05-11
 
