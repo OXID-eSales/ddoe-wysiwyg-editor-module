@@ -2,7 +2,7 @@
 
 # Compatibility
 
-* `b-7.1.x` - compatible with OXID eShop b-7.0.x branch currently, but works with **Twig engine** only
+* `b-7.1.x` - compatible with OXID eShop b-7.1.x branch, works with **Twig engine** only
 * `b-7.0.x` - compatible with OXID eShop b-7.0.x branch and supports **Legacy Smarty engine**
 * `b-2.x` branch is compatible with OXID eShop compilations: 6.2.x, 6.3.x, 6.4.x and 6.5.x
 * tag `2.0.0` - compatible with OXID eShop compilation 6.0
