@@ -56,11 +56,5 @@
             "oxid-esales/oxideshop-unified-namespace-generator": true,
             "oxid-esales/oxideshop-composer-plugin": true
         }
-    },
-    "repositories": {
-        "ddoe/media-library-module": {
-            "type": "git",
-            "url": "https://github.com/OXID-eSales/media-library-module"
-        }
     }
 }

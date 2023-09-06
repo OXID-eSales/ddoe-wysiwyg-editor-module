@@ -17,13 +17,13 @@ $sMetadataVersion = '2.1';
  */
 $aModule = [
     'id'          => 'ddoewysiwyg',
-    'title'       => 'WYSIWYG Editor + Mediathek',
+    'title'       => 'Summernote WYSIWYG Editor for OXID eShop',
     'description' => [
         'de' => '',
         'en' => '',
     ],
     'thumbnail'   => 'logo.png',
-    'version'     => '3.0.1',
+    'version'     => '4.0.0',
     'author'      => 'OXID eSales AG & digidesk - media solutions',
     'url'         => 'https://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',

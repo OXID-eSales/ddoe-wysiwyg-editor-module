@@ -13,12 +13,12 @@ In order to install the module via composer run one of the following commands in
 (where the shop's composer.json file resides).
 * `composer require ddoe/wysiwyg-editor-module:^3.0.0`
   to install the latest released version compatible with OXID eShop v6.0
-* `composer require ddoe/wysiwyg-editor-module:dev-b-7.0.x`  
+* `composer require ddoe/wysiwyg-editor-module:dev-b-7.1.x`  
   to install the specific unreleased branch
 
 ### Module activation in OXID eShop Admin 
 After installation, please, activate the module in OXID eShop Admin  
-`EXTENSIONS -> Modules -> "WYSIWYG Editor + Mediathek" -> Activate`
+`EXTENSIONS -> Modules -> "Summernote WYSIWYG Editor for OXID eShop" -> Activate`
 
 # Development installation
 
@@ -28,14 +28,15 @@ In case of different environment usage, please adjust by your own needs.
 ```shell
 # Clone the repository
 cd <shopRootPath>
-git clone https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module --branch=b-7.0.x source/source/modules/ddoe/wysiwyg
+git clone https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module.git --branch=b-7.1.x source/dev-packages/wysiwyg
 
-# Configure modules in composer
-composer config repositories.ddoe/wysiwyg-editor-module \
-  --json '{"type":"path", "url":"./source/modules/ddoe/wysiwyg", "options": {"symlink": true}}'
-composer require ddoe/wysiwyg-editor-module:*
+docker compose exec -T \
+  php composer config repositories.ddoe/wysiwyg-editor-module \
+  --json '{"type":"path", "url":"./dev-packages/wysiwyg", "options": {"symlink": true}}'
+docker compose exec -T php composer require ddoe/wysiwyg-editor-module:* --no-update
 
-# Activate module
+# Activate modules
+bin/oe-console oe:module:activate ddoemedialibrary
 bin/oe-console oe:module:activate ddoewysiwyg
 ```
 
