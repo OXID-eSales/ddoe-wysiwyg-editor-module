@@ -340,7 +340,7 @@ jobs:
         run: |
           docker-compose exec -T \
             --workdir=/var/www/test-module \
-            php composer tests-codeception
+            php composer tests-codeception -- -g ${{ inputs.module_codecept_test_group }}
 
       - name: Upload log artifact
         if: always()
