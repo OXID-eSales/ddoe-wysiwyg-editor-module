@@ -136,6 +136,12 @@ jobs:
             --db-host=mysql --db-port=3306 --db-name=example --db-user=root --db-password=root --force
           docker-compose exec -T php bin/oe-console oe:module:activate ${{ env.MODULE_IDS }}
 
+      - name: Install module dev dependencies
+        run: |
+          docker-compose exec -T \
+            --workdir=/var/www/test-module \
+            php composer install
+
       - name: Stop containers
         run: |
           docker-compose down
@@ -175,12 +181,6 @@ jobs:
         run: |
           make up
           sleep 2
-
-      - name: Install module dependencies
-        run: |
-          docker-compose exec -T \
-            --workdir=/var/www/test-module \
-            php composer install
 
       - name: Run phpcs
         if: always()
@@ -241,10 +241,9 @@ jobs:
         run: |
           docker-compose exec -T \
             -e XDEBUG_MODE=coverage \
-            php php vendor/bin/phpunit \
-              -c /var/www/vendor/${{ env.PACKAGE_NAME }}/tests/phpunit.xml \
+            --workdir=/var/www/test-module \
+            php composer phpunit -- \
               --testsuite=Integration \
-              --bootstrap=/var/www/source/bootstrap.php \
               --coverage-text \
               --coverage-php=/var/www/integration.cov
 
@@ -287,10 +286,9 @@ jobs:
         run: |
           docker-compose exec -T \
             -e XDEBUG_MODE=coverage \
-            php php vendor/bin/phpunit \
-              -c /var/www/vendor/${{ env.PACKAGE_NAME }}/tests/phpunit.xml \
+            --workdir=/var/www/test-module \
+            php composer phpunit -- \
               --testsuite=Unit \
-              --bootstrap=/var/www/source/bootstrap.php \
               --coverage-text \
               --coverage-php=/var/www/unit.cov
 
@@ -340,7 +338,7 @@ jobs:
         run: |
           docker-compose exec -T \
             --workdir=/var/www/test-module \
-            php composer tests-codeception -- -g ${{ inputs.module_codecept_test_group }}
+            php composer codeception -- -g ${{ inputs.module_codecept_test_group }}
 
       - name: Upload log artifact
         if: always()
