@@ -8,8 +8,8 @@
 namespace OxidEsales\WysiwygModule\Application\Controller;
 
 use OxidEsales\Eshop\Application\Controller\FrontendController;
-use OxidEsales\Eshop\Core\Language;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\MediaLibrary\Transition\Core\LanguageInterface;
 use OxidEsales\WysiwygModule\Core\Utils;
 
 /**
@@ -22,14 +22,13 @@ class WysiwygLangJs extends FrontendController
      */
     public function init()
     {
-        /** @var \OxidEsales\WysiwygModule\Core\Language $oLang */
-        $oLang = oxNew(Language::class);
+        $languages = $this->getService(LanguageInterface::class);
 
         header('Content-Type: application/javascript');
 
         /** @var Utils $oUtils */
         $oUtils = Registry::getUtils();
-        $sJson = $oUtils->encodeJson($oLang->getLanguageStrings());
+        $sJson = $oUtils->encodeJson($languages->getLanguageStringsArray());
         $oUtils->showMessageAndExit(";( function(g){ g.i18n = " . $sJson . "; })(window);");
     }
 }
