@@ -22,17 +22,8 @@
                 {
                     val = $node.val();
 
-                    var regex
-                    var regexMediaUrl;
-
-                    //todo: find better way to handle different template engine
-                    if (window.isSmarty) {
-                      regex = new RegExp(/(=\s*")([^">]*)(\[\{([^\}\]]|\}[^\]]|[^\}]\])*\}\])([^">]*)(")/gi);
-                      regexMediaUrl = new RegExp(/<img[^>]*src=\s*"(\[\{\$oViewConf\-\>getMediaUrl\(\)\}\][^">]+)"[^>]*data-filepath=\s*"([^">]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi);
-                    } else {
-                      regex = new RegExp(/(=\s*")([^">]*)(\{\{([^\}\}]|\}[^\}]|[^\}]\})*\}\})([^">]*)(")/gi);
-                      regexMediaUrl = new RegExp(/<img[^>]*src=\s*"(\{\{oViewConf.getMediaUrl\(\)\}\}[^">]+)"[^>]*data-filepath=\s*"([^">]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi);
-                    }
+                    var regex = new RegExp(/(=\s*")([^">]*)(\{\{([^\}\}]|\}[^\}]|[^\}]\})*\}\})([^">]*)(")/gi);
+                    var regexMediaUrl = new RegExp(/<img[^>]*src=\s*"(\{\{oViewConf.getMediaUrl\(\)\}\}[^">]+)"[^>]*data-filepath=\s*"([^">]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi);
 
                     // fix smarty or twig tags double quotes within attributes
                     val = val.replace(regex, function( text, start, attr_before, smarty, smarty_inner, attr_after, end )
@@ -67,14 +58,7 @@
             html: function ( $node, isNewlineOnBlock )
             {
                 var markup = this.value( $node );
-                var mediaTag;
-
-                //todo: find better way to handle different template engine
-                if (window.isSmarty) {
-                  mediaTag = '[{$oViewConf->getMediaUrl()}]';
-                } else {
-                  mediaTag = '{{oViewConf.getMediaUrl()}}';
-                }
+                var mediaTag = '{{oViewConf.getMediaUrl()}}';
 
                 if ( isNewlineOnBlock )
                 {
