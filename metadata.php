@@ -35,8 +35,6 @@ $aModule = [
         // Core
         // todo: is the same as in media library module. Should be optimized
         \OxidEsales\Eshop\Core\Language::class    => \OxidEsales\WysiwygModule\Core\Language::class,
-        // todo: is almost the same as in media library module. Should be optimized
-        \OxidEsales\Eshop\Core\Utils::class       => \OxidEsales\WysiwygModule\Core\Utils::class,
     ],
     'controllers'       => [
         // Lang
