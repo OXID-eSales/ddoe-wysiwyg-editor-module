@@ -42,14 +42,14 @@
 
 
         document.addEventListener('DOMContentLoaded', function () {
-            loadScript('{{ oViewConf.getSelfLink()|cat('cl=ddoewysiwyglangjs')|replace({'&amp;':'&'})|raw }}', function () {
+            loadScript('{{ oViewConf.getSelfLink()|cat('cl=ddoelangjs')|replace({'&amp;':'&'})|raw }}', function () {
                 loadScript('{{ oViewConf.getModuleUrl('ddoemedialibrary','out/src/js/overlay.min.js') }}');
             });
         });
     }
 </script>
 
-{{ script({ include: oViewConf.getSelfLink()|cat('cl=ddoewysiwyglangjs'), priority: 1, dynamic: __oxid_include_dynamic }) }}
+{{ script({ include: oViewConf.getSelfLink()|cat('cl=ddoelangjs'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery-ui.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}

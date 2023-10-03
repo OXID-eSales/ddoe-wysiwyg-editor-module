@@ -28,17 +28,8 @@ $aModule = [
     'url'         => 'https://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
     'extend'      => [
-
         // Admin Controller
         TextEditorHandler::class => \OxidEsales\WysiwygModule\Application\Controller\TextEditorHandler::class,
-
-        // Core
-        // todo: is the same as in media library module. Should be optimized
-        \OxidEsales\Eshop\Core\Language::class    => \OxidEsales\WysiwygModule\Core\Language::class,
-    ],
-    'controllers'       => [
-        // Lang
-        'ddoewysiwyglangjs' => \OxidEsales\WysiwygModule\Application\Controller\WysiwygLangJs::class,
     ],
     'events'      => [
         'onActivate'   => '\OxidEsales\WysiwygModule\Core\Events::onActivate',
