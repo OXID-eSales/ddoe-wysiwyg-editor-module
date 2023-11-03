@@ -19,7 +19,7 @@
   "scripts": {
     "dev": "eslint config && webpack-dev-server --config=./config/webpack.config.dev.js --open --progress",
     "prebuild": "node ./config/build-fonts.js",
-    "build": "webpack --mode=production --config=./config/webpack.config.production.js --progress",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --node-env production --mode=production --config=./config/webpack.config.production.js --progress",
     "lint": "eslint src/js plugin lang test config",
     "test": "karma start karma.conf.js --single-run",
     "test:grep": "karma run karma.conf.js -- --grep",

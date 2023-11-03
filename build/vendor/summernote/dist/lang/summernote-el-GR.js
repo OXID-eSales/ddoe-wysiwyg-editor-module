@@ -7,7 +7,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  * 
- * Date: 2023-02-24T17:57Z
+ * Date: 2023-11-03T15:17Z
  * 
  */
 (function webpackUniversalModuleDefinition(root, factory) {

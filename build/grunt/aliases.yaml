@@ -6,7 +6,6 @@ development:
   - "copy:ddvisualeditor"
 
 production:
-#  - "exec:summernote_build"
   - "development"
   - "less:fontawesome"
   - "uglify:bootstrap"

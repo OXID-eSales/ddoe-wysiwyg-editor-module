@@ -7,7 +7,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  * 
- * Date: 2023-02-24T17:57Z
+ * Date: 2023-11-03T15:17Z
  * 
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -5368,8 +5368,13 @@ var Editor_Editor = /*#__PURE__*/function () {
       if (_this.options.onCreateLink) {
         linkUrl = _this.options.onCreateLink(linkUrl);
       } else if (checkProtocol) {
-        // if url doesn't have any protocol and not even a relative or a label, use http:// as default
-        linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl) ? linkUrl : _this.options.defaultProtocol + linkUrl;
+        // OEVE-190 Start
+        // leave urls beginning with '{{' untouched
+        if (linkUrl.indexOf("{{") === -1) {
+          // if url doesn't have any protocol and not even a relative or a label, use http:// as default
+          linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl) ? linkUrl : _this.options.defaultProtocol + linkUrl;
+        } // OEVE-190 End
+
       }
 
       var anchors = [];
