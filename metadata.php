@@ -20,7 +20,7 @@ $aModule = array(
         'en' => '',
     ),
     'thumbnail'   => 'logo.png',
-    'version'     => '3.0.1',
+    'version'     => '3.0.2',
     'author'      => 'OXID eSales AG & digidesk - media solutions',
     'url'         => 'http://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
