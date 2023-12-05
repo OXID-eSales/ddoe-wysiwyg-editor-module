@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Legacy Smarty engine variant is not supported anymore, and will not work with this release.
 - PHP 8.0 support
 
+## [3.0.2] - 2023-11-22
+
+### Fixed
+- License title and paddings updated
+- Compatibility matrix information updated in readme 
+
 ## [3.0.1] - 2023-05-11
 
 ### Fixed
@@ -107,6 +113,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Correct protocol usage for image urls
 
 [4.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v3.0.1...b-7.1.x
+[3.0.2]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.4.2...v3.0.0
 [2.4.3]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v2.4.2...b-2.x
