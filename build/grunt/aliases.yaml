@@ -1,3 +1,6 @@
+summernote:
+  - "exec:summernote_build"
+
 development:
   - "jshint:development"
   - "less:wysiwyg"

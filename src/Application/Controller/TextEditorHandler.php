@@ -60,7 +60,8 @@ class TextEditorHandler extends TextEditorHandler_parent
             'iEditorHeight' => $height,
             'iEditorWidth' => $width,
             'blTextEditorDisabled' => $this->isTextEditorDisabled(),
-            'langabbr' => $sLangAbbr
+            'langabbr' => $sLangAbbr,
+            'isSSL' => ($oConfig->getConfigParam('sSSLShopURL') || $oConfig->getConfigParam('sMallSSLShopURL')) ? 1 : 0,
         ]);
     }
 

@@ -189,7 +189,7 @@ export default class LinkDialog {
 
     if( /^\{{ seo_url/.test( linkInfo.url ) )
     {
-      linkInfo.cms = /ident="([^"]*)"/g.exec( linkInfo.url )[1];
+      linkInfo.cms = /ident: '([^']*)'/g.exec( linkInfo.url )[1];
       linkInfo.url = '';
     }
 

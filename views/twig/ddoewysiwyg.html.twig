@@ -10,7 +10,17 @@
 
 <div class="ddoe-wysiwyg" id="ddoew">
     <div class="ddoe-wysiwyg-editor">
-        <textarea {% if blTextEditorDisabled  %}disabled {% endif %}id="editor_{{ sEditorField }}" name="{{ sEditorField }}" style="width: {% if iEditorWidth %}{{ iEditorWidth }}{% else %}100%{% endif %}; height: {% if iEditorHeight %}{{ iEditorHeight }}{% else %}300px{% endif %};">{{ sEditorValue|escape("html") }}</textarea>
+        {% set sEditorWidth = '100%' %}
+        {% if iEditorWidth %}{% set sEditorWidth = iEditorWidth %}{% endif %}
+
+        {% set sEditorHeight = '300px' %}
+        {% if iEditorHeight %}{% set sEditorHeight = iEditorHeight %}{% endif %}
+
+        <textarea {% if blTextEditorDisabled  %}disabled {% endif %}id="editor_{{ sEditorField }}"
+                  name="{{ sEditorField }}"
+                  style="width: {{ sEditorWidth }}; height: {{ sEditorHeight }};"
+                  data-lang="{{ langabbr }}"
+                  data-ssl="{{ isSSL }}">{{ sEditorValue|escape("html") }}</textarea>
     </div>
 </div>
 
