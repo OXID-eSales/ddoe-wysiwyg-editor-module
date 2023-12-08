@@ -38,7 +38,9 @@ $.noConflict();
                             var iHeight = $( this ).height();
 
                             var $editor = $(this).ddoeInitSummernote({
-                                minHeight: iHeight
+                                minHeight: iHeight,
+                                lang: $( this ).data('lang') == 'de' ? 'de-DE' : 'en-US',
+                                defaultProtocol: $( this ).data('ssl') == '1' ? 'https://' : 'http://'
                             });
 
                             if ('disabled' === $(this).attr('disabled')) {

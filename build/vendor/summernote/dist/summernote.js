@@ -7,7 +7,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  * 
- * Date: 2023-02-24T17:57Z
+ * Date: 2023-12-06T10:13Z
  * 
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -5365,11 +5365,21 @@ var Editor_Editor = /*#__PURE__*/function () {
         linkCms = linkCms.trim();
       }
 
+      if (linkCms) // if cms ident is given then ignore linkUrl and therefore empty it for safety
+        {
+          linkUrl = '';
+        }
+
       if (_this.options.onCreateLink) {
         linkUrl = _this.options.onCreateLink(linkUrl);
       } else if (checkProtocol) {
-        // if url doesn't have any protocol and not even a relative or a label, use http:// as default
-        linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl) ? linkUrl : _this.options.defaultProtocol + linkUrl;
+        // OEVE-190 Start
+        // leave urls beginning with '{{' untouched
+        if (linkUrl && linkUrl.indexOf("{{") === -1) {
+          // if url doesn't have any protocol and not even a relative or a label, use http:// as default
+          linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl) ? linkUrl : _this.options.defaultProtocol + linkUrl;
+        } // OEVE-190 End
+
       }
 
       var anchors = [];
@@ -5392,10 +5402,11 @@ var Editor_Editor = /*#__PURE__*/function () {
         if (linkUrl) {
           anchorLink = linkUrl;
         } else if (linkCms) {
+          //todo: find better way to handle different template engine
           if (window.isSmarty) {
             anchorLink = '[{oxgetseourl type="oxcontent" ident="' + linkCms + '"}]';
           } else {
-            anchorLink = '{{ seo_url({ type:\'oxcontent\', ident:\'' + linkCms + '\' }) }}';
+            anchorLink = '{{ seo_url({ ident: \'' + linkCms + '\' }) }}';
           }
         }
 
@@ -8548,8 +8559,8 @@ var LinkDialog_LinkDialog = /*#__PURE__*/function () {
         linkInfo.url = '';
       }
 
-      if (/^\{\{\s?seo_url/.test(linkInfo.url)) {
-        linkInfo.cms = /ident:\s?'([^']*)'/g.exec(linkInfo.url)[1];
+      if (/^\{{ seo_url/.test(linkInfo.url)) {
+        linkInfo.cms = /ident: '([^']*)'/g.exec(linkInfo.url)[1];
         linkInfo.url = '';
       }
 

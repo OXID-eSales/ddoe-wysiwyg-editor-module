@@ -25,6 +25,7 @@
   },
   "scripts": {
     "start": "grunt",
+    "summernote": "node_modules/yarn/bin/yarn --cwd build/vendor/summernote run build && grunt",
     "postinstall": "node_modules/yarn/bin/yarn --cwd build/vendor/summernote install"
   }
 }
