@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Legacy Smarty engine variant is not supported anymore, and will not work with this release.
 - PHP 8.0 support
 
+### Fixed
+- Handling of url and CMS-Ident improved in the Link add/edit plugin.
+
 ## [3.0.2] - 2023-11-22
 
 ### Fixed
