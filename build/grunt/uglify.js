@@ -18,23 +18,18 @@ module.exports = {
                 "build/vendor/summernote/plugin/ddmedia.summernote.js",
                 "build/vendor/summernote/plugin/summernote.js",
                 "build/js/plugins/summernote-video-responsive/summernote-video-responsive.js",
-                "build/js/plugins/summernote-lang-extends/summernote-de-DE.js",
                 "build/js/plugins/summernote-lang-extends/summernote-en-US.js",
                 "build/js/summernote.js"
+            ],
+            "assets/out/src/js/lang/summernote-de.min.js": [
+                "build/vendor/summernote/dist/lang/summernote-de-DE.js",
+                "build/js/plugins/summernote-lang-extends/summernote-de-DE.js"
             ],
             "assets/out/src/js/backend.min.js": [
                 "build/js/backend.js"
             ]
 
         }
-    },
-
-    wysiwyglang: {
-
-        files: {
-            "assets/out/src/js/lang/summernote-de.min.js": "build/vendor/summernote/dist/lang/summernote-de-DE.js"
-        }
-
     },
 
     bootstrap: {

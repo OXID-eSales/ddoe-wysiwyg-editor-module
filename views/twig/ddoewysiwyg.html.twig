@@ -68,5 +68,5 @@
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/backend.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 
 {% if langabbr == 'de' %}
-    <script type="text/javascript" src="{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/js/lang/summernote-de.min.js') }}"></script>
+    {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/lang/summernote-de.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {% endif %}
