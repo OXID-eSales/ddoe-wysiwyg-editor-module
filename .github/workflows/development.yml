@@ -154,7 +154,7 @@ jobs:
 
       - name: Upload configuration artifacts
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Configs-${{ inputs.php }}-${{ inputs.mysql }}
           path: |
@@ -212,7 +212,7 @@ jobs:
 
       - name: Upload log artifact
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: StylesLog-${{ inputs.php }}
           path: |
@@ -249,7 +249,7 @@ jobs:
 
       - name: Upload log artifact
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ModuleIntegrationTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
           path: |
@@ -294,7 +294,7 @@ jobs:
 
       - name: Upload log artifact
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ModuleUnitTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
           path: |
@@ -342,7 +342,7 @@ jobs:
 
       - name: Upload log artifact
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ModuleCodeceptionTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
           path: |
@@ -402,7 +402,7 @@ jobs:
           sed -i 's+/var/www/test-module/+./+' source/coverage.xml
 
       - name: Upload log artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: TestsLog-${{ inputs.php }}-${{ inputs.mysql }}
           path: source/coverage.xml
