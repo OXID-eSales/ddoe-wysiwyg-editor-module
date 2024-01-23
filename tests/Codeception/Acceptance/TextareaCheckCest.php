@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Tests\Codeception\Acceptance;
 
-use OxidEsales\WysiwygModule\Tests\Codeception\AcceptanceTester;
+use OxidEsales\WysiwygModule\Tests\Codeception\Support\AcceptanceTester;
 
 /**
  * @group ddoe_wysiwyg

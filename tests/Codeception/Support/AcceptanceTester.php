@@ -7,17 +7,16 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\WysiwygModule\Tests\Codeception;
+namespace OxidEsales\WysiwygModule\Tests\Codeception\Support;
 
 use Codeception\Util\Fixtures;
 use OxidEsales\Codeception\Admin\AdminLoginPage;
 use OxidEsales\Codeception\Admin\AdminPanel;
 use OxidEsales\Codeception\Page\Home;
-use OxidEsales\WysiwygModule\Tests\Codeception\_generated\AcceptanceTesterActions;
 
 final class AcceptanceTester extends \Codeception\Actor
 {
-    use AcceptanceTesterActions;
+	use _generated\AcceptanceTesterActions;
 
     /**
      * Open shop first page.

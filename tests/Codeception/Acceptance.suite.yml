@@ -6,7 +6,7 @@ bootstrap: _bootstrap.php
 modules:
   enabled:
     - Asserts
-    - OxidEsales\WysiwygModule\Tests\Codeception\Helper\Acceptance
+    - OxidEsales\WysiwygModule\Tests\Codeception\Support\Helper\Acceptance
     - \OxidEsales\Codeception\Module\ShopSetup:
         dump: '%DUMP_PATH%'
         fixtures: '%FIXTURES_PATH%'
