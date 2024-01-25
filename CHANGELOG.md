@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Media library extracted to [separate module](https://github.com/OXID-eSales/media-library-module) and can be used separatly
 - Media library module added as dependency
+- New module logo
+- Updated the structure to Codeception 5
 
 ### Removed
 - Legacy Smarty engine variant is not supported anymore, and will not work with this release.
