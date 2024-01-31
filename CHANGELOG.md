@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Media library module added as dependency
 - New module logo
 - Updated the structure to Codeception 5
+- Modify github workflows to use new universal workflow
 
 ### Removed
 - Legacy Smarty engine variant is not supported anymore, and will not work with this release.
