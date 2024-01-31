@@ -25,8 +25,11 @@ phpunit:
   load_shop: *install_module_prefix
 
 phpcs_tests:
+  skip: true
+
+styles:
   matrix:
-    testplan: *test_plan
+    testplan: '["tests/github_actions/ddoe-wysiwyg-editor-module.yml"]'
   load_shop: *install_module_prefix
 
 runtest:
