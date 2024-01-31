@@ -22,7 +22,7 @@
     "prefer-stable": true,
     "prefer-dist": true,
     "require":     {
-        "php": ">=8.0",
+        "php": "^8.1",
         "symfony/filesystem": "*",
         "ext-gd": "*",
         "oxid-esales/media-library-module": "dev-b-7.1.x"
