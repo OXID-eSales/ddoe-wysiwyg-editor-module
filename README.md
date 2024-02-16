@@ -1,5 +1,13 @@
 # Summernote WYSIWYG Editor for OXID eShop
 
+[![Development](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/push_module_71x.yml/badge.svg?branch=b-7.1.x)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/push_module_71x.yml)
+[![Latest Version](https://img.shields.io/packagist/v/ddoe/wysiwyg-editor-module?logo=composer&label=latest&include_prereleases&color=orange)](https://packagist.org/packages/ddoe/wysiwyg-editor-module)
+[![PHP Version](https://img.shields.io/packagist/php-v/ddoe/wysiwyg-editor-module)](https://github.com/ddoe/wysiwyg-editor-module)
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=OXID-eSales_ddoe-wysiwyg-editor-module&metric=alert_status)](https://sonarcloud.io/dashboard?id=OXID-eSales_ddoe-wysiwyg-editor-module)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=OXID-eSales_ddoe-wysiwyg-editor-module&metric=coverage)](https://sonarcloud.io/dashboard?id=OXID-eSales_ddoe-wysiwyg-editor-module)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=OXID-eSales_ddoe-wysiwyg-editor-module&metric=sqale_index)](https://sonarcloud.io/dashboard?id=OXID-eSales_ddoe-wysiwyg-editor-module)
+
 # Compatibility
 
 * `b-7.1.x` - compatible with OXID eShop b-7.1.x branch, works with **Twig engine** only
