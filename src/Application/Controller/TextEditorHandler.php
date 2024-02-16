@@ -7,9 +7,8 @@
 
 namespace OxidEsales\WysiwygModule\Application\Controller;
 
-use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
 
 /**
@@ -39,7 +38,7 @@ class TextEditorHandler extends TextEditorHandler_parent
             $height .= 'px';
         }
 
-        $oConfig = $this->getConfig();
+        $oConfig = Registry::getConfig();
         $oLang = Registry::getLang();
 
         $iDynInterfaceLanguage = $oConfig->getConfigParam('iDynInterfaceLanguage');
@@ -47,14 +46,9 @@ class TextEditorHandler extends TextEditorHandler_parent
             (isset($iDynInterfaceLanguage) ? $iDynInterfaceLanguage : $oLang->getTplLanguage())
         );
 
-        /** @var TemplateRendererInterface $templateRenderer */
-        $templateRenderer = ContainerFactory::getInstance()
-            ->getContainer()
-            ->get(TemplateRendererInterface::class);
-
+        $templateRenderer = ContainerFacade::get(TemplateRendererInterface::class);
         return $templateRenderer->renderTemplate('@ddoewysiwyg/ddoewysiwyg', [
-            'oView' => $this->getView(),
-            'oViewConf' => $this->getViewConfig(),
+            'oViewConf' => $oConfig->getTopActiveView()->getViewConfig(),
             'sEditorField' => $fieldName,
             'sEditorValue' => $objectValue,
             'iEditorHeight' => $height,
@@ -63,35 +57,5 @@ class TextEditorHandler extends TextEditorHandler_parent
             'langabbr' => $sLangAbbr,
             'isSSL' => ($oConfig->getConfigParam('sSSLShopURL') || $oConfig->getConfigParam('sMallSSLShopURL')) ? 1 : 0,
         ]);
-    }
-
-    /**
-     * Config instance getter
-     *
-     * @return Config
-     */
-    public function getConfig()
-    {
-        return Registry::getConfig();
-    }
-
-    /**
-     * Get active view
-     *
-     * @return object
-     */
-    public function getView()
-    {
-        return $this->getConfig()->getTopActiveView();
-    }
-
-    /**
-     * Gets viewConfig object
-     *
-     * @return object
-     */
-    public function getViewConfig()
-    {
-        return $this->getView()->getViewConfig();
     }
 }
