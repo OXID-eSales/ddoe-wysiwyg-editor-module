@@ -1,0 +1,11 @@
+imports:
+  - { resource: src/Service/services.yaml }
+
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\WysiwygModule\Core\Registry:
+    class: OxidEsales\Eshop\Core\Registry
+    public: true

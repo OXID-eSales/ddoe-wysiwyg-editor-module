@@ -1,0 +1,14 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+    bind:
+      OxidEsales\Eshop\Core\Language: '@=service("OxidEsales\\WysiwygModule\\Core\\Registry").getLang()'
+      OxidEsales\Eshop\Core\Config: '@=service("OxidEsales\\WysiwygModule\\Core\\Registry").getConfig()'
+
+  OxidEsales\WysiwygModule\Service\SettingsInterface:
+    class: OxidEsales\WysiwygModule\Service\Settings
+
+  OxidEsales\WysiwygModule\Service\EditorRendererInterface:
+    class: OxidEsales\WysiwygModule\Service\EditorRenderer
+    public: true

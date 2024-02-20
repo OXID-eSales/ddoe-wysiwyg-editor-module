@@ -7,9 +7,8 @@
 
 namespace OxidEsales\WysiwygModule\Application\Controller;
 
-use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
-use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
+use OxidEsales\WysiwygModule\Service\EditorRendererInterface;
 
 /**
  * Class TextEditorHandler
@@ -30,32 +29,19 @@ class TextEditorHandler extends TextEditorHandler_parent
      */
     public function renderRichTextEditor($width, $height, $objectValue, $fieldName)
     {
-        if (strpos($width, '%') === false) {
-            $width .= 'px';
-        }
+        $editorRenderer = $this->getWysiwywEditorRenderer();
 
-        if (strpos($height, '%') === false) {
-            $height .= 'px';
-        }
-
-        $oConfig = Registry::getConfig();
-        $oLang = Registry::getLang();
-
-        $iDynInterfaceLanguage = $oConfig->getConfigParam('iDynInterfaceLanguage');
-        $sLangAbbr = $oLang->getLanguageAbbr(
-            (isset($iDynInterfaceLanguage) ? $iDynInterfaceLanguage : $oLang->getTplLanguage())
+        return $editorRenderer->render(
+            width: $width,
+            height: $height,
+            objectValue: (string)$objectValue,
+            fieldName: $fieldName,
+            isEditorDisabled: $this->isTextEditorDisabled()
         );
+    }
 
-        $templateRenderer = ContainerFacade::get(TemplateRendererInterface::class);
-        return $templateRenderer->renderTemplate('@ddoewysiwyg/ddoewysiwyg', [
-            'oViewConf' => $oConfig->getTopActiveView()->getViewConfig(),
-            'sEditorField' => $fieldName,
-            'sEditorValue' => $objectValue,
-            'iEditorHeight' => $height,
-            'iEditorWidth' => $width,
-            'blTextEditorDisabled' => $this->isTextEditorDisabled(),
-            'langabbr' => $sLangAbbr,
-            'isSSL' => ($oConfig->getConfigParam('sSSLShopURL') || $oConfig->getConfigParam('sMallSSLShopURL')) ? 1 : 0,
-        ]);
+    public function getWysiwywEditorRenderer(): EditorRendererInterface
+    {
+        return ContainerFacade::get(EditorRendererInterface::class);
     }
 }
