@@ -50,10 +50,11 @@
         "phpmd": "echo 'phpmd check disabled' >phpmd.report.txt",
         "phpmd-report": "echo '{}' >phpmd.report.json",
 
-        "phpunit": "vendor/bin/phpunit --bootstrap=/var/www/source/bootstrap.php --config=tests/",
-        "phpunit-coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --bootstrap=/var/www/source/bootstrap.php --config=tests/ --coverage-html=tests/result/coverage",
+        "tests-unit": "XDEBUG_MODE=coverage vendor/bin/phpunit --config=tests/ --testsuite=Unit",
+        "tests-integration": "XDEBUG_MODE=coverage vendor/bin/phpunit --bootstrap=/var/www/source/bootstrap.php --config=tests/ --testsuite=Integration",
+        "tests-coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --bootstrap=/var/www/source/bootstrap.php --config=tests/ --coverage-html=tests/result/coverage",
 
-        "codeception": "THEME_ID=apex MODULE_IDS=ddoewysiwyg /var/www/vendor/bin/codecept run Acceptance -c /var/www/vendor/ddoe/wysiwyg-editor-module/tests/codeception.yml"
+        "tests-codeception": "THEME_ID=apex MODULE_IDS=ddoewysiwyg /var/www/vendor/bin/codecept run Acceptance -c /var/www/vendor/ddoe/wysiwyg-editor-module/tests/codeception.yml"
     },
     "config": {
         "allow-plugins": {
