@@ -10,7 +10,12 @@
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
          cacheDirectory=".phpunit.cache"
          backupStaticProperties="false"
-         requireCoverageMetadata="false">
+         requireCoverageMetadata="false"
+         displayDetailsOnTestsThatTriggerWarnings="true"
+         displayDetailsOnTestsThatTriggerNotices="true"
+         displayDetailsOnTestsThatTriggerErrors="true"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+         colors="true">
     <testsuites>
         <testsuite name="Unit">
             <directory>Unit/</directory>
