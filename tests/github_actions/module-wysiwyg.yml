@@ -27,7 +27,8 @@ phpunit:
   load_shop: *install_module_prefix
 
 codeception:
-  matrix_testplan: '["-"]'
+  matrix:
+    testplan: '["-"]'
   load_shop: *install_module_prefix
   title: codeception
   container:
