@@ -9,11 +9,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Tests\Codeception\Acceptance;
 
+use Codeception\Attribute\Group;
 use OxidEsales\WysiwygModule\Tests\Codeception\Support\AcceptanceTester;
 
-/**
- * @group ddoe_wysiwyg
- */
+#[Group('ddoewysiwyg')]
 final class TextareaCheckCest
 {
     public function testCmsTextAreaModified(AcceptanceTester $I): void
