@@ -92,7 +92,8 @@ class EditorRendererTest extends TestCase
         $sut->render($width, $height, 'anything', 'anything');
     }
 
-    public function testRenderCalledWithCorrectInputValues(): void {
+    public function testRenderCalledWithCorrectInputValues(): void
+    {
         $sut = $this->getSut(
             templateRenderer: $templateRendererSpy = $this->createMock(TemplateRendererInterface::class)
         );
@@ -116,7 +117,8 @@ class EditorRendererTest extends TestCase
         $sut->render('any', 'any', $fieldValue, $fieldName);
     }
 
-    public function testRenderCalledWithCorrectLanguage(): void {
+    public function testRenderCalledWithCorrectLanguage(): void
+    {
         $sut = $this->getSut(
             templateRenderer: $templateRendererSpy = $this->createMock(TemplateRendererInterface::class),
             settingsService: $settingsServiceStub = $this->createStub(SettingsInterface::class),
