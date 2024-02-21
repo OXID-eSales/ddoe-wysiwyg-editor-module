@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace Application\Controller;
 
-use _PHPStan_156ee64ba\Symfony\Component\String\UnicodeString;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\WysiwygModule\Application\Controller\TextEditorHandler;
 use OxidEsales\WysiwygModule\Service\EditorRendererInterface;
+use Symfony\Component\String\UnicodeString;
 
 class TextEditorHandlerTest extends IntegrationTestCase
 {
