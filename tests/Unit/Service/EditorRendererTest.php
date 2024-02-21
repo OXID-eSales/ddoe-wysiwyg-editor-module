@@ -82,8 +82,8 @@ class EditorRendererTest extends TestCase
             ->with(
                 '@ddoewysiwyg/ddoewysiwyg',
                 $this->callback(function ($input) use ($expectedHeight, $expectedWidth) {
-                    $this->assertSame($input['iEditorWidth'], $expectedWidth);
-                    $this->assertSame($input['iEditorHeight'], $expectedHeight);
+                    $this->assertSame($expectedWidth, $input['iEditorWidth']);
+                    $this->assertSame($expectedHeight, $input['iEditorHeight']);
 
                     return true;
                 })
@@ -107,8 +107,8 @@ class EditorRendererTest extends TestCase
             ->with(
                 '@ddoewysiwyg/ddoewysiwyg',
                 $this->callback(function ($input) use ($fieldName, $fieldValue) {
-                    $this->assertSame($input['sEditorField'], $fieldName);
-                    $this->assertSame($input['sEditorValue'], $fieldValue);
+                    $this->assertSame($fieldName, $input['sEditorField']);
+                    $this->assertSame($fieldValue, $input['sEditorValue']);
 
                     return true;
                 })
@@ -132,7 +132,7 @@ class EditorRendererTest extends TestCase
             ->with(
                 '@ddoewysiwyg/ddoewysiwyg',
                 $this->callback(function ($input) use ($language) {
-                    $this->assertSame($input['langabbr'], $language);
+                    $this->assertSame($language, $input['langabbr']);
 
                     return true;
                 })
@@ -165,7 +165,7 @@ class EditorRendererTest extends TestCase
             ->with(
                 '@ddoewysiwyg/ddoewysiwyg',
                 $this->callback(function ($input) use ($flagValue) {
-                    $this->assertSame($input['blTextEditorDisabled'], $flagValue);
+                    $this->assertSame($flagValue, $input['blTextEditorDisabled']);
                     return true;
                 })
             );
@@ -189,7 +189,7 @@ class EditorRendererTest extends TestCase
             ->with(
                 '@ddoewysiwyg/ddoewysiwyg',
                 $this->callback(function ($input) use ($viewConfigStub) {
-                    $this->assertSame($input['oViewConf'], $viewConfigStub);
+                    $this->assertSame($viewConfigStub, $input['oViewConf']);
                     return true;
                 })
             );
