@@ -6,11 +6,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [4.0.0] - Unreleased
 
-### Added
-- Folder functionality for media library
-- Possibility to rename of images
-- Check for allowed file types during upload [PR-19](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/pull/19)
-
 ### Changed
 - Media library extracted to [separate module](https://github.com/OXID-eSales/media-library-module) and can be used separatly
 - Media library module added as dependency
