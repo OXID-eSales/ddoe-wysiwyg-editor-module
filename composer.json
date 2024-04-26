@@ -31,7 +31,14 @@
         "phpstan/phpstan": "^1.8.11",
         "squizlabs/php_codesniffer": "3.*",
         "oxid-esales/oxideshop-ce": "dev-b-7.1.x",
-        "phpunit/phpunit": "^10.4"
+        "phpunit/phpunit": "^10.4",
+        "codeception/codeception": "^5.0",
+        "codeception/module-asserts": "^3.0",
+        "codeception/module-db": "^3.0",
+        "codeception/module-filesystem": "^3.0",
+        "codeception/module-webdriver": "^4.0",
+        "oxid-esales/codeception-modules": "dev-b-7.1.x",
+        "oxid-esales/codeception-page-objects": "dev-b-7.1.x"
     },
     "autoload":    {
         "psr-4": {
@@ -50,16 +57,19 @@
         "phpmd": "echo 'phpmd check disabled' >phpmd.report.txt",
         "phpmd-report": "echo '{}' >phpmd.report.json",
 
-        "tests-unit": "XDEBUG_MODE=coverage vendor/bin/phpunit --config=tests/ --testsuite=Unit",
-        "tests-integration": "XDEBUG_MODE=coverage vendor/bin/phpunit --bootstrap=/var/www/source/bootstrap.php --config=tests/ --testsuite=Integration",
+        "tests-unit": "XDEBUG_MODE=coverage vendor/bin/phpunit --config=tests/ --testsuite=Unit --coverage-clover=tests/Reports/coverage_unit_module-wysiwyg.xml",
+        "tests-integration": "XDEBUG_MODE=coverage vendor/bin/phpunit --bootstrap=/var/www/source/bootstrap.php --config=tests/ --testsuite=Integration --coverage-clover=tests/Reports/coverage_integration_module-wysiwyg.xml",
         "tests-coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --bootstrap=/var/www/source/bootstrap.php --config=tests/ --coverage-html=tests/result/coverage",
 
-        "tests-codeception": "THEME_ID=apex MODULE_IDS=ddoewysiwyg /var/www/vendor/bin/codecept run Acceptance -c /var/www/vendor/ddoe/wysiwyg-editor-module/tests/codeception.yml"
+        "tests-codeception": [
+            "Composer\\Config::disableProcessTimeout",
+            "THEME_ID=apex MODULE_IDS=ddoemedialibrary,ddoewysiwyg SHOP_ROOT_PATH=/var/www vendor/bin/codecept run Acceptance -c tests/codeception.yml"
+        ]
     },
     "config": {
         "allow-plugins": {
             "oxid-esales/oxideshop-unified-namespace-generator": true,
-            "oxid-esales/oxideshop-composer-plugin": true
+            "oxid-esales/oxideshop-composer-plugin": false
         }
     }
 }

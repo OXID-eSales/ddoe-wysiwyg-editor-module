@@ -1,0 +1,63 @@
+install_shop_with_modules:
+  cache:
+    prepared_shop: false
+  composer:
+    transform: |
+      {
+          "require": {
+              "oxid-esales/oxideshop-ce": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/twig-component": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/twig-admin-theme": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/apex-theme": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/developer-tools": "{{ .Data.global.composer.dev_ref }}",
+              "ddoe/wysiwyg-editor-module": "dev-{{ .Github.RefName }}"
+          },
+          "repositories": {
+            "ddoe/wysiwyg-editor-module": {
+              "type": "git",
+              "url": "https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module.git"
+            }
+          }
+      }
+  custom_script_container: |
+    vendor/bin/oe-console oe:database:reset --db-host=mysql --db-port=3306 --db-name=example --db-user=root --db-password=root --force
+    vendor/bin/oe-console oe:module:activate ddoemedialibrary
+    vendor/bin/oe-console oe:module:activate ddoewysiwyg
+    vendor/bin/oe-console oe:theme:activate apex
+
+runscript: &runscript
+  matrix:
+    script: |
+      [
+        "wysiwyg:tests-unit",
+        "wysiwyg:tests-integration",
+        "wysiwyg:tests-codeception"
+      ]
+  wysiwyg:
+    path: 'vendor/ddoe/wysiwyg-editor-module'
+
+runslim:
+  <<: *runscript
+  matrix:
+    script: |
+      [
+        "wysiwyg:phpcs",
+        "wysiwyg:phpstan",
+        "wysiwyg:phpmd",
+      ]
+
+sonarcloud:
+  matrix:
+    testplan: '["-"]'
+  strip_path: '/var/www/vendor/ddoe/wysiwyg-editor-module/'
+  project_key: 'OXID-eSales_ddoe-wysiwyg-editor-module'
+  project_name: 'ddoe/wysiwyg-editor-module'
+  parameters: |
+    -Dsonar.language=php
+    -Dsonar.scm.provider=git
+    -Dsonar.sources=src
+    -Dsonar.tests=tests
+    -Donar.php.phpstan.reportPaths=coverage-reports/phpstan.report.json
+
+finish:
+  slack_title: 'WYSIWYG module ({{ .Data.global.git.shop_ref }}) by {{ .Github.Actor }}'

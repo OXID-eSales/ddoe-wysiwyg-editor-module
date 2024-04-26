@@ -15,14 +15,14 @@ use OxidEsales\WysiwygModule\Tests\Codeception\Support\AcceptanceTester;
 #[Group('ddoewysiwyg')]
 final class TextareaCheckCest
 {
-    public function testCmsTextAreaModified(AcceptanceTester $I): void
+    public function productDescriptionTextAreaModified(AcceptanceTester $I): void
     {
-        $I->wantToTest('Module improves the cms pages textarea');
+        $I->wantToTest('Module improves the product description textarea');
 
         $adminPanel = $I->loginAdmin();
-        $adminPanel->openCMSPages();
+        $adminPanel->openProducts();
         $I->selectEditFrame();
 
-        $I->seeElementInDOM("#ddoew #editor_oxcontents__oxcontent");
+        $I->seeElementInDOM("#ddoew #editor_oxarticles__oxlongdesc");
     }
 }
