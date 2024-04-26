@@ -1,6 +1,6 @@
 # Summernote WYSIWYG Editor for OXID eShop
 
-[![Development](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/push_module_71x.yml/badge.svg?branch=b-7.1.x)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/push_module_71x.yml)
+[![Development](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yml/badge.svg?branch=b-7.1.x)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yml)
 [![Latest Version](https://img.shields.io/packagist/v/ddoe/wysiwyg-editor-module?logo=composer&label=latest&include_prereleases&color=orange)](https://packagist.org/packages/ddoe/wysiwyg-editor-module)
 [![PHP Version](https://img.shields.io/packagist/php-v/ddoe/wysiwyg-editor-module)](https://github.com/ddoe/wysiwyg-editor-module)
 
