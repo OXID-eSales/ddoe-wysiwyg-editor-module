@@ -57,8 +57,8 @@
         "phpmd": "echo 'phpmd check disabled' >phpmd.report.txt",
         "phpmd-report": "echo '{}' >phpmd.report.json",
 
-        "tests-unit": "XDEBUG_MODE=coverage vendor/bin/phpunit --config=tests/ --testsuite=Unit",
-        "tests-integration": "XDEBUG_MODE=coverage vendor/bin/phpunit --bootstrap=/var/www/source/bootstrap.php --config=tests/ --testsuite=Integration",
+        "tests-unit": "XDEBUG_MODE=coverage vendor/bin/phpunit --config=tests/ --testsuite=Unit --coverage-clover=tests/Reports/coverage_unit_module-wysiwyg.xml",
+        "tests-integration": "XDEBUG_MODE=coverage vendor/bin/phpunit --bootstrap=/var/www/source/bootstrap.php --config=tests/ --testsuite=Integration --coverage-clover=tests/Reports/coverage_integration_module-wysiwyg.xml",
         "tests-coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --bootstrap=/var/www/source/bootstrap.php --config=tests/ --coverage-html=tests/result/coverage",
 
         "tests-codeception": [
