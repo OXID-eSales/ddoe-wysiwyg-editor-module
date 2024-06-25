@@ -13,6 +13,7 @@ use OxidEsales\Eshop\Core\ViewConfig;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
 use OxidEsales\WysiwygModule\Service\EditorRenderer;
 use OxidEsales\WysiwygModule\Service\SettingsInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class EditorRendererTest extends TestCase
@@ -197,7 +198,51 @@ class EditorRendererTest extends TestCase
         $sut->render('any', 'any', 'any', 'any');
     }
 
-    public function getSut(
+    #[DataProvider('filterTemplateProvider')]
+    public function testFilterContent(string $template, string $expectedTemplate): void
+    {
+        $templateRendererSpy = $this->createMock(TemplateRendererInterface::class);
+        $templateRendererSpy
+            ->expects($this->once())
+            ->method('renderTemplate')
+            ->with(
+                '@ddoewysiwyg/ddoewysiwyg',
+                $this->callback(function ($context) use ($expectedTemplate) {
+                    return $expectedTemplate == $context['sEditorValue'];
+                })
+            );
+
+        $sut = $this->getSut($templateRendererSpy);
+        $sut->render('any', 'any', $template, 'any');
+    }
+
+    public static function filterTemplateProvider(): array
+    {
+        return [
+            [
+                'template' => 'plain template',
+                'expectedTemplate' => 'plain template',
+            ],
+            [
+                'template' => '<div>template</div>',
+                'expectedTemplate' => '<div>template</div>',
+            ],
+            [
+                'template' => '<p>par 1</p><script>//js1</script><p>par 2</p>',
+                'expectedTemplate' => '<p>par 1</p>//js1<p>par 2</p>',
+            ],
+            [
+                'template' => '<script>//js1</script><script>//js2</script>',
+                'expectedTemplate' => '//js1//js2',
+            ],
+            [
+                'template' => '<p>par 1</p><script src="app.js"/><p>par 2</p>',
+                'expectedTemplate' => '<p>par 1</p><p>par 2</p>',
+            ],
+        ];
+    }
+
+    private function getSut(
         TemplateRendererInterface $templateRenderer = null,
         SettingsInterface $settingsService = null,
     ): EditorRenderer {
