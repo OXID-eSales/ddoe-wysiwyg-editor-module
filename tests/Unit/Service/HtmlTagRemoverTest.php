@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\WysiwygModule\Tests\Unit\Service;
 
 use DOMDocument;
+use InvalidArgumentException;
 use OxidEsales\WysiwygModule\Service\HtmlTagRemover;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -18,8 +19,24 @@ use PHPUnit\Framework\TestCase;
 class HtmlTagRemoverTest extends TestCase
 {
     #[Test]
+    public function throwExceptionOnNoParentNode(): void
+    {
+        $doc = new DOMDocument();
+        $doc->loadHTML('<div></div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        $node = $doc->getElementsByTagName('div')->item(0);
+        $parentlessNode = $node->parentNode;
+
+        $remover = new HtmlTagRemover();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("The node does not have a parent.");
+
+        $remover->remove($parentlessNode);
+    }
+
+    #[Test]
     #[DataProvider('htmlProvider')]
-    public function remove(string $node, string $html, string $expectedHtml): void
+    public function removeNode(string $node, string $html, string $expectedHtml): void
     {
         $doc = new DOMDocument();
         $doc->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
@@ -45,9 +62,9 @@ class HtmlTagRemoverTest extends TestCase
                 'expectedHtml' => '<div>//content</div>',
             ],
             [
-            'node' => 'script',
-            'html' => '<div><script src="app.js"/></div>',
-            'expectedHtml' => '<div></div>',
+                'node' => 'script',
+                'html' => '<div><script src="app.js"/></div>',
+                'expectedHtml' => '<div></div>',
             ],
         ];
     }
