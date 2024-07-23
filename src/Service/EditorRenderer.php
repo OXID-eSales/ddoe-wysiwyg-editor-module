@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Service;
 
-use OxidEsales\EshopCommunity\Internal\Framework\Templating\HtmlFilter\HtmlFilter;
+use OxidEsales\EshopCommunity\Internal\Framework\Templating\HtmlFilter\HtmlFilterInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
 
 class EditorRenderer implements EditorRendererInterface
@@ -17,6 +17,7 @@ class EditorRenderer implements EditorRendererInterface
     public function __construct(
         protected TemplateRendererInterface $templateRenderer,
         protected SettingsInterface $settingsService,
+        protected HtmlFilterInterface $htmlFilter
     ) {
     }
 
@@ -56,7 +57,6 @@ class EditorRenderer implements EditorRendererInterface
 
     private function filterContent(string $content): string
     {
-        $filter = new HtmlFilter(new HtmlTagRemover());
-        return $filter->filter($content);
+        return $this->htmlFilter->filter($content);
     }
 }

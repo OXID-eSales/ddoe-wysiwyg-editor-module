@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\WysiwygModule\Tests\Unit\Service;
 
 use OxidEsales\Eshop\Core\ViewConfig;
+use OxidEsales\EshopCommunity\Internal\Framework\Templating\HtmlFilter\HtmlFilterInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
 use OxidEsales\WysiwygModule\Service\EditorRenderer;
 use OxidEsales\WysiwygModule\Service\SettingsInterface;
@@ -73,8 +74,15 @@ class EditorRendererTest extends TestCase
         string $expectedWidth,
         string $expectedHeight,
     ): void {
+
+        $templateRendererSpy = $this->createMock(TemplateRendererInterface::class);
+        $htmlFilterMock = $this->createMock(HtmlFilterInterface::class);
+        $htmlFilterMock
+            ->method('filter');
+
         $sut = $this->getSut(
-            templateRenderer: $templateRendererSpy = $this->createMock(TemplateRendererInterface::class)
+            templateRenderer: $templateRendererSpy,
+            htmlFilter: $htmlFilterMock
         );
 
         $templateRendererSpy
@@ -95,12 +103,14 @@ class EditorRendererTest extends TestCase
 
     public function testRenderCalledWithCorrectInputValues(): void
     {
-        $sut = $this->getSut(
-            templateRenderer: $templateRendererSpy = $this->createMock(TemplateRendererInterface::class)
-        );
+        $templateRendererSpy = $this->createMock(TemplateRendererInterface::class);
+        $htmlFilterStub = $this->createMock(HtmlFilterInterface::class);
 
         $fieldName = uniqid();
         $fieldValue = uniqid();
+
+        $htmlFilterStub->method('filter')
+            ->willReturn($fieldValue);
 
         $templateRendererSpy
             ->expects($this->once())
@@ -114,6 +124,11 @@ class EditorRendererTest extends TestCase
                     return true;
                 })
             );
+
+        $sut = $this->getSut(
+            templateRenderer: $templateRendererSpy,
+            htmlFilter: $htmlFilterStub
+        );
 
         $sut->render('any', 'any', $fieldValue, $fieldName);
     }
@@ -201,6 +216,11 @@ class EditorRendererTest extends TestCase
     #[DataProvider('filterTemplateProvider')]
     public function testFilterContent(string $template, string $expectedTemplate): void
     {
+        $htmlFilterStub = $this->createMock(HtmlFilterInterface::class);
+        $htmlFilterStub
+            ->method('filter')
+            ->willReturn($expectedTemplate);
+
         $templateRendererSpy = $this->createMock(TemplateRendererInterface::class);
         $templateRendererSpy
             ->expects($this->once())
@@ -212,7 +232,10 @@ class EditorRendererTest extends TestCase
                 })
             );
 
-        $sut = $this->getSut($templateRendererSpy);
+        $sut = $this->getSut(
+            templateRenderer:  $templateRendererSpy,
+            htmlFilter: $htmlFilterStub
+        );
         $sut->render('any', 'any', $template, 'any');
     }
 
@@ -245,10 +268,12 @@ class EditorRendererTest extends TestCase
     private function getSut(
         TemplateRendererInterface $templateRenderer = null,
         SettingsInterface $settingsService = null,
+        HtmlFilterInterface $htmlFilter = null,
     ): EditorRenderer {
         return new EditorRenderer(
             templateRenderer: $templateRenderer ?? $this->createStub(TemplateRendererInterface::class),
             settingsService: $settingsService ?? $this->createStub(SettingsInterface::class),
+            htmlFilter: $htmlFilter ?? $this->createStub(HtmlFilterInterface::class),
         );
     }
 }
