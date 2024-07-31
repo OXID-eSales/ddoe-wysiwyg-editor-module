@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [4.1.0] - Unreleased
 
+### Changed
+- Upgrade phpunit to 11.x
+
 ### Removed
 - Support of PHP 8.1
 

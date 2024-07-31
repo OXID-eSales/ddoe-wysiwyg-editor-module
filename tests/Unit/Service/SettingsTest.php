@@ -14,6 +14,7 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Language;
 use OxidEsales\Eshop\Core\ViewConfig;
 use OxidEsales\WysiwygModule\Service\Settings;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class SettingsTest extends TestCase
@@ -48,7 +49,7 @@ class SettingsTest extends TestCase
         ];
     }
 
-    /** @dataProvider isSslDataProvider */
+    #[DataProvider('isSslDataProvider')]
     public function testIsSsl(bool $expectedResult, array $configValues): void
     {
         $sut = $this->getSut(

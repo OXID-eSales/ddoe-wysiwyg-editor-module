@@ -31,7 +31,7 @@
         "phpstan/phpstan": "^1.8.11",
         "squizlabs/php_codesniffer": "3.*",
         "oxid-esales/oxideshop-ce": "dev-b-7.1.x",
-        "phpunit/phpunit": "^10.4",
+        "phpunit/phpunit": "^11.2",
         "codeception/codeception": "^5.0",
         "codeception/module-asserts": "^3.0",
         "codeception/module-db": "^3.0",

@@ -13,6 +13,7 @@ use OxidEsales\Eshop\Core\ViewConfig;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
 use OxidEsales\WysiwygModule\Service\EditorRenderer;
 use OxidEsales\WysiwygModule\Service\SettingsInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class EditorRendererTest extends TestCase
@@ -65,7 +66,7 @@ class EditorRendererTest extends TestCase
         );
     }
 
-    /** @dataProvider renderSizeParamsDataProvider */
+    #[DataProvider('renderSizeParamsDataProvider')]
     public function testRenderCalledWithCorrectSizeParams(
         string $width,
         string $height,
@@ -152,7 +153,7 @@ class EditorRendererTest extends TestCase
         ];
     }
 
-    /** @dataProvider activityFlagDataProvider */
+    #[DataProvider('activityFlagDataProvider')]
     public function testRenderCalledWithCorrectTextareaActivityFlag(bool $flagValue): void
     {
         $sut = $this->getSut(
