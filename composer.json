@@ -25,20 +25,20 @@
         "php": ">=8.2",
         "symfony/filesystem": "*",
         "ext-gd": "*",
-        "oxid-esales/media-library-module": "dev-b-7.1.x"
+        "oxid-esales/media-library-module": "dev-b-7.2.x"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.8.11",
         "squizlabs/php_codesniffer": "3.*",
-        "oxid-esales/oxideshop-ce": "dev-b-7.1.x",
+        "oxid-esales/oxideshop-ce": "dev-b-7.2.x",
         "phpunit/phpunit": "^11.2",
         "codeception/codeception": "^5.0",
         "codeception/module-asserts": "^3.0",
         "codeception/module-db": "^3.0",
         "codeception/module-filesystem": "^3.0",
         "codeception/module-webdriver": "^4.0",
-        "oxid-esales/codeception-modules": "dev-b-7.1.x",
-        "oxid-esales/codeception-page-objects": "dev-b-7.1.x"
+        "oxid-esales/codeception-modules": "dev-b-7.2.x",
+        "oxid-esales/codeception-page-objects": "dev-b-7.2.x"
     },
     "autoload":    {
         "psr-4": {
