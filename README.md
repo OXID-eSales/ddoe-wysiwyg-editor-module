@@ -2,7 +2,7 @@
 
 [![Development](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yml/badge.svg?branch=b-7.1.x)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yml)
 [![Latest Version](https://img.shields.io/packagist/v/ddoe/wysiwyg-editor-module?logo=composer&label=latest&include_prereleases&color=orange)](https://packagist.org/packages/ddoe/wysiwyg-editor-module)
-[![PHP Version](https://img.shields.io/packagist/php-v/ddoe/wysiwyg-editor-module)](https://github.com/ddoe/wysiwyg-editor-module)
+[![PHP Version](https://img.shields.io/packagist/php-v/ddoe/wysiwyg-editor-module)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=OXID-eSales_ddoe-wysiwyg-editor-module&metric=alert_status)](https://sonarcloud.io/dashboard?id=OXID-eSales_ddoe-wysiwyg-editor-module)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=OXID-eSales_ddoe-wysiwyg-editor-module&metric=coverage)](https://sonarcloud.io/dashboard?id=OXID-eSales_ddoe-wysiwyg-editor-module)
@@ -42,7 +42,7 @@ In case of different environment usage, please adjust by your own needs.
 ```shell
 # Clone the repository
 cd <shopRootPath>
-git clone https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module.git --branch=b-7.1.x source/dev-packages/wysiwyg
+git clone https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module.git --branch=b-7.2.x source/dev-packages/wysiwyg
 
 docker compose exec -T \
   php composer config repositories.ddoe/wysiwyg-editor-module \
