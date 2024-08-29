@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\WysiwygModule\Tests\Unit\Service;
 
 use OxidEsales\Eshop\Core\ViewConfig;
-use OxidEsales\EshopCommunity\Internal\Framework\Templating\HtmlFilter\HtmlFilterInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
+use OxidEsales\WysiwygModule\HtmlFilter\HtmlFilterInterface;
 use OxidEsales\WysiwygModule\Service\EditorRenderer;
 use OxidEsales\WysiwygModule\Service\SettingsInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
