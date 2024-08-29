@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Service;
 
-use OxidEsales\EshopCommunity\Internal\Framework\Templating\HtmlFilter\HtmlFilterInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
+use OxidEsales\WysiwygModule\HtmlFilter\HtmlFilterInterface;
 
 class EditorRenderer implements EditorRendererInterface
 {

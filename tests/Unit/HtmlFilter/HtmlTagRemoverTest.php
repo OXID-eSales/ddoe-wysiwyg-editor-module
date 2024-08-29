@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\WysiwygModule\Tests\Unit\Service;
+namespace OxidEsales\WysiwygModule\Tests\Unit\HtmlFilter;
 
 use DOMDocument;
 use InvalidArgumentException;
-use OxidEsales\WysiwygModule\Service\HtmlTagRemover;
+use OxidEsales\WysiwygModule\HtmlFilter\HtmlTagRemover;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

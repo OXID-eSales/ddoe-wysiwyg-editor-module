@@ -7,11 +7,10 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\WysiwygModule\Service;
+namespace OxidEsales\WysiwygModule\HtmlFilter;
 
 use DOMNode;
 use InvalidArgumentException;
-use OxidEsales\EshopCommunity\Internal\Framework\Templating\HtmlFilter\HtmlRemoverInterface;
 
 class HtmlTagRemover implements HtmlRemoverInterface
 {

@@ -12,13 +12,3 @@ services:
   OxidEsales\WysiwygModule\Service\EditorRendererInterface:
     class: OxidEsales\WysiwygModule\Service\EditorRenderer
     public: true
-
-  OxidEsales\EshopCommunity\Internal\Framework\Templating\HtmlFilter\HtmlRemoverInterface:
-    class: OxidEsales\WysiwygModule\Service\HtmlTagRemover
-    public: true
-
-  OxidEsales\EshopCommunity\Internal\Framework\Templating\HtmlFilter\HtmlFilterInterface:
-    class: OxidEsales\EshopCommunity\Internal\Framework\Templating\HtmlFilter\HtmlFilter
-    public: true
-    arguments:
-      $htmlRemover: '@OxidEsales\EshopCommunity\Internal\Framework\Templating\HtmlFilter\HtmlRemoverInterface'
