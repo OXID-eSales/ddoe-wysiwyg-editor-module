@@ -10,12 +10,14 @@ declare(strict_types=1);
 namespace OxidEsales\WysiwygModule\Service;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
+use OxidEsales\WysiwygModule\HtmlFilter\HtmlFilterInterface;
 
 class EditorRenderer implements EditorRendererInterface
 {
     public function __construct(
         protected TemplateRendererInterface $templateRenderer,
         protected SettingsInterface $settingsService,
+        protected HtmlFilterInterface $htmlFilter
     ) {
     }
 
@@ -30,7 +32,7 @@ class EditorRenderer implements EditorRendererInterface
             'iEditorWidth' => $this->prepareSize($width),
             'iEditorHeight' => $this->prepareSize($height),
             'sEditorField' => $fieldName,
-            'sEditorValue' => $objectValue,
+            'sEditorValue' => $this->filterContent($objectValue),
             'langabbr' => $this->settingsService->getInterfaceLanguageAbbreviation(),
             'blTextEditorDisabled' => $isEditorDisabled,
             'oViewConf' => $this->settingsService->getActiveViewConfig(),
@@ -51,5 +53,10 @@ class EditorRenderer implements EditorRendererInterface
     private function checkIfOnlyDigitsInValue(string $sizeValue): bool
     {
         return (bool)preg_match("/^\d+$/i", $sizeValue);
+    }
+
+    private function filterContent(string $content): string
+    {
+        return $this->htmlFilter->filter($content);
     }
 }

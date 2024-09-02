@@ -25,4 +25,35 @@ final class TextareaCheckCest
 
         $I->seeElementInDOM("#ddoew #editor_oxarticles__oxlongdesc");
     }
+
+    public function contentIsFiltered(AcceptanceTester $I): void
+    {
+        $loadId = 'test_content';
+        $template = "<p>par 1</p><script>var filterTest = 'test';</script><p>par 2</p>";
+
+        $I->haveInDatabase('oxcontents', [
+            'OXID' => md5($loadId),
+            'OXLOADID' => $loadId,
+            'OXCONTENT' => $template,
+            'OXCONTENT_1' => $template,
+            'OXCONTENT_2' => $template,
+            'OXCONTENT_3' => $template,
+        ]);
+
+        $adminPanel = $I->loginAdmin();
+        $adminPanel->openCMSPages();
+
+        $I->selectListFrame();
+        $I->fillField("//input[@name='where[oxcontents][oxloadid]']", $loadId);
+        $I->submitForm('#search', []);
+
+        $I->selectListFrame();
+        $I->click($loadId);
+
+        $I->selectEditFrame();
+        $I->waitForDocumentReadyState();
+
+        $isVarDefined = $I->executeJS("return typeof filterTest !== 'undefined'");
+        $I->assertFalse($isVarDefined);
+    }
 }

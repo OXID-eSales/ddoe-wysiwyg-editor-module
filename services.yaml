@@ -1,5 +1,6 @@
 imports:
   - { resource: src/Service/services.yaml }
+  - { resource: src/HtmlFilter/services.yaml }
 
 services:
   _defaults:

@@ -1,0 +1,12 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\WysiwygModule\HtmlFilter\HtmlRemoverInterface:
+    class: OxidEsales\WysiwygModule\HtmlFilter\HtmlTagRemover
+    public: true
+
+  OxidEsales\WysiwygModule\HtmlFilter\HtmlFilterInterface:
+    class: OxidEsales\WysiwygModule\HtmlFilter\HtmlFilter
+    public: true
