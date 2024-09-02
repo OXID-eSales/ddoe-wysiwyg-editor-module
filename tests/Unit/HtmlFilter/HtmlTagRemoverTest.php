@@ -22,16 +22,14 @@ class HtmlTagRemoverTest extends TestCase
     public function throwExceptionOnNoParentNode(): void
     {
         $doc = new DOMDocument();
-        $doc->loadHTML('<div></div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        $node = $doc->getElementsByTagName('div')->item(0);
-        $parentlessNode = $node->parentNode;
+        $node = $doc->createElement('div');
 
         $remover = new HtmlTagRemover();
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("The node does not have a parent.");
 
-        $remover->remove($parentlessNode);
+        $remover->remove($node);
     }
 
     #[Test]
