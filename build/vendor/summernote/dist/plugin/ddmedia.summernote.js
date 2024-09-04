@@ -19,8 +19,7 @@
                     // create button
                     var button = ui.button(
                         {
-                            className: 'btn-info',
-                            contents: '<i class="fa fa-file-image-o"></i>',
+                            contents: '<i class="fa fa-file-image-o fa-file-image"></i>',
                             click: function (e) {
                                 if (typeof MediaLibrary === 'undefined') {
                                     if (top.basefrm && top.basefrm.OverlayInstance) {
