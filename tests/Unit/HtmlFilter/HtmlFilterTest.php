@@ -28,7 +28,7 @@ class HtmlFilterTest extends TestCase
             ->method('remove');
         $filter = new HtmlFilter($removerSpy);
 
-        $filter->filter($html);
+        $this->assertEquals($html, $filter->filter($html));
     }
 
     public static function noScriptTagsProvider(): array

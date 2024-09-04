@@ -43,7 +43,8 @@ class HtmlFilter implements HtmlFilterInterface
     private function getInnerHtml(DOMDocument $doc): string
     {
         $html = '';
-        foreach ($doc->documentElement->childNodes as $node) {
+        $div = $doc->documentElement->childNodes->item(0);
+        foreach ($div->childNodes as $node) {
             $html .= $doc->saveHTML($node);
         }
 
