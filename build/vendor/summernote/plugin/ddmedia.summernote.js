@@ -11,6 +11,7 @@
             {
                 var layoutInfo = context.layoutInfo;
                 var $toolbar   = layoutInfo.toolbar;
+                var lang       = context.options.langInfo;
 
                 var ui = $.summernote.ui;
 
@@ -20,6 +21,7 @@
                     var button = ui.button(
                         {
                             contents: '<i class="fa fa-file-image-o fa-file-image"></i>',
+                            tooltip: lang.image.image,
                             click: function (e) {
                                 if (typeof MediaLibrary === 'undefined') {
                                     if (top.basefrm && top.basefrm.OverlayInstance) {
