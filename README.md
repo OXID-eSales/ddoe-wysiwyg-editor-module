@@ -10,23 +10,23 @@
 
 # Compatibility
 
+### Versions
+* versions `4.x` - compatible with OXID eShop compilation 7.1.x and higher
+* versions `3.x` - compatible with OXID eShop compilation 7.0.x
+* versions `2.x` - compatible with OXID eShop compilation 6.0.x - 6.5.x
+
 ### Branches
 * `b-7.2.x` is compatible with OXID eShop b-7.2.x branch, works with **Twig engine** only
 * `b-7.1.x` is compatible with OXID eShop b-7.1.x branch, works with **Twig engine** only
 * `b-7.0.x` is compatible with OXID eShop b-7.0.x branch and supports **Legacy Smarty engine**
 * `b-2.x` is compatible with OXID eShop compilations: 6.2.x - 6.5.x
 
-### Versions
-* versions `4.x` - compatible with OXID eShop compilation 7.1.x
-* versions `3.x` - compatible with OXID eShop compilation 7.0.x
-* versions `2.x` - compatible with OXID eShop compilation 6.0.x - 6.5.x
-
 ### Module installation via composer
 
 In order to install the module via composer run one of the following commands in commandline in your shop base directory 
 (where the shop's composer.json file resides).
-* `composer require ddoe/wysiwyg-editor-module:^3.0.0`
-  to install the latest released version compatible with OXID eShop v6.0
+* `composer require ddoe/wysiwyg-editor-module:^4.1.0`
+  to install the latest released version compatible with OXID eShop v7.1.x
 * `composer require ddoe/wysiwyg-editor-module:dev-b-7.1.x`  
   to install the specific unreleased branch
 

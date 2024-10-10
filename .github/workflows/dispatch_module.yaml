@@ -26,19 +26,19 @@ jobs:
           # shellcheck disable=SC2088
           case "${{ inputs.limit }}" in
             "no") LIMIT='';;
-            "PHP8.2/MySQL5.7") LIMIT='~/defaults/php8.2_mysql5.7_only.yml,' ;;
-            "PHP8.2/MySQL8.0") LIMIT='~/defaults/php8.2_mysql8.0_only.yml,' ;;
-            "PHP8.3/MySQL5.7") LIMIT='~/defaults/php8.3_mysql5.7_only.yml,' ;;
-            "PHP8.3/MySQL8.0") LIMIT='~/defaults/php8.3_mysql8.0_only.yml,' ;;
+            "PHP8.2/MySQL5.7") LIMIT='~/defaults/php8.2_mysql5.7_only.yaml,' ;;
+            "PHP8.2/MySQL8.0") LIMIT='~/defaults/php8.2_mysql8.0_only.yaml,' ;;
+            "PHP8.3/MySQL5.7") LIMIT='~/defaults/php8.3_mysql5.7_only.yaml,' ;;
+            "PHP8.3/MySQL8.0") LIMIT='~/defaults/php8.3_mysql8.0_only.yaml,' ;;
           esac
           
           # shellcheck disable=SC2088
-          TESTPLAN="~/defaults/7.2.x.yml,${LIMIT}~/module-wysiwyg.yml,~/_custom.yml"
+          TESTPLAN="~/defaults/7.2.x.yaml,${LIMIT}~/module-wysiwyg.yaml,~/_custom.yaml"
           echo "testplan=${TESTPLAN}" | tee -a "${GITHUB_OUTPUT}"
 
   dispatch_stable:
     needs: build_testplan
-    uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yml@v4
+    uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
     with:
       testplan: ${{ needs.build_testplan.outputs.testplan }}
       runs_on: '"ubuntu-latest"'

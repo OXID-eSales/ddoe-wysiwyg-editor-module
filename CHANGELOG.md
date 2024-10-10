@@ -4,19 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [4.1.0] - Unreleased
-
-### Fixed
-- Pre-filter CMS content before it is passed to Summernote editor
-
-### Added
-- `HtmlFilter` and `HtmlTagRemover` class
+## [4.2.0] - Unreleased
 
 ### Changed
 - Upgrade phpunit to 11.x
 
 ### Removed
 - Support of PHP 8.1
+
+## [4.1.0] - 2024-10-10
+
+### Fixed
+- Pre-filter CMS content before it is passed to Summernote editor
+
+### Added
+- `HtmlFilter` and `HtmlTagRemover` class
 
 ## [4.0.0] - 2024-03-12
 
@@ -127,6 +129,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
+[4.2.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v4.1.0...b-7.2.x
+[4.1.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v4.0.0...v4.1.0
 [4.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v3.0.2...v4.0.0
 [3.0.2]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v3.0.0...v3.0.1
