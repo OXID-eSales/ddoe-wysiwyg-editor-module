@@ -1,14 +1,17 @@
-name: Schedule for full matrix run
+name: Auto trigger on push or pull requests
+# Matrix workflow using re-usable github actions
 
 on:
-  schedule:
-    - cron: '0 4 */7 * *'
+  pull_request: {}
+  push:
+    branches:
+      - 'b-7.1.x*'
 
 jobs:
-  schedule_matrix:
-    uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yml@v4
+  php81_mysql80:
+    uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
     with:
-      testplan: '~/defaults/7.1.x.yml,~/module-wysiwyg.yml,~/_custom.yml'
+      testplan: '~/defaults/7.1.x.yaml,~/defaults/php8.1_mysql8.0_only.yaml,~/module-wysiwyg.yaml'
       runs_on: '"ubuntu-latest"'
       defaults: 'v4'
       plan_folder: '.github/oxid-esales'

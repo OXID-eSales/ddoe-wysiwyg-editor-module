@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [4.1.0] - unreleased
+## [4.1.0] - 2024-10-10
 
 ### Fixed
 - Pre-filter CMS content before it is passed to Summernote editor
@@ -121,6 +121,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
+[4.1.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v4.0.0...v4.1.0
 [4.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v3.0.2...v4.0.0
 [3.0.2]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v3.0.0...v3.0.1
