@@ -1,6 +1,6 @@
 # Summernote WYSIWYG Editor for OXID eShop
 
-[![Development](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yml/badge.svg?branch=b-7.1.x)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yml)
+[![Development](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yml/badge.svg?branch=b-7.2.x)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yml)
 [![Latest Version](https://img.shields.io/packagist/v/ddoe/wysiwyg-editor-module?logo=composer&label=latest&include_prereleases&color=orange)](https://packagist.org/packages/ddoe/wysiwyg-editor-module)
 [![PHP Version](https://img.shields.io/packagist/php-v/ddoe/wysiwyg-editor-module)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module)
 
@@ -11,7 +11,8 @@
 # Compatibility
 
 ### Versions
-* versions `4.x` - compatible with OXID eShop compilation 7.1.x and higher
+* versions `4.2.x` - compatible with OXID eShop compilation 7.2.x and higher
+* versions `4.x` - compatible with OXID eShop compilation 7.1.x
 * versions `3.x` - compatible with OXID eShop compilation 7.0.x
 * versions `2.x` - compatible with OXID eShop compilation 6.0.x - 6.5.x
 
@@ -25,9 +26,9 @@
 
 In order to install the module via composer run one of the following commands in commandline in your shop base directory 
 (where the shop's composer.json file resides).
-* `composer require ddoe/wysiwyg-editor-module:^4.1.0`
-  to install the latest released version compatible with OXID eShop v7.1.x
-* `composer require ddoe/wysiwyg-editor-module:dev-b-7.1.x`  
+* `composer require ddoe/wysiwyg-editor-module:^4.2.0`
+  to install the latest released version compatible with OXID eShop v7.2.x
+* `composer require ddoe/wysiwyg-editor-module:dev-b-7.2.x`  
   to install the specific unreleased branch
 
 ### Module activation in OXID eShop Admin 

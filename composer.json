@@ -25,7 +25,7 @@
         "php": ">=8.2",
         "symfony/filesystem": "*",
         "ext-gd": "*",
-        "oxid-esales/media-library-module": "dev-b-7.2.x"
+        "oxid-esales/media-library-module": "^2.1"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.8.11",
@@ -45,6 +45,9 @@
             "OxidEsales\\WysiwygModule\\": "./src",
             "OxidEsales\\WysiwygModule\\Tests\\": "./tests"
         }
+    },
+    "conflict": {
+        "oxid-esales/oxideshop-ce": "<7.2"
     },
     "scripts": {
         "phpcs-report": "phpcs --standard=tests/phpcs.xml --report=json --report-file=phpcs.report.json",
