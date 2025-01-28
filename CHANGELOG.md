@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.4.3] - unreleased
 
+### Added
+- TemplateRendererBridgeInterface so it can use OXID smarty legacy
+
 ### Changed
 - License updated - now using OXID Module and Component License
 
