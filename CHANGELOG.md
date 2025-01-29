@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [undecided] - unreleased
+
+### Changed
+- Migrate from Grunt to Vite for assets generating
+- Rewrite JS scripts to ES6
+
+### Removed
+- External libraries from vendor directory. They are installed using Node.js now
+- Possibility to 'Use default protocol' in Link Dialog
+
 ## [4.2.0] - 2024-10-14
 
 ### Changed

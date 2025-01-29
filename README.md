@@ -55,6 +55,16 @@ bin/oe-console oe:module:activate ddoemedialibrary
 bin/oe-console oe:module:activate ddoewysiwyg
 ```
 
+## Assets
+This module uses Node.js and Vite to generate and manage assets such as scripts and styles. To regenerate assets, navigate to the module directory and run:
+```shell
+npm run build
+```
+Alternatively, if you're actively developing and want changes to be applied automatically, you can enable watch mode:
+```shell
+npm run watch
+```
+
 ## Bugs and Issues
 
 If you experience any bugs or issues, please report them in the section **WYSIWYG Editor + Media Gallery** of https://bugs.oxid-esales.com.

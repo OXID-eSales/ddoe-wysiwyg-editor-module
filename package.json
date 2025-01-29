@@ -3,6 +3,7 @@
   "version": "3.0.0",
   "description": "",
   "main": "Gruntfile.js",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module"
@@ -10,22 +11,36 @@
   "keywords": [],
   "author": "digidesk - media solutions",
   "devDependencies": {
+    "eslint": "^9.18.0",
     "grunt": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-cssmin": "^2.1.0",
     "grunt-contrib-jshint": "^1.1.0",
     "grunt-contrib-less": "^1.0.0",
     "grunt-contrib-uglify": "^2.3.0",
     "grunt-contrib-watch": "^1.0.0",
-    "grunt-contrib-copy": "^1.0.0",
     "grunt-exec": "^3.0.0",
+    "husky": "^9.1.7",
     "less-plugin-autoprefix": "^1.5.1",
     "load-grunt-config": "^0.19.2",
     "time-grunt": "^1.4.0",
+    "vite": "^6.0.11",
+    "vite-plugin-eslint": "^1.8.1",
+    "vite-plugin-static-copy": "^2.2.0",
     "yarn": "^1.22.19"
   },
   "scripts": {
     "start": "grunt",
     "summernote": "node_modules/yarn/bin/yarn --cwd build/vendor/summernote run build && grunt",
-    "postinstall": "node_modules/yarn/bin/yarn --cwd build/vendor/summernote install"
+    "postinstall": "node_modules/yarn/bin/yarn --cwd build/vendor/summernote install",
+    "build": "vite build",
+    "watch": "vite build --watch"
+  },
+  "dependencies": {
+    "bootstrap": "^3.4.1",
+    "font-awesome": "^4.7.0",
+    "jquery": "^1.12.4",
+    "jquery-ui": "^1.14.1",
+    "summernote": "^0.8.20"
   }
 }

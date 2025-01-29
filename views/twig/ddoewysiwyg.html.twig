@@ -64,9 +64,15 @@
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery-ui.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/bootstrap.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
-{{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/ddoesummernote.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
-{{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/backend.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
-
+{{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/summernote.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {% if langabbr == 'de' %}
-    {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/lang/summernote-de.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
+    {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/summernote-de-DE.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {% endif %}
+
+<script type="module">
+    import { autoInitializeSummernote } from "{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/init.min.js') }}";
+
+    document.addEventListener("DOMContentLoaded", function() {
+        autoInitializeSummernote();
+    });
+</script>
