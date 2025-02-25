@@ -22,7 +22,7 @@ function overrideTooltip() {
     };
 }
 
-function initializeSummernote(element, options) {
+export function initializeSummernote(element, options) {
     const defaultSettings = {
         lang: 'de-DE',
         minHeight: 100,
