@@ -2,7 +2,7 @@ export default [
   {
     files: ['build/js/**/*.js'],
     languageOptions: {
-      sourceType: 'script',
+      sourceType: 'module',
       globals: {
         browser: true,
         jquery: true,

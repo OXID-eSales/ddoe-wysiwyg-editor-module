@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+import eslint from 'vite-plugin-eslint';
 import path from 'path';
 
 export default defineConfig({
@@ -18,33 +19,27 @@ export default defineConfig({
                 { src: path.resolve(__dirname, 'build/img/*'), dest: 'img' },
             ],
         }),
+        eslint({
+            overrideConfigFile: path.resolve(__dirname, 'build/js/eslint.config.js'),
+            failOnError: true,
+            failOnWarning: false,
+        })
     ],
     build: {
         outDir: path.resolve(__dirname, 'assets/out/src'),
+        minify: true,
+        sourcemap: true,
         rollupOptions: {
             preserveEntrySignatures: 'strict',
             input: {
-                summernoteInitJs: path.resolve(__dirname, 'build/js/summernote/init.js'),
-                backendCss: path.resolve(__dirname, 'build/less/backend_editor.less'),
+                ddoesummernote: path.resolve(__dirname, 'build/js/summernote/init.js'),
             },
             output: {
-                entryFileNames: (chunk) => {
-                    const nameMap = {
-                        summernoteInitJs: 'js/summernote/init.min.js',
-                    };
-                    return nameMap[chunk.name] || 'assets/js/[name].[hash].js'; // Default fallback
-                },
-                assetFileNames: (assetInfo) => {
-                    const nameMap = {
-                        backendCss: 'css/backend.min.css',
-                    };
-                    const inputKey = assetInfo.name && Object.keys(nameMap).find((key) => assetInfo.name.includes(key));
-
-                    return inputKey ? nameMap[inputKey] : 'assets/[name].[hash].[ext]'; // Default fallback
-                },
+                entryFileNames: 'js/summernote/[name].min.js',
+                chunkFileNames: 'js/[name].min.js',
+                assetFileNames: 'css/[name].min.[ext]',
             },
             treeshake: false,
         },
-        minify: 'esbuild',
     },
 });

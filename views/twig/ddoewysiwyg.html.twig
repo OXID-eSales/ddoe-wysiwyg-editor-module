@@ -1,6 +1,6 @@
 <style type="text/css">
     @import url('{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/css/font-awesome.min.css') }}');
-    @import url('{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/css/backend.min.css') }}');
+    @import url('{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/css/ddoesummernote.min.css') }}');
     @import url('{{ oViewConf.getModuleUrl('ddoewysiwyg','out/src/css/summernote.min.css') }}');
 
     #ddoew {
@@ -70,7 +70,7 @@
 {% endif %}
 
 <script type="module">
-    import { autoInitializeSummernote } from "{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/init.min.js') }}";
+    import { autoInitializeSummernote } from "{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/ddoesummernote.min.js') }}";
 
     document.addEventListener("DOMContentLoaded", function() {
         autoInitializeSummernote();
