@@ -17,6 +17,7 @@
 * versions `2.x` - compatible with OXID eShop compilation 6.0.x - 6.5.x
 
 ### Branches
+* `b-7.3.x` is compatible with OXID eShop b-7.3.x branch, works with **Twig engine** only
 * `b-7.2.x` is compatible with OXID eShop b-7.2.x branch, works with **Twig engine** only
 * `b-7.1.x` is compatible with OXID eShop b-7.1.x branch, works with **Twig engine** only
 * `b-7.0.x` is compatible with OXID eShop b-7.0.x branch and supports **Legacy Smarty engine**
@@ -27,7 +28,7 @@
 In order to install the module via composer run one of the following commands in commandline in your shop base directory 
 (where the shop's composer.json file resides).
 * `composer require ddoe/wysiwyg-editor-module:^4.2.0`
-  to install the latest released version compatible with OXID eShop v7.2.x
+  to install the latest released version compatible with OXID eShop v7.3.x
 * `composer require ddoe/wysiwyg-editor-module:dev-b-7.2.x`  
   to install the specific unreleased branch
 
@@ -43,7 +44,7 @@ In case of different environment usage, please adjust by your own needs.
 ```shell
 # Clone the repository
 cd <shopRootPath>
-git clone https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module.git --branch=b-7.2.x source/dev-packages/wysiwyg
+git clone https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module.git --branch=b-7.3.x source/dev-packages/wysiwyg
 
 docker compose exec -T \
   php composer config repositories.ddoe/wysiwyg-editor-module \
