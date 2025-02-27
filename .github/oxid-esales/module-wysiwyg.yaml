@@ -53,10 +53,10 @@ sonarcloud:
   project_key: 'OXID-eSales_ddoe-wysiwyg-editor-module'
   project_name: 'ddoe/wysiwyg-editor-module'
   parameters: |
-    -Dsonar.language=php
-    -Dsonar.scm.provider=git
-    -Dsonar.sources=src
-    -Dsonar.tests=tests
+    -Dsonar.language=php \
+    -Dsonar.scm.provider=git \
+    -Dsonar.sources=src \
+    -Dsonar.tests=tests \
     -Donar.php.phpstan.reportPaths=coverage-reports/phpstan.report.json
 
 finish:

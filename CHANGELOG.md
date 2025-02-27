@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [undecided] - unreleased
 
+### Added
+- Support of PHP 8.4
+
 ### Changed
 - Migrate from Grunt to Vite for assets generating
 - Rewrite JS scripts to ES6
@@ -50,7 +53,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - License title and paddings updated
-- Compatibility matrix information updated in readme 
+- Compatibility matrix information updated in readme
 
 ## [3.0.1] - 2023-05-11
 
@@ -125,7 +128,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [2.1.0] - 2018-01-17
 
 ### Added
-- Option to disable the wysiyg editor and make the content display readonly 
+- Option to disable the wysiyg editor and make the content display readonly
 
 ## [2.0.0] - 2017-11-14
 

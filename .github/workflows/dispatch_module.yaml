@@ -11,7 +11,9 @@ on:
           - 'PHP8.2/MySQL8.0'
           - 'PHP8.3/MySQL5.7'
           - 'PHP8.3/MySQL8.0'
-        default: 'PHP8.2/MySQL8.0'
+          - 'PHP8.4/MySQL8.0'
+          - 'PHP8.4/MariaDb11'
+        default: 'PHP8.3/MySQL8.0'
         description: 'Limit to one PHP/MySQL combination'
 
 jobs:
@@ -30,10 +32,12 @@ jobs:
             "PHP8.2/MySQL8.0") LIMIT='~/defaults/php8.2_mysql8.0_only.yaml,' ;;
             "PHP8.3/MySQL5.7") LIMIT='~/defaults/php8.3_mysql5.7_only.yaml,' ;;
             "PHP8.3/MySQL8.0") LIMIT='~/defaults/php8.3_mysql8.0_only.yaml,' ;;
+            "PHP8.4/MySQL8.0") LIMIT='~/defaults/php8.4_mysql8.0_only.yaml,' ;;
+            "PHP8.4/MariaDb11") LIMIT='~/defaults/php8.4_mariadb11_only.yaml,' ;;
           esac
-          
+
           # shellcheck disable=SC2088
-          TESTPLAN="~/defaults/7.2.x.yaml,${LIMIT}~/module-wysiwyg.yaml,~/_custom.yaml"
+          TESTPLAN="~/defaults/7.3.x.yaml,${LIMIT}~/module-wysiwyg.yaml,~/_custom.yaml"
           echo "testplan=${TESTPLAN}" | tee -a "${GITHUB_OUTPUT}"
 
   dispatch_stable:
