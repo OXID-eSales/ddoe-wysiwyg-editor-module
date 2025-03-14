@@ -1,6 +1,6 @@
 # Summernote WYSIWYG Editor for OXID eShop
 
-[![Development](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yml/badge.svg?branch=b-7.3.x)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yml)
+[![Development](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yaml/badge.svg?branch=b-7.3.x)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yaml)
 [![Latest Version](https://img.shields.io/packagist/v/ddoe/wysiwyg-editor-module?logo=composer&label=latest&include_prereleases&color=orange)](https://packagist.org/packages/ddoe/wysiwyg-editor-module)
 [![PHP Version](https://img.shields.io/packagist/php-v/ddoe/wysiwyg-editor-module)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module)
 
@@ -25,15 +25,15 @@
 
 ### Module installation via composer
 
-In order to install the module via composer run one of the following commands in commandline in your shop base directory 
+In order to install the module via composer run one of the following commands in commandline in your shop base directory
 (where the shop's composer.json file resides).
 * `composer require ddoe/wysiwyg-editor-module:^4.2.0`
   to install the latest released version compatible with OXID eShop v7.3.x
-* `composer require ddoe/wysiwyg-editor-module:dev-b-7.3.x`  
+* `composer require ddoe/wysiwyg-editor-module:dev-b-7.3.x`
   to install the specific unreleased branch
 
-### Module activation in OXID eShop Admin 
-After installation, please, activate the module in OXID eShop Admin  
+### Module activation in OXID eShop Admin
+After installation, please, activate the module in OXID eShop Admin
 `EXTENSIONS -> Modules -> "Summernote WYSIWYG Editor for OXID eShop" -> Activate`
 
 # Development installation
@@ -78,12 +78,23 @@ Commands can be also triggered directly on the container with docker compose, ex
 docker compose exec -T php composer tests-coverage
 ```
 
-## Assets
-This module uses Node.js and Vite to generate and manage assets such as scripts and styles. To regenerate assets, navigate to the module directory and run:
+## Rebuilding the assets
+To rebuild the assets, latest node docker container can be used. The one is pulled automatically if you are using the
+installation method from the previous section. What is left - connect to the container, install the npm dependencies
+and run the assets building process
+
 ```shell
+make node
+```
+
+Navigate to the module directory and run:
+
+```shell
+npm install
 npm run build
 ```
 Alternatively, if you're actively developing and want changes to be applied automatically, you can enable watch mode:
+
 ```shell
 npm run watch
 ```

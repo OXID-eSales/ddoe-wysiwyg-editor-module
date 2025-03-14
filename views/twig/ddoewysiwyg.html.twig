@@ -24,43 +24,6 @@
     </div>
 </div>
 
-{#todo: Overlay-Script should be loaded only if media library is active#}
-<script type="text/javascript">
-    var _win = top.basefrm;
-    var _doc = _win.document;
-
-    if( !_win.isOverlayLoaded )
-    {
-        _win.MediaLibraryModuleUrl     = '{{ oViewConf.getModuleUrl('ddoemedialibrary') }}';
-        _win.editorControllerUrl = '{{ oViewConf.getSelfLink()|cat('cl=ddoemedia_wrapper&overlay=1')|replace({'&amp;':'&'})|raw }}';
-        _win.isOverlayLoaded     = true;
-
-        var loadScript = function( src, cb )
-        {
-            var headElement   = _doc.getElementsByTagName( 'head' )[ 0 ];
-            var scriptElement = _doc.createElement( 'script' );
-
-            scriptElement.setAttribute( 'src', src );
-
-            if( typeof cb === 'function' )
-            {
-                scriptElement.addEventListener( 'load', function( e ) { cb( null, e ); }, false );
-            }
-
-            headElement.appendChild( scriptElement );
-        };
-
-
-        document.addEventListener('DOMContentLoaded', function () {
-            loadScript('{{ oViewConf.getSelfLink()|cat('cl=ddoelangjs')|replace({'&amp;':'&'})|raw }}', function () {
-                loadScript('{{ oViewConf.getModuleUrl('ddoemedialibrary','out/src/js/overlay.min.js') }}');
-            });
-        });
-    }
-</script>
-
-{{ script({ include: oViewConf.getSelfLink()|cat('cl=ddoelangjs'), priority: 1, dynamic: __oxid_include_dynamic }) }}
-
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery-ui.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/bootstrap.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
@@ -72,7 +35,29 @@
 <script type="module">
     import { autoInitializeSummernote } from "{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/ddoesummernote.min.js') }}";
 
+    top.basefrm.MediaLibraryModuleUrl = "{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/base.min.js') }}";
+    top.basefrm.MediaLibraryStyles = '{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/css/overlay.min.css') }}';
+    top.basefrm.editorControllerUrl = '{{ oViewConf.getSelfLink()|cat('cl=ddoemedia_wrapper&overlay=1')|replace({'&amp;':'&'})|raw }}';
+
     document.addEventListener("DOMContentLoaded", function() {
+        const baseIframe = top.basefrm.document;
+        const moduleScript = baseIframe.createElement("script");
+        moduleScript.type = "module";
+        moduleScript.innerHTML = `
+            (async () => {
+                try {
+                    await import("{{ oViewConf.getSelfLink()|cat('cl=ddoelangjs')|replace({'&amp;':'&'})|raw }}");
+                    await import("{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery.min.js') }}");
+
+                    const { OverlayInstance } = await import("{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/overlay.min.js') }}");
+
+                    window.OverlayInstance = OverlayInstance;
+                } catch (error) {
+                    console.error("Failed to load overlay script:", error);
+                }
+            })();
+        `;
+        baseIframe.head.appendChild(moduleScript);
         autoInitializeSummernote();
     });
 </script>
