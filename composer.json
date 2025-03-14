@@ -42,12 +42,17 @@
     },
     "autoload":    {
         "psr-4": {
-            "OxidEsales\\WysiwygModule\\": "./src",
-            "OxidEsales\\WysiwygModule\\Tests\\": "./tests"
+            "OxidEsales\\WysiwygModule\\": "./src"
+        }
+    },
+    "autoload-dev":    {
+        "psr-4": {
+            "OxidEsales\\WysiwygModule\\Tests\\": "./tests",
+            "OxidEsales\\EshopCommunity\\Tests\\": "./vendor/oxid-esales/oxideshop-ce/tests"
         }
     },
     "conflict": {
-        "oxid-esales/oxideshop-ce": "<7.2"
+        "oxid-esales/oxideshop-ce": "<7.3"
     },
     "scripts": {
         "phpcs-report": "phpcs --standard=tests/phpcs.xml --report=json --report-file=phpcs.report.json",
@@ -72,7 +77,7 @@
     "config": {
         "allow-plugins": {
             "oxid-esales/oxideshop-unified-namespace-generator": true,
-            "oxid-esales/oxideshop-composer-plugin": false
+            "oxid-esales/oxideshop-composer-plugin": true
         }
     }
 }
