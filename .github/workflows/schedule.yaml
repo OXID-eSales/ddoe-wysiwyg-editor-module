@@ -6,7 +6,7 @@ on:
 
 jobs:
   schedule_matrix:
-    uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
+    uses: OXID-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
     with:
       testplan: '~/defaults/7.3.x.yaml,~/module-wysiwyg.yaml,~/_custom.yaml'
       runs_on: '"ubuntu-latest"'
