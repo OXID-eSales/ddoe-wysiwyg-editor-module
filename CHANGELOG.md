@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Migrate from Grunt to Vite for assets generating
 - Rewrite JS scripts to ES6
+- jQuery updated to v3.7.1 version
 
 ### Removed
 - External libraries from vendor directory. They are installed using Node.js now
