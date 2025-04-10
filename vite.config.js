@@ -16,11 +16,11 @@ export default defineConfig({
                 { src: path.resolve(__dirname, 'node_modules/summernote/dist/font'), dest: 'css' },
                 { src: path.resolve(__dirname, 'node_modules/font-awesome/css/font-awesome.min.css'), dest: 'css' },
                 { src: path.resolve(__dirname, 'node_modules/font-awesome/fonts'), dest: '' },
-                { src: path.resolve(__dirname, 'build/img/*'), dest: 'img' },
+                { src: path.resolve(__dirname, 'node_build/img/*'), dest: 'img' },
             ],
         }),
         eslint({
-            overrideConfigFile: path.resolve(__dirname, 'build/js/eslint.config.js'),
+            overrideConfigFile: path.resolve(__dirname, 'node_build/js/eslint.config.js'),
             failOnError: true,
             failOnWarning: false,
         })
@@ -32,7 +32,7 @@ export default defineConfig({
         rollupOptions: {
             preserveEntrySignatures: 'strict',
             input: {
-                ddoesummernote: path.resolve(__dirname, 'build/js/summernote/init.js'),
+                ddoesummernote: path.resolve(__dirname, 'node_build/js/summernote/init.js'),
             },
             output: {
                 entryFileNames: 'js/summernote/[name].min.js',
