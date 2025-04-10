@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [undecided] - unreleased
+## [5.0.0] - 2025-04-10
 
 ### Added
 - Support of PHP 8.4
@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 - External libraries from vendor directory. They are installed using Node.js now
+- Completely removed Grunt and its dependencies from the project
 - Possibility to 'Use default protocol' in Link Dialog
 
 ## [4.2.0] - 2024-10-14
@@ -143,6 +144,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
+[5.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v4.2.0...v5.0.0
 [4.2.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v4.1.0...v4.2.0
 [4.1.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v4.0.0...v4.1.0
 [4.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v3.0.2...v4.0.0
