@@ -20,7 +20,7 @@
     "yarn": "^1.22.19"
   },
   "scripts": {
-    "lint": "eslint --config build/js/eslint.config.js --ext .js build",
+    "lint": "eslint --config node_build/js/eslint.config.js --ext .js node_build",
     "build": "vite build",
     "watch": "vite build --watch"
   },

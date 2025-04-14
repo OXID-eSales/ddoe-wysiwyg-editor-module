@@ -1,6 +1,6 @@
 export default [
   {
-    files: ['build/js/**/*.js'],
+    files: ['node_build/js/**/*.js'],
     languageOptions: {
       sourceType: 'module',
       globals: {
