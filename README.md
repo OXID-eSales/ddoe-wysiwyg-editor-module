@@ -1,6 +1,6 @@
 # Summernote WYSIWYG Editor for OXID eShop
 
-[![Development](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yaml/badge.svg?branch=b-7.3.x)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yaml)
+[![Development](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yaml/badge.svg?branch=b-7.4.x)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yaml)
 [![Latest Version](https://img.shields.io/packagist/v/ddoe/wysiwyg-editor-module?logo=composer&label=latest&include_prereleases&color=orange)](https://packagist.org/packages/ddoe/wysiwyg-editor-module)
 [![PHP Version](https://img.shields.io/packagist/php-v/ddoe/wysiwyg-editor-module)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module)
 
@@ -18,9 +18,10 @@
 * versions `2.x` - compatible with OXID eShop compilation 6.0.x - 6.5.x
 
 ### Branches
-* `b-7.3.x` is compatible with OXID eShop b-7.3.x branch, works with **Twig engine** only
-* `b-7.2.x` is compatible with OXID eShop b-7.2.x branch, works with **Twig engine** only
-* `b-7.1.x` is compatible with OXID eShop b-7.1.x branch, works with **Twig engine** only
+* `b-7.4.x` is compatible with OXID eShop b-7.4.x branch
+* `b-7.3.x` is compatible with OXID eShop b-7.3.x branch
+* `b-7.2.x` is compatible with OXID eShop b-7.2.x branch
+* `b-7.1.x` is compatible with OXID eShop b-7.1.x branch, works with **Twig engine** only from here on
 * `b-7.0.x` is compatible with OXID eShop b-7.0.x branch and supports **Legacy Smarty engine**
 * `b-2.x` is compatible with OXID eShop compilations: 6.2.x - 6.5.x
 
@@ -30,7 +31,7 @@ In order to install the module via composer run one of the following commands in
 (where the shop's composer.json file resides).
 * `composer require ddoe/wysiwyg-editor-module:^5.0.0`
   to install the latest released version compatible with OXID eShop v7.3.x
-* `composer require ddoe/wysiwyg-editor-module:dev-b-7.3.x`
+* `composer require ddoe/wysiwyg-editor-module:dev-b-7.4.x`
   to install the specific unreleased branch
 
 ### Module activation in OXID eShop Admin
@@ -39,7 +40,7 @@ After installation, please, activate the module in OXID eShop Admin
 
 # Development installation
 The installation instructions below are shown for the current [SDK](https://github.com/OXID-eSales/docker-eshop-sdk)
-for shop 7.3. Make sure your system meets the requirements of the SDK.
+for shop 7.4. Make sure your system meets the requirements of the SDK.
 
 0. Ensure all docker containers are down to avoid port conflicts
 
@@ -50,7 +51,7 @@ echo MyProject && git clone https://github.com/OXID-eSales/docker-eshop-sdk.git 
 
 2. Clone the repository to the source directory
 ```shell
-git clone --recurse-submodules https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module.git --branch=b-7.3.x ./source
+git clone --recurse-submodules https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module.git --branch=b-7.4.x ./source
 ```
 
 3. Run the recipe to setup the development environment
