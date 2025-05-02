@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [5.0.1] - Unreleased
 
+### Changed
+- Updated the PHPStan to 2.1
+
 ### Fixed
 - Development recipe to not require the media library module twice
 - Run migrations on CI before module activation
