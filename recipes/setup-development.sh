@@ -44,8 +44,6 @@ $SCRIPT_PATH/parts/shared/require.sh -n"oxid-esales/developer-tools" -v"dev-b-7.
 $SCRIPT_PATH/parts/shared/require_theme_dev.sh -t"apex" -b"b-7.3.x"
 $SCRIPT_PATH/parts/shared/require_demodata_package.sh -e"${edition}" -b"b-7.3.x"
 
-$SCRIPT_PATH/parts/shared/require.sh -n"oxid-esales/media-library-module" -g"https://github.com/OXID-eSales/media-library-module.git" -v"dev-b-7.3.x"
-
 docker compose exec php composer update --no-interaction
 
 make up
@@ -68,8 +66,6 @@ $SCRIPT_PATH/parts/shared/create_admin.sh
 mkdir -p .idea; mkdir -p source/.idea; cp "${SCRIPT_PATH}/parts/bases/vcs.xml.base" .idea/vcs.xml
 perl -pi\
   -e 's#</component>#<mapping directory="\$PROJECT_DIR\$/source" vcs="Git" />\n  </component>#g;'\
-  -e 's#</component>#<mapping directory="\$PROJECT_DIR\$/source/vendor/oxid-esales/media-library-module" vcs="Git" />\n  </component>#g;'\
-  -e 's#</component>#<mapping directory="\$PROJECT_DIR\$/source/vendor/ddoe/wysiwyg-editor-module" vcs="Git" />\n  </component>#g;'\
   -e 's#</component>#<mapping directory="\$PROJECT_DIR\$/source/vendor/oxid-esales/media-library-module" vcs="Git" />\n  </component>#g;'\
   -e 's#</component>#<mapping directory="\$PROJECT_DIR\$/source/vendor/oxid-esales/oxideshop-ce" vcs="Git" />\n  </component>#g;'\
   -e 's#</component>#<mapping directory="\$PROJECT_DIR\$/source/vendor/oxid-esales/oxideshop-pe" vcs="Git" />\n  </component>#g;'\

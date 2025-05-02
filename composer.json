@@ -75,9 +75,13 @@
         ]
     },
     "config": {
+        "github-protocols": ["https"],
         "allow-plugins": {
             "oxid-esales/oxideshop-unified-namespace-generator": true,
             "oxid-esales/oxideshop-composer-plugin": true
+        },
+        "preferred-install": {
+            "oxid-esales/media-library-module": "source"
         }
     }
 }
