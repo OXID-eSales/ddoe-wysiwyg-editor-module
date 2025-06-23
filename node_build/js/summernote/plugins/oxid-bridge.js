@@ -43,6 +43,7 @@ export function injectOxidBridge() {
 
         html: function ($node, isNewlineOnBlock) {
             var markup = this.value( $node );
+            var mediaTag = '{{oViewConf.getMediaUrl()}}';
 
             if (isNewlineOnBlock) {
                 var regexTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
@@ -58,6 +59,14 @@ export function injectOxidBridge() {
 
                 markup = $.trim( markup );
             }
+
+            // set media smarty or twig tags
+            markup = markup.replace(
+                /<img[^>]*src=\s*"([^"]+)"[^>]*data-filename=\s*"([^">]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi,
+                function( tag, src, filename ) {
+                    return tag.replace( src, mediaTag + '/' + filename );
+                }
+            );
 
             return markup;
         }

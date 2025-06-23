@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Development recipe to not require the media library module twice
 - Run migrations on CI before module activation
+- Add missing `getMediaUrl` replacement for Media library images
 
 ## [5.0.0] - 2025-04-10
 
