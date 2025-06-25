@@ -33,6 +33,8 @@
 {% endif %}
 
 <script type="module">
+    top.basefrm.mediaUrls = {{ contentMediaUrls|json_encode|raw }};
+
     import { autoInitializeSummernote } from "{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/ddoesummernote.min.js') }}";
 
     top.basefrm.MediaLibraryModuleUrl = "{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/base.min.js') }}";

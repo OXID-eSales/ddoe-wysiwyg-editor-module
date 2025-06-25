@@ -16,18 +16,17 @@ export function injectOxidBridge() {
             if (isTextarea($node[0])) {
                 val = $node.val();
 
+                // fix tags double quotes within attributes
                 var regex = new RegExp(/(=\s*")([^">]*)(\{\{([^\}\}]|\}[^\}]|[^\}]\})*\}\})([^">]*)(")/gi);
-                var regexMediaUrl = new RegExp(/<img[^>]*src=\s*"(\{\{oViewConf.getMediaUrl\(\)\}\}[^">]+)"[^>]*data-filepath=\s*"([^">]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi);
-
-                // fix smarty or twig tags double quotes within attributes
                 val = val.replace(regex, function(text, start, attr_before, smarty, smarty_inner, attr_after, end) {
                     smarty = smarty.replace(/\\"/g, '\'').replace(/"/g, '\'');
                     return (start + attr_before + smarty + attr_after + end);
                 });
 
-                // switch smarty or twig function call with media url
-                val = val.replace(regexMediaUrl, function(text, src, filepath) {
-                    text = text.replace(src, filepath);
+                // switch twig function call with media url
+                var regexMediaUrl = new RegExp(/<img[^>]*src=\s*"(.*?[^"])"[^>]*data-id=\s*"([^">]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi);
+                val = val.replace(regexMediaUrl, function(text, src, id) {
+                    text = text.replace(src, top.basefrm.mediaUrls[id]);
                     return text;
                 });
             } else {
@@ -43,7 +42,6 @@ export function injectOxidBridge() {
 
         html: function ($node, isNewlineOnBlock) {
             var markup = this.value( $node );
-            var mediaTag = '{{oViewConf.getMediaUrl()}}';
 
             if (isNewlineOnBlock) {
                 var regexTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
@@ -62,9 +60,9 @@ export function injectOxidBridge() {
 
             // set media smarty or twig tags
             markup = markup.replace(
-                /<img[^>]*src=\s*"([^"]+)"[^>]*data-filename=\s*"([^">]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi,
-                function( tag, src, filename ) {
-                    return tag.replace( src, mediaTag + '/' + filename );
+                /<img[^>]*src=\s*"([^"]+)"[^>]*data-id=\s*"([^">]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi,
+                function(tag, src, id) {
+                    return tag.replace( src, "{{oViewConf.getMediaUrl('" + id + "')}}" );
                 }
             );
 

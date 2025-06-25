@@ -80,13 +80,25 @@ export function autoInitializeSummernote() {
                 var $editor = initializeSummernote($(this), {
                     minHeight: iHeight,
                     lang: $(this).data('lang') == 'de' ? 'de-DE' : 'en-US',
-                    defaultProtocol: $(this).data('ssl') == '1' ? 'https://' : 'http://'
+                    defaultProtocol: $(this).data('ssl') == '1' ? 'https://' : 'http://',
+                    callbacks: {
+                        onInit: function() {
+                            $('img.dd-wysiwyg-media-image').each(function () {
+                                const id = $(this).attr('data-id');
+                                const realSrc = top.basefrm.mediaUrls[id];
+                                if (realSrc) {
+                                    $(this).attr('src', realSrc);
+                                }
+                            });
+                        }
+                    }
                 });
 
                 if ('disabled' === $(this).attr('disabled')) {
                     $(this).summernote('disable');
                 }
 
+                // todo: check why this activation/deactivation is needed
                 var editorContext = $editor.data( 'summernote' );
                 editorContext.invoke('codeview.activate');
                 editorContext.invoke('codeview.deactivate');
@@ -97,6 +109,7 @@ export function autoInitializeSummernote() {
 
         $form.find('*[type="submit"]').first().on('click', function() {
             $('.ddoe-wysiwyg-editor > textarea', $form).each(function () {
+                // todo: check why this activation/deactivation is needed
                 var context = $( this ).data( 'summernote' );
 
                 // deactivate codeview before getting value
@@ -104,6 +117,9 @@ export function autoInitializeSummernote() {
                     context.invoke( 'codeview.deactivate' );
                 }
                 context.invoke( 'codeview.activate' );
+
+                // use the codeview value as the textarea final value before submit
+                $( this ).val($( this ).summernote('code'));
             });
         });
     }
