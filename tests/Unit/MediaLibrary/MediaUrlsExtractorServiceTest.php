@@ -11,6 +11,7 @@ namespace OxidEsales\WysiwygModule\Tests\Unit\MediaLibrary;
 
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepositoryInterface;
+use OxidEsales\MediaLibrary\Media\Service\MediaObjectResourceInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\WysiwygModule\MediaLibrary\MediaIdParserServiceInterface;
 use OxidEsales\WysiwygModule\MediaLibrary\MediaUrlsExtractorService;
@@ -42,8 +43,8 @@ class MediaUrlsExtractorServiceTest extends TestCase
                 [$id2, $media2Stub = $this->createStub(MediaInterface::class)],
             ]);
 
-        $mediaResourceMock = $this->createMock(MediaResourceInterface::class);
-        $mediaResourceMock->method('getUrlToMedia')
+        $mediaObjectResourceService = $this->createMock(MediaObjectResourceInterface::class);
+        $mediaObjectResourceService->method('getUrlToMedia')
             ->willReturnMap([
                 [$media1Stub, $url1 = uniqid()],
                 [$media2Stub, $url2 = uniqid()],
@@ -52,7 +53,7 @@ class MediaUrlsExtractorServiceTest extends TestCase
         $sut = $this->getSut(
             mediaIdParserService: $mediaParser,
             preloadMediaRepository: $preloadRepositorySpy,
-            mediaResource: $mediaResourceMock,
+            mediaObjectResource: $mediaObjectResourceService,
         );
 
         $result = $sut->getContentMediaUrls($input);
@@ -64,12 +65,12 @@ class MediaUrlsExtractorServiceTest extends TestCase
     private function getSut(
         MediaIdParserServiceInterface $mediaIdParserService = null,
         PreloadMediaRepositoryInterface $preloadMediaRepository = null,
-        MediaResourceInterface $mediaResource = null,
+        MediaObjectResourceInterface $mediaObjectResource = null,
     ): MediaUrlsExtractorService {
         return new MediaUrlsExtractorService(
             mediaIdParserService: $mediaIdParserService,
             preloadMediaRepository: $preloadMediaRepository,
-            mediaResource: $mediaResource,
+            mediaObjectResource: $mediaObjectResource,
         );
     }
 }

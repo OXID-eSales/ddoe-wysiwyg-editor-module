@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\WysiwygModule\MediaLibrary;
 
 use OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepositoryInterface;
-use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
+use OxidEsales\MediaLibrary\Media\Service\MediaObjectResourceInterface;
 
 class MediaUrlsExtractorService implements MediaUrlsExtractorServiceInterface
 {
@@ -18,7 +18,7 @@ class MediaUrlsExtractorService implements MediaUrlsExtractorServiceInterface
     public function __construct(
         private readonly MediaIdParserServiceInterface $mediaIdParserService,
         private readonly PreloadMediaRepositoryInterface $preloadMediaRepository,
-        private readonly MediaResourceInterface $mediaResource,
+        private readonly MediaObjectResourceInterface $mediaObjectResource,
     ) {
     }
 
@@ -33,7 +33,7 @@ class MediaUrlsExtractorService implements MediaUrlsExtractorServiceInterface
         $result = [];
         foreach ($ids as $oneId) {
             $media = $this->preloadMediaRepository->getMediaById($oneId);
-            $result[$oneId] = $this->mediaResource->getUrlToMedia($media);
+            $result[$oneId] = $this->mediaObjectResource->getUrlToMedia($media);
         }
 
         return $result;
