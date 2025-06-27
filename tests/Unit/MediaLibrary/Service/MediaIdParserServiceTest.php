@@ -42,6 +42,18 @@ class MediaIdParserServiceTest extends TestCase
             'expectedIds' => [$randomId],
         ];
 
+        $randomId = uniqid();
+        yield 'one placeholder with quotes not apostrophes' => [
+            'content' => uniqid() . "{{oeMediaUrl(\"" . $randomId . "\")}}" . uniqid(),
+            'expectedIds' => [$randomId],
+        ];
+
+        $randomId = uniqid();
+        yield 'one placeholder with additional spaces' => [
+            'content' => uniqid() . "{{ oeMediaUrl('" . $randomId . "') }}" . uniqid(),
+            'expectedIds' => [$randomId],
+        ];
+
         $randomId1 = uniqid();
         $randomId2 = uniqid();
         yield 'multiple different placeholders' => [
