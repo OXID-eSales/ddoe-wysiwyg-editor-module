@@ -39,7 +39,7 @@ class EditorRenderer implements EditorRendererInterface
             'iEditorWidth' => $this->prepareSize($width),
             'iEditorHeight' => $this->prepareSize($height),
             'sEditorField' => $fieldName,
-            'sEditorValue' => $this->filterContent($objectValue),
+            'sEditorValue' => $this->htmlFilter->filter($objectValue),
             'langabbr' => $this->settingsService->getInterfaceLanguageAbbreviation(),
             'blTextEditorDisabled' => $isEditorDisabled,
             'oViewConf' => $this->settingsService->getActiveViewConfig(),
@@ -61,10 +61,5 @@ class EditorRenderer implements EditorRendererInterface
     private function checkIfOnlyDigitsInValue(string $sizeValue): bool
     {
         return (bool)preg_match("/^\d+$/i", $sizeValue);
-    }
-
-    private function filterContent(string $content): string
-    {
-        return $this->htmlFilter->filter($content);
     }
 }

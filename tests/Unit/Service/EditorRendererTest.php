@@ -213,13 +213,16 @@ class EditorRendererTest extends TestCase
         $sut->render('any', 'any', 'any', 'any');
     }
 
-    #[DataProvider('filterTemplateProvider')]
-    public function testFilterContent(string $template, string $expectedTemplate): void
+    public function testFilterContent(): void
     {
+        $contentExample = uniqid();
+
+        $filteredContent = uniqid();
         $htmlFilterStub = $this->createMock(HtmlFilterInterface::class);
         $htmlFilterStub
             ->method('filter')
-            ->willReturn($expectedTemplate);
+            ->with($contentExample)
+            ->willReturn($filteredContent);
 
         $templateRendererSpy = $this->createMock(TemplateRendererInterface::class);
         $templateRendererSpy
@@ -227,8 +230,8 @@ class EditorRendererTest extends TestCase
             ->method('renderTemplate')
             ->with(
                 '@ddoewysiwyg/ddoewysiwyg',
-                $this->callback(function ($context) use ($expectedTemplate) {
-                    return $expectedTemplate == $context['sEditorValue'];
+                $this->callback(function ($context) use ($filteredContent) {
+                    return $filteredContent == $context['sEditorValue'];
                 })
             );
 
@@ -236,33 +239,7 @@ class EditorRendererTest extends TestCase
             templateRenderer:  $templateRendererSpy,
             htmlFilter: $htmlFilterStub
         );
-        $sut->render('any', 'any', $template, 'any');
-    }
-
-    public static function filterTemplateProvider(): array
-    {
-        return [
-            [
-                'template' => 'plain template',
-                'expectedTemplate' => 'plain template',
-            ],
-            [
-                'template' => '<div>template</div>',
-                'expectedTemplate' => '<div>template</div>',
-            ],
-            [
-                'template' => '<p>par 1</p><script>//js1</script><p>par 2</p>',
-                'expectedTemplate' => '<p>par 1</p>//js1<p>par 2</p>',
-            ],
-            [
-                'template' => '<script>//js1</script><script>//js2</script>',
-                'expectedTemplate' => '//js1//js2',
-            ],
-            [
-                'template' => '<p>par 1</p><script src="app.js"/><p>par 2</p>',
-                'expectedTemplate' => '<p>par 1</p><p>par 2</p>',
-            ],
-        ];
+        $sut->render('any', 'any', $contentExample, 'any');
     }
 
     private function getSut(
