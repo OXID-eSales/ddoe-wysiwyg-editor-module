@@ -7,14 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\WysiwygModule\Tests\Unit\MediaLibrary;
+namespace MediaLibrary\Service;
 
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaObjectResourceInterface;
-use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
-use OxidEsales\WysiwygModule\MediaLibrary\MediaIdParserServiceInterface;
-use OxidEsales\WysiwygModule\MediaLibrary\MediaUrlsExtractorService;
+use OxidEsales\WysiwygModule\MediaLibrary\Service\MediaIdParserServiceInterface;
+use OxidEsales\WysiwygModule\MediaLibrary\Service\MediaUrlsExtractorService;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

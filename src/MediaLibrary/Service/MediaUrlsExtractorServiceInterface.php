@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\WysiwygModule\MediaLibrary;
+namespace OxidEsales\WysiwygModule\MediaLibrary\Service;
 
 interface MediaUrlsExtractorServiceInterface
 {

@@ -1,4 +1,5 @@
 imports:
+  - { resource: src/MediaLibrary/services.yaml }
   - { resource: src/Service/services.yaml }
   - { resource: src/HtmlFilter/services.yaml }
 

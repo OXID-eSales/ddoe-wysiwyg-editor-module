@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\WysiwygModule\MediaLibrary;
+namespace OxidEsales\WysiwygModule\MediaLibrary\Service;
 
 use OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaObjectResourceInterface;

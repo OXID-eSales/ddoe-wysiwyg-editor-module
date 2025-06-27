@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\WysiwygModule\MediaLibrary\Service\MediaIdParserServiceInterface:
+    class: OxidEsales\WysiwygModule\MediaLibrary\Service\MediaIdParserService
+
+  OxidEsales\WysiwygModule\MediaLibrary\Service\MediaUrlsExtractorServiceInterface:
+    class: OxidEsales\WysiwygModule\MediaLibrary\Service\MediaUrlsExtractorService

@@ -11,10 +11,6 @@ namespace OxidEsales\WysiwygModule\Tests\Integration;
 
 use OxidEsales\EshopCommunity\Internal\Container\ContainerBuilderFactory;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
-use OxidEsales\WysiwygModule\HtmlFilter\HtmlFilterInterface;
-use OxidEsales\WysiwygModule\HtmlFilter\HtmlRemoverInterface;
-use OxidEsales\WysiwygModule\Service\EditorRendererInterface;
-use OxidEsales\WysiwygModule\Service\SettingsInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -64,12 +60,16 @@ class ServiceAvailabilityTest extends IntegrationTestCase
     {
         return [
             // HtmlFilter
-            [HtmlFilterInterface::class],
-            [HtmlRemoverInterface::class],
+            [\OxidEsales\WysiwygModule\HtmlFilter\HtmlFilterInterface::class],
+            [\OxidEsales\WysiwygModule\HtmlFilter\HtmlRemoverInterface::class],
+
+            // MediaLibrary
+            [\OxidEsales\WysiwygModule\MediaLibrary\Service\MediaIdParserServiceInterface::class],
+            [\OxidEsales\WysiwygModule\MediaLibrary\Service\MediaUrlsExtractorServiceInterface::class],
 
             // Service
-            [EditorRendererInterface::class],
-            [SettingsInterface::class],
+            [\OxidEsales\WysiwygModule\Service\EditorRendererInterface::class],
+            [\OxidEsales\WysiwygModule\Service\SettingsInterface::class],
         ];
     }
 }

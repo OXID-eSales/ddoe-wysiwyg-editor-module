@@ -7,10 +7,10 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\WysiwygModule\Tests\Unit\MediaLibrary;
+namespace MediaLibrary\Service;
 
-use OxidEsales\WysiwygModule\MediaLibrary\MediaIdParserService;
-use OxidEsales\WysiwygModule\MediaLibrary\MediaIdParserServiceInterface;
+use OxidEsales\WysiwygModule\MediaLibrary\Service\MediaIdParserService;
+use OxidEsales\WysiwygModule\MediaLibrary\Service\MediaIdParserServiceInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
