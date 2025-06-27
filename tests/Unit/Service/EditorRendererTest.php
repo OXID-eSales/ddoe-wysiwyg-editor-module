@@ -12,6 +12,7 @@ namespace OxidEsales\WysiwygModule\Tests\Unit\Service;
 use OxidEsales\Eshop\Core\ViewConfig;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
 use OxidEsales\WysiwygModule\HtmlFilter\HtmlFilterInterface;
+use OxidEsales\WysiwygModule\MediaLibrary\Service\MediaUrlsExtractorServiceInterface;
 use OxidEsales\WysiwygModule\Service\EditorRenderer;
 use OxidEsales\WysiwygModule\Service\SettingsInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -242,15 +243,47 @@ class EditorRendererTest extends TestCase
         $sut->render('any', 'any', $contentExample, 'any');
     }
 
+    public function testMediaUrlsGivenToTemplate(): void
+    {
+        $contentExample = uniqid();
+
+        $expectedMediaUrls = [uniqid(), uniqid()];
+        $mediaUrlsExtractorMock = $this->createMock(MediaUrlsExtractorServiceInterface::class);
+        $mediaUrlsExtractorMock->method('getContentMediaUrls')
+            ->with($contentExample)
+            ->willReturn($expectedMediaUrls);
+
+        $templateRendererSpy = $this->createMock(TemplateRendererInterface::class);
+        $templateRendererSpy
+            ->expects($this->once())
+            ->method('renderTemplate')
+            ->with(
+                '@ddoewysiwyg/ddoewysiwyg',
+                $this->callback(function ($context) use ($expectedMediaUrls) {
+                    return $expectedMediaUrls == $context['contentMediaUrls'];
+                })
+            );
+
+        $sut = $this->getSut(
+            templateRenderer:  $templateRendererSpy,
+            mediaUrlsExtractor: $mediaUrlsExtractorMock,
+        );
+        $sut->render('any', 'any', $contentExample, 'any');
+    }
+
     private function getSut(
         TemplateRendererInterface $templateRenderer = null,
         SettingsInterface $settingsService = null,
         HtmlFilterInterface $htmlFilter = null,
+        MediaUrlsExtractorServiceInterface $mediaUrlsExtractor = null,
     ): EditorRenderer {
+        $mediaUrlsExtractor ??= $this->createMock(MediaUrlsExtractorServiceInterface::class);
+
         return new EditorRenderer(
             templateRenderer: $templateRenderer ?? $this->createStub(TemplateRendererInterface::class),
             settingsService: $settingsService ?? $this->createStub(SettingsInterface::class),
             htmlFilter: $htmlFilter ?? $this->createStub(HtmlFilterInterface::class),
+            mediaUrlsExtractorService: $mediaUrlsExtractor
         );
     }
 }

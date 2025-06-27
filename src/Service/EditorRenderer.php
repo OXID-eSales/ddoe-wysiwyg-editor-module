@@ -11,16 +11,21 @@ namespace OxidEsales\WysiwygModule\Service;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
 use OxidEsales\WysiwygModule\HtmlFilter\HtmlFilterInterface;
+use OxidEsales\WysiwygModule\MediaLibrary\Service\MediaUrlsExtractorServiceInterface;
 
 class EditorRenderer implements EditorRendererInterface
 {
     public function __construct(
         protected TemplateRendererInterface $templateRenderer,
         protected SettingsInterface $settingsService,
-        protected HtmlFilterInterface $htmlFilter
+        protected HtmlFilterInterface $htmlFilter,
+        private readonly MediaUrlsExtractorServiceInterface $mediaUrlsExtractorService,
     ) {
     }
 
+    // todo: extract template parameters calculation to a separate class
+    // todo: decorate parameters calculator with html filter part
+    // todo: decorate parameters calculator with the media urls part
     public function render(
         string $width,
         string $height,
@@ -28,13 +33,6 @@ class EditorRenderer implements EditorRendererInterface
         string $fieldName,
         bool $isEditorDisabled = false,
     ): string {
-        // todo: prepare images
-        $urls = [
-            '055254e0af61e897dface96873f29254' => 'http://localhost.local/out/pictures/ddmedia/1028-536x354.jpg',
-            'a7a8388ee560d72e2858681cc388a0e5' => 'http://localhost.local/out/pictures/ddmedia/1028-536x354.jpg',
-            'abe2cefab95e8660cc5d5a53d2e09b97' => 'http://localhost.local/out/pictures/ddmedia/1028-536x354.jpg',
-        ];
-
         $config = [
             'iEditorWidth' => $this->prepareSize($width),
             'iEditorHeight' => $this->prepareSize($height),
@@ -43,7 +41,7 @@ class EditorRenderer implements EditorRendererInterface
             'langabbr' => $this->settingsService->getInterfaceLanguageAbbreviation(),
             'blTextEditorDisabled' => $isEditorDisabled,
             'oViewConf' => $this->settingsService->getActiveViewConfig(),
-            'contentMediaUrls' => $urls,
+            'contentMediaUrls' => $this->mediaUrlsExtractorService->getContentMediaUrls($objectValue),
         ];
 
         return $this->templateRenderer->renderTemplate('@ddoewysiwyg/ddoewysiwyg', $config);
