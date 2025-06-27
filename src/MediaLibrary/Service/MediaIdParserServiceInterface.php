@@ -9,6 +9,5 @@ namespace OxidEsales\WysiwygModule\MediaLibrary\Service;
 
 interface MediaIdParserServiceInterface
 {
-
     public function parseMediaIdsFromContent(string $content): array;
 }

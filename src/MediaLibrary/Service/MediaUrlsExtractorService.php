@@ -14,7 +14,6 @@ use OxidEsales\MediaLibrary\Media\Service\MediaObjectResourceInterface;
 
 class MediaUrlsExtractorService implements MediaUrlsExtractorServiceInterface
 {
-
     public function __construct(
         private readonly MediaIdParserServiceInterface $mediaIdParserService,
         private readonly PreloadMediaRepositoryInterface $preloadMediaRepository,
