@@ -14,7 +14,7 @@ class MediaIdParserService implements MediaIdParserServiceInterface
     public function parseMediaIdsFromContent(string $content): array
     {
         preg_match_all(
-            "/{{oViewConf.getMediaUrl\('([\w.]+)'\)}}/",
+            "/{{oeMediaUrl\('([\w.]+)'\)}}/",
             $content,
             $matches
         );

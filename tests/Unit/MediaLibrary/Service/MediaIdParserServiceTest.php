@@ -26,36 +26,36 @@ class MediaIdParserServiceTest extends TestCase
 
         $randomId = uniqid();
         yield 'one placeholder' => [
-            'content' => uniqid() . "{{oViewConf.getMediaUrl('" . $randomId . "')}}" . uniqid(),
+            'content' => uniqid() . "{{oeMediaUrl('" . $randomId . "')}}" . uniqid(),
             'expectedIds' => [$randomId],
         ];
 
         $randomId = uniqid() . '.' . uniqid();
         yield 'one placeholder with dot in id' => [
-            'content' => uniqid() . "{{oViewConf.getMediaUrl('" . $randomId . "')}}" . uniqid(),
+            'content' => uniqid() . "{{oeMediaUrl('" . $randomId . "')}}" . uniqid(),
             'expectedIds' => [$randomId],
         ];
 
         $randomId = uniqid() . '_' . uniqid();
         yield 'one placeholder with underscore in id' => [
-            'content' => uniqid() . "{{oViewConf.getMediaUrl('" . $randomId . "')}}" . uniqid(),
+            'content' => uniqid() . "{{oeMediaUrl('" . $randomId . "')}}" . uniqid(),
             'expectedIds' => [$randomId],
         ];
 
         $randomId1 = uniqid();
         $randomId2 = uniqid();
         yield 'multiple different placeholders' => [
-            'content' => uniqid() . "{{oViewConf.getMediaUrl('" . $randomId1 . "')}}" . uniqid()
-                . uniqid() . "{{oViewConf.getMediaUrl('" . $randomId2 . "')}}" . uniqid(),
+            'content' => uniqid() . "{{oeMediaUrl('" . $randomId1 . "')}}" . uniqid()
+                . uniqid() . "{{oeMediaUrl('" . $randomId2 . "')}}" . uniqid(),
             'expectedIds' => [$randomId1, $randomId2],
         ];
 
         $randomId1 = uniqid();
         $randomId2 = uniqid();
         yield 'multiple different placeholders with duplication' => [
-            'content' => uniqid() . "{{oViewConf.getMediaUrl('" . $randomId1 . "')}}" . uniqid()
-                . uniqid() . "{{oViewConf.getMediaUrl('" . $randomId2 . "')}}" . uniqid()
-                . uniqid() . "{{oViewConf.getMediaUrl('" . $randomId1 . "')}}" . uniqid(),
+            'content' => uniqid() . "{{oeMediaUrl('" . $randomId1 . "')}}" . uniqid()
+                . uniqid() . "{{oeMediaUrl('" . $randomId2 . "')}}" . uniqid()
+                . uniqid() . "{{oeMediaUrl('" . $randomId1 . "')}}" . uniqid(),
             'expectedIds' => [$randomId1, $randomId2],
         ];
     }

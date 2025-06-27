@@ -62,7 +62,7 @@ export function injectOxidBridge() {
             markup = markup.replace(
                 /<img[^>]*src=\s*"([^"]+)"[^>]*data-id=\s*"([^">]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi,
                 function(tag, src, id) {
-                    return tag.replace( src, "{{oViewConf.getMediaUrl('" + id + "')}}" );
+                    return tag.replace( src, "{{oeMediaUrl('" + id + "')}}" );
                 }
             );
 
