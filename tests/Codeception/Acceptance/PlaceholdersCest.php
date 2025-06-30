@@ -20,8 +20,10 @@ final class PlaceholdersCest
         $loadId = 'test_content';
 
         $imageId = uniqid();
-        $contentValue = '<img src="hardcodedurl" data-source="media" data-id="' . $imageId . '" class="dd-wysiwyg-media-image">';
-        $expectedContent = '<img src="{{oeMediaUrl(\'' . $imageId . '\')}}" data-source="media" data-id="' . $imageId . '" class="dd-wysiwyg-media-image">';
+        $contentValue = '<img src="hardcodedurl" data-source="media" '
+            . 'data-id="' . $imageId . '" class="dd-wysiwyg-media-image">';
+        $expectedContent = '<img src="{{oeMediaUrl(\'' . $imageId . '\')}}" data-source="media" '
+            . 'data-id="' . $imageId . '" class="dd-wysiwyg-media-image">';
 
         $I->haveInDatabase('oxcontents', [
             'OXID' => md5($loadId),
@@ -29,7 +31,7 @@ final class PlaceholdersCest
             'OXCONTENT' => $contentValue,
             'OXCONTENT_1' => $contentValue,
             'OXCONTENT_2' => $contentValue,
-            'OXCONTENT_' => $contentValue,
+            'OXCONTENT_3' => $contentValue,
         ]);
 
         $adminPanel = $I->loginAdmin();
@@ -46,8 +48,6 @@ final class PlaceholdersCest
         $I->waitForDocumentReadyState();
 
         $I->click("//input[@type='submit']");
-
-        $I->wait(30);
 
         $I->seeInDatabase('oxcontents', [
             'OXID' => md5($loadId),
