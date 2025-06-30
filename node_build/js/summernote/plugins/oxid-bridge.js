@@ -24,7 +24,7 @@ export function injectOxidBridge() {
                 });
 
                 // switch twig function call with media url
-                var regexMediaUrl = new RegExp(/<img[^>]*src=\s*"(.*?[^"])"[^>]*data-id=\s*"([^">]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi);
+                var regexMediaUrl = new RegExp(/<img[^>]*src=\s*"([^"]+)"[^>]*data-id=\s*"([^"]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi);
                 val = val.replace(regexMediaUrl, function(text, src, id) {
                     text = text.replace(src, top.basefrm.mediaUrls[id]);
                     return text;
