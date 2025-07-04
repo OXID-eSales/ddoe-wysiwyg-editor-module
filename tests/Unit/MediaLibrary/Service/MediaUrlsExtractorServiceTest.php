@@ -32,11 +32,9 @@ class MediaUrlsExtractorServiceTest extends TestCase
 
         $preloadExpectation = [$id1, $id2];
         $preloadRepositorySpy = $this->createMock(PreloadMediaRepositoryInterface::class);
-        $preloadRepositorySpy->method('registerForPreload')
-            ->willReturnCallback(function ($id) use (&$preloadExpectation) {
-                $this->assertContains($id, $preloadExpectation);
-                unset($preloadExpectation[array_search($id, $preloadExpectation)]);
-            });
+        $preloadRepositorySpy->expects($this->once())
+            ->method('registerForPreload')
+            ->with(...$preloadExpectation);
         $preloadRepositorySpy->method('getMediaById')
             ->willReturnMap([
                 [$id1, $media1Stub = $this->createStub(MediaInterface::class)],
@@ -58,8 +56,6 @@ class MediaUrlsExtractorServiceTest extends TestCase
 
         $result = $sut->getContentMediaUrls($input);
         $this->assertEquals([$id1 => $url1, $id2 => $url2], $result);
-
-        $this->assertEmpty($preloadExpectation, 'All media IDs should have been registered for preload');
     }
 
     #[Test]
@@ -74,11 +70,9 @@ class MediaUrlsExtractorServiceTest extends TestCase
 
         $preloadExpectation = [$id1, $id2];
         $preloadRepositorySpy = $this->createMock(PreloadMediaRepositoryInterface::class);
-        $preloadRepositorySpy->method('registerForPreload')
-            ->willReturnCallback(function ($id) use (&$preloadExpectation) {
-                $this->assertContains($id, $preloadExpectation);
-                unset($preloadExpectation[array_search($id, $preloadExpectation)]);
-            });
+        $preloadRepositorySpy->expects($this->once())
+            ->method('registerForPreload')
+            ->with(...$preloadExpectation);
 
         $media2Stub = $this->createStub(MediaInterface::class);
         $preloadRepositorySpy->method('getMediaById')
@@ -104,8 +98,6 @@ class MediaUrlsExtractorServiceTest extends TestCase
 
         $result = $sut->getContentMediaUrls($input);
         $this->assertEquals([$id1 => '', $id2 => $url2], $result);
-
-        $this->assertEmpty($preloadExpectation, 'All media IDs should have been registered for preload');
     }
 
     private function getSut(

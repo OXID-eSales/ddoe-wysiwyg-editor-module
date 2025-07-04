@@ -25,10 +25,7 @@ class MediaUrlsExtractorService implements MediaUrlsExtractorServiceInterface
     public function getContentMediaUrls(string $content): array
     {
         $ids = $this->mediaIdParserService->parseMediaIdsFromContent($content);
-
-        foreach ($ids as $oneId) {
-            $this->preloadMediaRepository->registerForPreload($oneId);
-        }
+        $this->preloadMediaRepository->registerForPreload(...$ids);
 
         $result = [];
         foreach ($ids as $oneId) {
