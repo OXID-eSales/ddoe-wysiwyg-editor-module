@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Development recipe to not require the media library module twice
 - Run migrations on CI before module activation
 - Add missing `getMediaUrl` replacement for Media library images
+- Summernote initialization stealing focus from previously selected input fields [#0007104](https://bugs.oxid-esales.com/view.php?id=7104)
 
 ## [5.0.0] - 2025-04-10
 

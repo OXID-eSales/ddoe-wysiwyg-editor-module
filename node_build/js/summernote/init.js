@@ -77,7 +77,7 @@ export function autoInitializeSummernote() {
 
                 var iHeight = $(this).height();
 
-                var $editor = initializeSummernote($(this), {
+                initializeSummernote($(this), {
                     minHeight: iHeight,
                     lang: $(this).data('lang') == 'de' ? 'de-DE' : 'en-US',
                     defaultProtocol: $(this).data('ssl') == '1' ? 'https://' : 'http://'
@@ -86,10 +86,6 @@ export function autoInitializeSummernote() {
                 if ('disabled' === $(this).attr('disabled')) {
                     $(this).summernote('disable');
                 }
-
-                var editorContext = $editor.data( 'summernote' );
-                editorContext.invoke('codeview.activate');
-                editorContext.invoke('codeview.deactivate');
             }
         });
 
