@@ -10,28 +10,25 @@ declare(strict_types=1);
 namespace OxidEsales\WysiwygModule\MediaLibrary\Service;
 
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
-use OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepositoryInterface;
-use OxidEsales\MediaLibrary\Media\Service\MediaObjectResourceInterface;
+use OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface;
 
 class MediaUrlsExtractorService implements MediaUrlsExtractorServiceInterface
 {
     public function __construct(
         private readonly MediaIdParserServiceInterface $mediaIdParserService,
-        private readonly PreloadMediaRepositoryInterface $preloadMediaRepository,
-        private readonly MediaObjectResourceInterface $mediaObjectResource,
+        private readonly MediaFacadeInterface $mediaFacade,
     ) {
     }
 
     public function getContentMediaUrls(string $content): array
     {
         $ids = $this->mediaIdParserService->parseMediaIdsFromContent($content);
-        $this->preloadMediaRepository->registerForPreload(...$ids);
+        $this->mediaFacade->registerForPreload(...$ids);
 
         $result = [];
         foreach ($ids as $oneId) {
             try {
-                $media = $this->preloadMediaRepository->getMediaById($oneId);
-                $mediaUrl = $this->mediaObjectResource->getUrlToMedia($media);
+                $mediaUrl = $this->mediaFacade->getMediaUrl($oneId);
             } catch (MediaNotFoundException) {
                 $mediaUrl = '';
             }
