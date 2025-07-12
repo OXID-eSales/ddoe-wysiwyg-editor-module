@@ -9,15 +9,16 @@ export default defineConfig({
             targets: [
                 { src: path.resolve(__dirname, 'node_modules/jquery/dist/jquery.min.js'), dest: 'js' },
                 { src: path.resolve(__dirname, 'node_modules/jquery-ui/dist/jquery-ui.min.js'), dest: 'js' },
-                { src: path.resolve(__dirname, 'node_modules/bootstrap/dist/js/bootstrap.min.js'), dest: 'js' },
-                { src: path.resolve(__dirname, 'node_modules/summernote/dist/summernote.min.js'), dest: 'js/summernote' },
+                { src: path.resolve(__dirname, 'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'), dest: 'js' },
+                { src: path.resolve(__dirname, 'node_modules/summernote/dist/summernote-bs5.min.js'), dest: 'js/summernote', rename: 'summernote.min.js' },
                 { src: path.resolve(__dirname, 'node_modules/summernote/dist/lang/summernote-de-DE.min.js'), dest: 'js/summernote' },
-                { src: path.resolve(__dirname, 'node_modules/summernote/dist/summernote.min.css'), dest: 'css' },
+                { src: path.resolve(__dirname, 'node_modules/bootstrap/dist/css/bootstrap.min.css'), dest: 'css' },
+                { src: path.resolve(__dirname, 'node_modules/summernote/dist/summernote-bs5.min.css'), dest: 'css', rename: 'summernote.min.css' },
                 { src: path.resolve(__dirname, 'node_modules/summernote/dist/font'), dest: 'css' },
                 { src: path.resolve(__dirname, 'node_modules/font-awesome/css/font-awesome.min.css'), dest: 'css' },
                 { src: path.resolve(__dirname, 'node_modules/font-awesome/fonts'), dest: '' },
-                { src: path.resolve(__dirname, 'node_build/img/*'), dest: 'img' },
-            ],
+                { src: path.resolve(__dirname, 'node_build/img/*'), dest: 'img' }
+            ]
         }),
         eslint({
             overrideConfigFile: path.resolve(__dirname, 'node_build/js/eslint.config.js'),
