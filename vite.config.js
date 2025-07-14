@@ -33,6 +33,7 @@ export default defineConfig({
             preserveEntrySignatures: 'strict',
             input: {
                 ddoesummernote: path.resolve(__dirname, 'node_build/js/summernote/init.js'),
+                overlay: path.resolve(__dirname, 'node_build/js/summernote/overlay.js'),
             },
             output: {
                 entryFileNames: 'js/summernote/[name].min.js',
