@@ -3,12 +3,13 @@
  * See LICENSE file for license details.
  */
 
-import '../../less/backend_editor.less'
+import '../../scss/backend_editor.scss'
 
 import { addMediaPlugin } from "./plugins/media-library.js";
 import { addVideoResponsivePlugin } from "./plugins/video-responsive.js";
 import { injectOxidBridge } from "./plugins/oxid-bridge.js";
 import { configureLinkDialogModule, replaceLinkDialogModule } from "./plugins/link.js";
+import { overrideEditorMethods} from "./plugins/custom-editor.js";
 
 function overrideTooltip() {
     var tooltipPlugin = $.fn.tooltip;
@@ -60,6 +61,7 @@ export function initializeSummernote(element, options) {
     const settings = { ...defaultSettings, ...options };
     var summernote = element.summernote(settings);
     replaceLinkDialogModule(summernote);
+    overrideEditorMethods(summernote);
     return summernote;
 }
 
