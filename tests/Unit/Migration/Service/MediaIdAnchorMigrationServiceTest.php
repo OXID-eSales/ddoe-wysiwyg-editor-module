@@ -14,7 +14,7 @@ use OxidEsales\MediaLibrary\Compatibility\Exception\UnknownPathFormatException;
 use OxidEsales\MediaLibrary\Compatibility\Factory\MediaFileInformationFactoryInterface;
 use OxidEsales\MediaLibrary\Compatibility\Repository\PathMappingRepositoryInterface;
 use OxidEsales\WysiwygModule\Migration\Service\MediaIdAnchorMigrationService;
-use OxidEsales\WysiwygModule\Migration\Service\MediaIdAnchorMigrationServiceInterface;
+use OxidEsales\WysiwygModule\Migration\Service\MigrationServiceInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -48,7 +48,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
     public function migrationDoesntChangeAnythingForCasesWeAreNotInterestedIn(string $original, string $expected): void
     {
         $sut = $this->getSut();
-        $result = $sut->migrateToMediaIdAnchors($original);
+        $result = $sut->migrateContent($original);
         $this->assertSame($expected, $result);
     }
 
@@ -79,7 +79,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             pathMappingRepository: $pathMappingRepositoryMock,
         );
 
-        $result = $sut->migrateToMediaIdAnchors($input);
+        $result = $sut->migrateContent($input);
         $this->assertSame($expected, $result);
     }
 
@@ -114,7 +114,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             pathMappingRepository: $pathMappingRepositoryMock,
         );
 
-        $result = $sut->migrateToMediaIdAnchors($input);
+        $result = $sut->migrateContent($input);
         $this->assertSame($expected, $result);
     }
 
@@ -160,7 +160,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             pathMappingRepository: $pathMappingRepositoryMock,
         );
 
-        $result = $sut->migrateToMediaIdAnchors($input);
+        $result = $sut->migrateContent($input);
         $this->assertSame($expected, $result);
     }
 
@@ -211,7 +211,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             pathMappingRepository: $pathMappingRepositoryMock,
         );
 
-        $result = $sut->migrateToMediaIdAnchors($input);
+        $result = $sut->migrateContent($input);
         $this->assertSame($expected, $result);
     }
 
@@ -262,14 +262,14 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             pathMappingRepository: $pathMappingRepositoryMock,
         );
 
-        $result = $sut->migrateToMediaIdAnchors($input);
+        $result = $sut->migrateContent($input);
         $this->assertSame($expected, $result);
     }
 
     private function getSut(
         MediaFileInformationFactoryInterface $mediaFileInformationFactory = null,
         PathMappingRepositoryInterface $pathMappingRepository = null,
-    ): MediaIdAnchorMigrationServiceInterface {
+    ): MigrationServiceInterface {
         $mediaFileInformationFactory ??= $this->createStub(MediaFileInformationFactoryInterface::class);
         $pathMappingRepository ??= $this->createStub(PathMappingRepositoryInterface::class);
 

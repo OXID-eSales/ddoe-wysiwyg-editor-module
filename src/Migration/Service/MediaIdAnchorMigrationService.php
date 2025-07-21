@@ -12,7 +12,7 @@ namespace OxidEsales\WysiwygModule\Migration\Service;
 use OxidEsales\MediaLibrary\Compatibility\Factory\MediaFileInformationFactoryInterface;
 use OxidEsales\MediaLibrary\Compatibility\Repository\PathMappingRepositoryInterface;
 
-class MediaIdAnchorMigrationService implements MediaIdAnchorMigrationServiceInterface
+class MediaIdAnchorMigrationService implements MigrationServiceInterface
 {
     public function __construct(
         private readonly MediaFileInformationFactoryInterface $mediaFileInformationFactory,
@@ -20,7 +20,7 @@ class MediaIdAnchorMigrationService implements MediaIdAnchorMigrationServiceInte
     ) {
     }
 
-    public function migrateToMediaIdAnchors(string $content): string
+    public function migrateContent(string $content): string
     {
         $content = preg_replace_callback(
             '/<[^>]+dd-wysiwyg-media-image[^>]+>/msi',

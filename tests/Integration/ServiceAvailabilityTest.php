@@ -67,6 +67,9 @@ class ServiceAvailabilityTest extends IntegrationTestCase
             [\OxidEsales\WysiwygModule\MediaLibrary\Service\MediaIdParserServiceInterface::class],
             [\OxidEsales\WysiwygModule\MediaLibrary\Service\MediaUrlsExtractorServiceInterface::class],
 
+            // Migration
+            [\OxidEsales\WysiwygModule\Migration\Command\MigrateMediaUrlsToIdsCommand::class],
+
             // Service
             [\OxidEsales\WysiwygModule\Service\EditorRendererInterface::class],
             [\OxidEsales\WysiwygModule\Service\SettingsInterface::class],

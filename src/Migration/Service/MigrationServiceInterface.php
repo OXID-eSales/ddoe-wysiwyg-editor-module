@@ -7,7 +7,7 @@
 
 namespace OxidEsales\WysiwygModule\Migration\Service;
 
-interface MediaIdAnchorMigrationServiceInterface
+interface MigrationServiceInterface
 {
-    public function migrateToMediaIdAnchors(string $content): string;
+    public function migrateContent(string $content): string;
 }
