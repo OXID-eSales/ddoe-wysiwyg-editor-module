@@ -39,7 +39,8 @@
         "codeception/module-webdriver": "^4.0",
         "oxid-esales/codeception-modules": "dev-b-7.4.x",
         "oxid-esales/codeception-page-objects": "dev-b-7.4.x",
-        "oxid-esales/developer-tools": "dev-b-7.4.x"
+        "oxid-esales/developer-tools": "dev-b-7.4.x",
+        "mikey179/vfsstream": "^1.6"
     },
     "autoload":    {
         "psr-4": {
