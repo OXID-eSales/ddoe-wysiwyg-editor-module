@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [6.0.0] - Unreleased
+
+### Added
+- `ddoewysiwyg:migrate:urls-to-ids` - migration command to exchange hardcoded media paths to new `oeMediaUrl` calls
+
+### Changed
+- Instead of inserting paths to the media items, `oeMediaUrl` function with the media id is inserted
+
 ## [5.0.1] - Unreleased
 
 ### Changed
@@ -154,7 +162,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
-[5.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v5.0.1...v5.0.1
+[6.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v5.0.1...v6.0.0
+[5.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v5.0.0...v5.0.1
 [5.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v4.2.0...v5.0.0
 [4.2.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v4.1.0...v4.2.0
 [4.1.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v4.0.0...v4.1.0
