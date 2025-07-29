@@ -9,14 +9,12 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Migration\Service;
 
-use OxidEsales\MediaLibrary\Compatibility\Factory\MediaFileInformationFactoryInterface;
-use OxidEsales\MediaLibrary\Compatibility\Repository\PathMappingRepositoryInterface;
+use OxidEsales\MediaLibrary\Compatibility\Facade\MediaIdByPathFacadeInterface;
 
 class MediaIdAnchorMigrationService implements MigrationServiceInterface
 {
     public function __construct(
-        private readonly MediaFileInformationFactoryInterface $mediaFileInformationFactory,
-        private readonly PathMappingRepositoryInterface $pathMappingRepository,
+        private readonly MediaIdByPathFacadeInterface $mediaIdByPathFacade,
     ) {
     }
 
@@ -37,8 +35,7 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
 
         if (preg_match('/src="(?<src>[^"]+)"/mi', $oneMediaItem, $matches)) {
             try {
-                $fileInformation = $this->mediaFileInformationFactory->fromPath($matches['src']);
-                $mediaId = $this->pathMappingRepository->getMediaIdByInformation($fileInformation);
+                $mediaId = $this->mediaIdByPathFacade->getMediaIdByPath($matches['src']);
 
                 $oneMediaItem = preg_replace(
                     '/src="[^"]+"/mi',
