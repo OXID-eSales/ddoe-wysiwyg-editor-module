@@ -16,21 +16,10 @@ function ddmedia(context) {
             contents: '<i class="fa fa-file-image-o fa-file-image"></i>',
             tooltip: lang.image.image,
             click: function () {
-                if (typeof MediaLibrary === 'undefined') {
-                    if (top.basefrm && top.basefrm.OverlayInstance) {
-                        top.basefrm.OverlayInstance.showOverlay(context);
-                    }
+                if (typeof context.options.mediaButtonClick === 'function') {
+                    context.options.mediaButtonClick(context);
                 } else {
-                    MediaLibrary.open(/image\/.*/i, function (id, file, fullpath) {
-                        context.invoke('editor.insertImage', fullpath, function ($image) {
-                            top.basefrm.mediaUrls[id] = fullpath;
-                            $image.css('max-width', '100%');
-                            $image.attr('src', fullpath);
-                            $image.attr('data-source', 'media');
-                            $image.attr('data-id', id);
-                            $image.addClass('dd-wysiwyg-media-image');
-                        });
-                    });
+                    console.error("mediaButtonClick is not defined");
                 }
             }
         });

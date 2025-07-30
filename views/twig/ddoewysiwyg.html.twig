@@ -32,26 +32,43 @@
     {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/summernote-de-DE.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {% endif %}
 
+{% set sActionLink = oViewConf.getSelfLink()|replace({'&amp;':'&'})|cat('overlay=' ~ request.isOverlay() ~ '&') %}
+{% set sMediaLink = oConf.getCurrentShopUrl(true)|regex_replace('/([^\/])(\/admin)/', '$1')|regex_replace('/http(s)?\, /', '')|trim('/', 'right')|cat('/out/pictures/ddmedia/') %}
+
 <script type="module">
     top.basefrm.mediaUrls = {{ contentMediaUrls|json_encode|raw }};
-
     import { autoInitializeSummernote } from "{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/ddoesummernote.min.js') }}";
+    top.basefrm.MediaLibraryStyles = '{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/css/medialibrary.min.css') }}';
+    top.basefrm.MediaLibraryModuleUrl = "{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/base.min.js') }}";
 
-    top.basefrm.OverlayStyles = '{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/css/overlay.min.css') }}';
-    top.basefrm.editorControllerUrl = '{{ oViewConf.getSelfLink()|cat('cl=ddoemedia_wrapper&overlay=1')|replace({'&amp;':'&'})|raw }}';
-
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", async function() {
         const baseIframe = top.basefrm.document;
         const moduleScript = baseIframe.createElement("script");
         moduleScript.type = "module";
         moduleScript.innerHTML = `
             (async () => {
                 try {
+                    const loadCss = (href) => {
+                        if (!document.querySelector(\`link[href="\${href}"]\`)) {
+                            const link = document.createElement('link');
+                            link.rel = 'stylesheet';
+                            link.href = href;
+                            document.head.appendChild(link);
+                        }
+                    };
+
                     await import("{{ oViewConf.getSelfLink()|cat('cl=ddoelangjs')|replace({'&amp;':'&'})|raw }}");
                     await import("{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery.min.js') }}");
+                    await import("{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery-ui.min.js') }}");
+                    await import("{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/bootstrap.min.js') }}");
+                    loadCss("{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/css/bootstrap.min.css') }}");
+                    loadCss("{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/css/medialibrary.min.css') }}");
+                    loadCss("{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/css/font-awesome.min.css') }}");
 
-                    const { OverlayInstance } = await import("{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/overlay.min.js') }}");
-                    window.OverlayInstance = OverlayInstance;
+                    const { MediaLibrary } = await import("{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/base.min.js') }}");
+                    MediaLibrary.setActionLink("{{ oViewConf.getSelfLink()|replace({'&amp;':'&'})|raw }}");
+                    MediaLibrary.setResourceLink("{{ oConf.getCurrentShopUrl(true)|regex_replace('/([^\/])(\/admin)/', '$1')|regex_replace('/http(s)?\, /', '')|trim('/', 'right')|cat('/out/pictures/ddmedia/') }}");
+                    window.MediaLibrary = MediaLibrary;
                 } catch (error) {
                     console.error("Failed to load overlay script:", error);
                 }
