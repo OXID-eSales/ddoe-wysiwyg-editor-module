@@ -17,6 +17,7 @@ use OxidEsales\WysiwygModule\Migration\Service\MigrationServiceInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class MediaIdAnchorMigrationServiceTest extends TestCase
 {
@@ -205,13 +206,55 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
+    public static function exceptionCasesDataProvider(): \Generator
+    {
+        yield 'path format unrecognized' => [
+            'exceptionStub' => new UnknownPathFormatException(),
+        ];
+
+        yield 'media not found by information' => [
+            'exceptionStub' => new MediaNotFoundByFileInformationException(),
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('exceptionCasesDataProvider')]
+    public function migrateToMediaIdAnchorsLogsMediaNotFoundException(\Exception $exceptionStub): void
+    {
+        $randomSrc = uniqid();
+
+        // phpcs:disable
+        $input = 'some start <img src="' . $randomSrc . '" style="max-width: 100%;" data-filename="237-536x354.jpg" data-filepath="//localhost.local/out/pictures/ddmedia/237-536x354.jpg" data-source="media" class="dd-wysiwyg-media-image"> some end';
+        // phpcs:enable
+
+        $mediaIdByPathMock = $this->createMock(MediaIdByPathFacadeInterface::class);
+        $mediaIdByPathMock->method('getMediaIdByPath')
+            ->with($randomSrc)
+            ->willThrowException($exceptionStub);
+
+        $loggerSpy = $this->createMock(LoggerInterface::class);
+        $loggerSpy->expects($this->once())
+            ->method('warning')
+            ->with($exceptionStub->getMessage());
+
+        $sut = $this->getSut(
+            mediaIdByPathFacade: $mediaIdByPathMock,
+            logger: $loggerSpy,
+        );
+
+        $sut->migrateContent($input);
+    }
+
     private function getSut(
         MediaIdByPathFacadeInterface $mediaIdByPathFacade = null,
+        LoggerInterface $logger = null,
     ): MigrationServiceInterface {
         $mediaIdByPathFacade ??= $this->createStub(MediaIdByPathFacadeInterface::class);
+        $logger ??= $this->createStub(LoggerInterface::class);
 
         return new MediaIdAnchorMigrationService(
             mediaIdByPathFacade: $mediaIdByPathFacade,
+            logger: $logger,
         );
     }
 }
