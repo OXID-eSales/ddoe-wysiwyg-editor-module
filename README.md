@@ -101,6 +101,28 @@ Alternatively, if you're actively developing and want changes to be applied auto
 npm run watch
 ```
 
+## Migration
+
+Besides running the usual migrations process, there are some addition actions that may differ by project.
+
+### Media paths to IDs
+
+The command `ddoewysiwyg:migrate:urls-to-ids tableName fieldName tableIdKey` migrates hardcoded media 
+paths inserted by earlier version of MediaLibrary to Media object ID's. It takes the `tableName`, `fieldName`,
+and the `tableIdKey` field as params.   
+
+Example use:
+```
+vendor/bin/oe-console ddoewysiwyg:migrate:urls-to-ids oxartextends OXLONGDESC
+vendor/bin/oe-console ddoewysiwyg:migrate:urls-to-ids oxartextends OXLONGDESC_1
+vendor/bin/oe-console ddoewysiwyg:migrate:urls-to-ids oxcategories OXDESC
+vendor/bin/oe-console ddoewysiwyg:migrate:urls-to-ids oxcategories OXDESC_1
+vendor/bin/oe-console ddoewysiwyg:migrate:urls-to-ids oxcontents OXCONTENT
+vendor/bin/oe-console ddoewysiwyg:migrate:urls-to-ids oxcontents OXCONTENT_1
+```
+
+Ensure all fields for which the WYSIWYG editor is used are migrated.
+
 ## Bugs and Issues
 
 If you experience any bugs or issues, please report them in the section **WYSIWYG Editor + Media Gallery** of https://bugs.oxid-esales.com.
