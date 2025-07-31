@@ -82,16 +82,18 @@ export function autoInitializeSummernote() {
                     lang: $(this).data('lang') == 'de' ? 'de-DE' : 'en-US',
                     defaultProtocol: $(this).data('ssl') == '1' ? 'https://' : 'http://',
                     mediaButtonClick: function (context) {
-                        top.basefrm.MediaLibrary.open(/image\/.*/i, function (id, file, fullpath) {
-                            context.invoke('editor.insertImage', fullpath, function ($image) {
-                                top.basefrm.mediaUrls[id] = fullpath;
-                                $image.css('max-width', '100%');
-                                $image.attr('src', fullpath);
-                                $image.attr('data-source', 'media');
-                                $image.attr('data-id', id);
-                                $image.addClass('dd-wysiwyg-media-image');
-                            });
-                        });
+                        top.basefrm.MediaLibrary.open({filter: /image\/.*/i, appendToHtml: true},
+                            function (id, file, fullpath) {
+                                context.invoke('editor.insertImage', fullpath, function ($image) {
+                                    top.basefrm.mediaUrls[id] = fullpath;
+                                    $image.css('max-width', '100%');
+                                    $image.attr('src', fullpath);
+                                    $image.attr('data-source', 'media');
+                                    $image.attr('data-id', id);
+                                    $image.addClass('dd-wysiwyg-media-image');
+                                });
+                            }
+                        );
                     },
                     callbacks: {
                         onInit: function() {
