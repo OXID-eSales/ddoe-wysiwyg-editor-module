@@ -1,0 +1,80 @@
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
+:root {
+    --bs-border-radius: 0;
+    --bs-border-radius-sm: 0;
+    --bs-border-radius-lg: 0;
+    --bs-border-radius-xl: 0;
+    --bs-border-radius-xxl: 0;
+    --bs-border-radius-2xl: 0;
+}
+
+.note-popover {
+    position: absolute;
+
+    .popover-arrow {
+        position: absolute;
+    }
+}
+
+#ddoew {
+
+    @import "bootstrap.min.css";
+    @import "../../node_modules/bootstrap/scss/mixins/_clearfix.scss";
+
+    $primary:                   #303841;
+
+    $dd-primary-btn:               #3c4e55;
+    $dd-primary-btn-border:        #314046;
+
+    .btn {
+        --bs-btn-disabled-border-color: transparent;
+    }
+
+    .btn-primary {
+        --bs-btn-bg: #{$dd-primary-btn};
+        --bs-btn-border-color: #{$dd-primary-btn-border};
+        --bs-btn-disabled-bg: lightness(#{$dd-primary-btn});
+        --bs-btn-hover-border-color: lightness(#{$dd-primary-btn});
+
+        background-color: var(--bs-btn-bg);
+        border-radius: var(--bs-border-radius);
+    }
+
+    .btn-outline-primary {
+        --bs-btn-color: #{$dd-primary-btn};
+        --bs-btn-border-color: #{$dd-primary-btn};
+        --bs-btn-hover-bg: #{$dd-primary-btn};
+        --bs-btn-hover-border-color: #{$dd-primary-btn};
+        --bs-btn-disabled-border-color: lightness(#{$dd-primary-btn});
+        --bs-btn-disabled-color: lightness(#{$dd-primary-btn});
+    }
+
+    .btn-success, .btn-info {
+        --bs-btn-color: #fff;
+        --bs-btn-hover-color: #fff;
+    }
+
+    .note-toolbar {
+        @include clearfix;
+
+        .note-btn-group {
+            float: left;
+            .fa {
+                line-height: inherit;
+                vertical-align: middle;
+            }
+        }
+    }
+
+    div.codeview textarea.note-codable {
+        color: white;
+    }
+
+    div.note-editable {
+        white-space: normal;
+    }
+}

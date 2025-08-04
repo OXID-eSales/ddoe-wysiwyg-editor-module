@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [6.0.0] - Unreleased
+
+### Changed
+- Update to Bootstrap 5
+- Switch from LESS to SASS
+
+### Fixed
+- Summernote initialization stealing focus from previously selected input fields [#0007104](https://bugs.oxid-esales.com/view.php?id=7104)
+
 ## [5.0.1] - Unreleased
 
 ### Changed
@@ -13,7 +22,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Development recipe to not require the media library module twice
 - Run migrations on CI before module activation
 - Add missing `getMediaUrl` replacement for Media library images
-- Summernote initialization stealing focus from previously selected input fields [#0007104](https://bugs.oxid-esales.com/view.php?id=7104)
 
 ## [5.0.0] - 2025-04-10
 
@@ -155,7 +163,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
-[5.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v5.0.1...v5.0.1
+[6.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v5.0.0...v6.0.0
+[5.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v5.0.0...v5.0.1
 [5.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v4.2.0...v5.0.0
 [4.2.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v4.1.0...v4.2.0
 [4.1.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v4.0.0...v4.1.0

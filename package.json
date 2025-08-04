@@ -17,7 +17,8 @@
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-static-copy": "^2.2.0",
     "less": "^4.2.2",
-    "yarn": "^1.22.19"
+    "yarn": "^1.22.19",
+    "sass": "~1.60.0"
   },
   "scripts": {
     "lint": "eslint --config node_build/js/eslint.config.js --ext .js node_build",
@@ -25,10 +26,10 @@
     "watch": "vite build --watch"
   },
   "dependencies": {
-    "bootstrap": "^3.4.1",
+    "bootstrap": "^5.3.7",
     "font-awesome": "^4.7.0",
     "jquery": "^3.7.1",
     "jquery-ui": "^1.14.1",
-    "summernote": "^0.8.20"
+    "summernote": "^0.9.1"
   }
 }
