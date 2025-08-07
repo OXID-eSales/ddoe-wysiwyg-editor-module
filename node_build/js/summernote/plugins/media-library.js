@@ -23,10 +23,11 @@ function ddmedia(context) {
                 } else {
                     MediaLibrary.open(/image\/.*/i, function (id, file, fullpath) {
                         context.invoke('editor.insertImage', fullpath, function ($image) {
+                            top.basefrm.mediaUrls[id] = fullpath;
                             $image.css('max-width', '100%');
-                            $image.attr('data-filename', file);
-                            $image.attr('data-filepath', fullpath);
+                            $image.attr('src', fullpath);
                             $image.attr('data-source', 'media');
+                            $image.attr('data-id', id);
                             $image.addClass('dd-wysiwyg-media-image');
                         });
                     });

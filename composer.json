@@ -25,7 +25,7 @@
         "php": ">=8.2",
         "symfony/filesystem": "*",
         "ext-gd": "*",
-        "oxid-esales/media-library-module": "dev-b-7.4.x"
+        "oxid-esales/media-library-module": "dev-b-7.4.x-images-anchor-OEVE-240"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.1",
@@ -39,7 +39,8 @@
         "codeception/module-webdriver": "^4.0",
         "oxid-esales/codeception-modules": "dev-b-7.4.x",
         "oxid-esales/codeception-page-objects": "dev-b-7.4.x",
-        "oxid-esales/developer-tools": "dev-b-7.4.x"
+        "oxid-esales/developer-tools": "dev-b-7.4.x",
+        "mikey179/vfsstream": "^1.6"
     },
     "autoload":    {
         "psr-4": {
@@ -65,6 +66,12 @@
 
         "phpmd": "echo 'phpmd check disabled' >phpmd.report.txt",
         "phpmd-report": "echo '{}' >phpmd.report.json",
+
+        "static": [
+            "@phpcs",
+            "@phpstan",
+            "@phpmd"
+        ],
 
         "tests-unit": "XDEBUG_MODE=coverage vendor/bin/phpunit --config=tests/ --testsuite=Unit --coverage-clover=tests/Reports/coverage_unit_module-wysiwyg.xml",
         "tests-integration": "XDEBUG_MODE=coverage vendor/bin/phpunit --bootstrap=/var/www/source/bootstrap.php --config=tests/ --testsuite=Integration --coverage-clover=tests/Reports/coverage_integration_module-wysiwyg.xml",

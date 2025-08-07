@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [6.0.0] - Unreleased
 
+### Added
+- `ddoewysiwyg:migrate:urls-to-ids` - migration command to exchange hardcoded media paths to new `oeMediaUrl` calls
+
 ### Changed
+- Instead of inserting paths to the media items, `oeMediaUrl` function with the media id is inserted
 - Update to Bootstrap 5
 - Switch from LESS to SASS
 
@@ -163,7 +167,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
-[6.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v5.0.0...v6.0.0
+[6.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v5.0.1...v6.0.0
 [5.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v5.0.0...v5.0.1
 [5.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v4.2.0...v5.0.0
 [4.2.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v4.1.0...v4.2.0

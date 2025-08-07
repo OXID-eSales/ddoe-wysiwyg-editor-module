@@ -12,6 +12,7 @@ namespace OxidEsales\WysiwygModule\Tests\Unit\Service;
 use OxidEsales\Eshop\Core\ViewConfig;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
 use OxidEsales\WysiwygModule\HtmlFilter\HtmlFilterInterface;
+use OxidEsales\WysiwygModule\MediaLibrary\Service\MediaUrlsExtractorServiceInterface;
 use OxidEsales\WysiwygModule\Service\EditorRenderer;
 use OxidEsales\WysiwygModule\Service\SettingsInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -213,13 +214,16 @@ class EditorRendererTest extends TestCase
         $sut->render('any', 'any', 'any', 'any');
     }
 
-    #[DataProvider('filterTemplateProvider')]
-    public function testFilterContent(string $template, string $expectedTemplate): void
+    public function testFilterContent(): void
     {
+        $contentExample = uniqid();
+
+        $filteredContent = uniqid();
         $htmlFilterStub = $this->createMock(HtmlFilterInterface::class);
         $htmlFilterStub
             ->method('filter')
-            ->willReturn($expectedTemplate);
+            ->with($contentExample)
+            ->willReturn($filteredContent);
 
         $templateRendererSpy = $this->createMock(TemplateRendererInterface::class);
         $templateRendererSpy
@@ -227,8 +231,8 @@ class EditorRendererTest extends TestCase
             ->method('renderTemplate')
             ->with(
                 '@ddoewysiwyg/ddoewysiwyg',
-                $this->callback(function ($context) use ($expectedTemplate) {
-                    return $expectedTemplate == $context['sEditorValue'];
+                $this->callback(function ($context) use ($filteredContent) {
+                    return $filteredContent == $context['sEditorValue'];
                 })
             );
 
@@ -236,44 +240,50 @@ class EditorRendererTest extends TestCase
             templateRenderer:  $templateRendererSpy,
             htmlFilter: $htmlFilterStub
         );
-        $sut->render('any', 'any', $template, 'any');
+        $sut->render('any', 'any', $contentExample, 'any');
     }
 
-    public static function filterTemplateProvider(): array
+    public function testMediaUrlsGivenToTemplate(): void
     {
-        return [
-            [
-                'template' => 'plain template',
-                'expectedTemplate' => 'plain template',
-            ],
-            [
-                'template' => '<div>template</div>',
-                'expectedTemplate' => '<div>template</div>',
-            ],
-            [
-                'template' => '<p>par 1</p><script>//js1</script><p>par 2</p>',
-                'expectedTemplate' => '<p>par 1</p>//js1<p>par 2</p>',
-            ],
-            [
-                'template' => '<script>//js1</script><script>//js2</script>',
-                'expectedTemplate' => '//js1//js2',
-            ],
-            [
-                'template' => '<p>par 1</p><script src="app.js"/><p>par 2</p>',
-                'expectedTemplate' => '<p>par 1</p><p>par 2</p>',
-            ],
-        ];
+        $contentExample = uniqid();
+
+        $expectedMediaUrls = [uniqid(), uniqid()];
+        $mediaUrlsExtractorMock = $this->createMock(MediaUrlsExtractorServiceInterface::class);
+        $mediaUrlsExtractorMock->method('getContentMediaUrls')
+            ->with($contentExample)
+            ->willReturn($expectedMediaUrls);
+
+        $templateRendererSpy = $this->createMock(TemplateRendererInterface::class);
+        $templateRendererSpy
+            ->expects($this->once())
+            ->method('renderTemplate')
+            ->with(
+                '@ddoewysiwyg/ddoewysiwyg',
+                $this->callback(function ($context) use ($expectedMediaUrls) {
+                    return $expectedMediaUrls == $context['contentMediaUrls'];
+                })
+            );
+
+        $sut = $this->getSut(
+            templateRenderer:  $templateRendererSpy,
+            mediaUrlsExtractor: $mediaUrlsExtractorMock,
+        );
+        $sut->render('any', 'any', $contentExample, 'any');
     }
 
     private function getSut(
         TemplateRendererInterface $templateRenderer = null,
         SettingsInterface $settingsService = null,
         HtmlFilterInterface $htmlFilter = null,
+        MediaUrlsExtractorServiceInterface $mediaUrlsExtractor = null,
     ): EditorRenderer {
+        $mediaUrlsExtractor ??= $this->createMock(MediaUrlsExtractorServiceInterface::class);
+
         return new EditorRenderer(
             templateRenderer: $templateRenderer ?? $this->createStub(TemplateRendererInterface::class),
             settingsService: $settingsService ?? $this->createStub(SettingsInterface::class),
             htmlFilter: $htmlFilter ?? $this->createStub(HtmlFilterInterface::class),
+            mediaUrlsExtractorService: $mediaUrlsExtractor
         );
     }
 }

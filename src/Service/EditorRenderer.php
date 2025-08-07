@@ -11,16 +11,21 @@ namespace OxidEsales\WysiwygModule\Service;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
 use OxidEsales\WysiwygModule\HtmlFilter\HtmlFilterInterface;
+use OxidEsales\WysiwygModule\MediaLibrary\Service\MediaUrlsExtractorServiceInterface;
 
 class EditorRenderer implements EditorRendererInterface
 {
     public function __construct(
         protected TemplateRendererInterface $templateRenderer,
         protected SettingsInterface $settingsService,
-        protected HtmlFilterInterface $htmlFilter
+        protected HtmlFilterInterface $htmlFilter,
+        private readonly MediaUrlsExtractorServiceInterface $mediaUrlsExtractorService,
     ) {
     }
 
+    // todo: extract template parameters calculation to a separate class
+    // todo: decorate parameters calculator with html filter part
+    // todo: decorate parameters calculator with the media urls part
     public function render(
         string $width,
         string $height,
@@ -32,10 +37,11 @@ class EditorRenderer implements EditorRendererInterface
             'iEditorWidth' => $this->prepareSize($width),
             'iEditorHeight' => $this->prepareSize($height),
             'sEditorField' => $fieldName,
-            'sEditorValue' => $this->filterContent($objectValue),
+            'sEditorValue' => $this->htmlFilter->filter($objectValue),
             'langabbr' => $this->settingsService->getInterfaceLanguageAbbreviation(),
             'blTextEditorDisabled' => $isEditorDisabled,
             'oViewConf' => $this->settingsService->getActiveViewConfig(),
+            'contentMediaUrls' => $this->mediaUrlsExtractorService->getContentMediaUrls($objectValue),
         ];
 
         return $this->templateRenderer->renderTemplate('@ddoewysiwyg/ddoewysiwyg', $config);
@@ -53,10 +59,5 @@ class EditorRenderer implements EditorRendererInterface
     private function checkIfOnlyDigitsInValue(string $sizeValue): bool
     {
         return (bool)preg_match("/^\d+$/i", $sizeValue);
-    }
-
-    private function filterContent(string $content): string
-    {
-        return $this->htmlFilter->filter($content);
     }
 }
