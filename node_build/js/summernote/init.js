@@ -83,6 +83,9 @@ export function autoInitializeSummernote() {
                     minHeight: iHeight,
                     lang: $(this).data('lang') == 'de' ? 'de-DE' : 'en-US',
                     defaultProtocol: $(this).data('ssl') == '1' ? 'https://' : 'http://',
+                    mediaButtonClick: function (context) {
+                        top.basefrm.OverlayInstance.showOverlay(context);
+                    },
                     callbacks: {
                         onInit: function() {
                             $('img.dd-wysiwyg-media-image').each(function () {
