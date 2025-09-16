@@ -54,4 +54,41 @@ final class PlaceholdersCest
             'OXCONTENT' => $expectedContent,
         ]);
     }
+
+    public function imageAltIsTransformedToTwigPlaceholder(AcceptanceTester $I): void
+    {
+        $loadId = 'test_content_alt';
+        $imageId = '68cab835a253c';
+        //phpcs:ignore
+        $contentValue = '<img src="hardcodedurl" data-source="media" data-id="' . $imageId . '" class="dd-wysiwyg-media-image" alt="{{oeMediaAlt(\'' . $imageId . '\')}}">';
+        //phpcs:ignore
+        $transformedContent = '<img src="{{oeMediaUrl(\'' . $imageId . '\')}}" data-source="media" data-id="' . $imageId . '" class="dd-wysiwyg-media-image" alt="{{oeMediaAlt(\'' . $imageId . '\')}}">';
+
+        $I->haveInDatabase('oxcontents', [
+            'OXID' => md5($loadId),
+            'OXLOADID' => $loadId,
+            'OXCONTENT' => $contentValue,
+            'OXCONTENT_1' => $contentValue,
+            'OXCONTENT_2' => $contentValue,
+            'OXCONTENT_3' => $contentValue,
+        ]);
+
+        $adminPanel = $I->loginAdmin();
+        $adminPanel->openCMSPages();
+
+        $I->selectListFrame();
+        $I->fillField("//input[@name='where[oxcontents][oxloadid]']", $loadId);
+        $I->submitForm('#search', []);
+
+        $I->selectListFrame();
+        $I->click($loadId);
+
+        $I->selectEditFrame();
+        $I->waitForDocumentReadyState();
+
+        $I->click("//input[@type='submit']");
+
+        $actualContent = $I->grabFromDatabase('oxcontents', 'OXCONTENT', ['OXID' => md5($loadId)]);
+        $I->assertEquals($transformedContent, $actualContent);
+    }
 }
