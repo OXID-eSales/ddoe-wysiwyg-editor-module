@@ -62,7 +62,7 @@
         "phpcbf": "phpcbf --standard=tests/phpcs.xml",
 
         "phpstan": "phpstan -ctests/PhpStan/phpstan.neon analyse src/",
-        "phpstan-report": "phpstan -ctests/PhpStan/phpstan.neon analyse src/ --error-format=json > phpstan.report.json",
+        "phpstan-report": "phpstan -ctests/PhpStan/phpstan.neon analyse src/ --error-format=json >tests/Reports/phpstan.report.json",
 
         "phpmd": "echo 'phpmd check disabled' >phpmd.report.txt",
         "phpmd-report": "echo '{}' >phpmd.report.json",
