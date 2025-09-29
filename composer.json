@@ -54,7 +54,7 @@
         }
     },
     "conflict": {
-        "oxid-esales/oxideshop-ce": "<7.3"
+        "oxid-esales/oxideshop-ce": "<7.4"
     },
     "scripts": {
         "phpcs-report": "phpcs --standard=tests/phpcs.xml --report=json --report-file=phpcs.report.json",
