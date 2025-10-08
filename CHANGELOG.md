@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - `ddoewysiwyg:migrate:urls-to-ids` - migration command to exchange hardcoded media paths to new `oeMediaUrl` calls
+- Add acceptance test to verify image alt attribute is transformed to a Twig placeholder
 
 ### Changed
 - Instead of inserting paths to the media items, `oeMediaUrl` function with the media id is inserted
