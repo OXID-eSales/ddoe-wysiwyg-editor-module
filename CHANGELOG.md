@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Summernote initialization stealing focus from previously selected input fields [#0007104](https://bugs.oxid-esales.com/view.php?id=7104)
+- Use `ViewConfig::formJsFileUrl` for adding the timestamps to JS files, this prevents caching issues after module update
 
 ## [5.0.1] - Unreleased
 
