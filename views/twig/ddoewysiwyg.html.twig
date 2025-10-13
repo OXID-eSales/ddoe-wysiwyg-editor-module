@@ -35,9 +35,9 @@
 <script type="module">
     top.basefrm.mediaUrls = {{ contentMediaUrls|json_encode|raw }};
 
-    import { autoInitializeSummernote } from "{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/ddoesummernote.min.js') }}";
+    import { autoInitializeSummernote } from "{{ oViewConf.formJsFileUrl(oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/ddoesummernote.min.js')) }}";
 
-    top.basefrm.OverlayStyles = '{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/css/overlay.min.css') }}';
+    top.basefrm.OverlayStyles = '{{ oViewConf.formJsFileUrl(oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/css/overlay.min.css')) }}';
     top.basefrm.editorControllerUrl = '{{ oViewConf.getSelfLink()|cat('cl=ddoemedia_wrapper&overlay=1')|replace({'&amp;':'&'})|raw }}';
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -48,9 +48,9 @@
             (async () => {
                 try {
                     await import("{{ oViewConf.getSelfLink()|cat('cl=ddoelangjs')|replace({'&amp;':'&'})|raw }}");
-                    await import("{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery.min.js') }}");
+                    await import("{{ oViewConf.formJsFileUrl(oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery.min.js')) }}");
 
-                    const { OverlayInstance } = await import("{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/overlay.min.js') }}");
+                    const { OverlayInstance } = await import("{{ oViewConf.formJsFileUrl(oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/overlay.min.js')) }}");
                     window.OverlayInstance = OverlayInstance;
                 } catch (error) {
                     console.error("Failed to load overlay script:", error);
