@@ -89,10 +89,13 @@ export function autoInitializeSummernote() {
                     callbacks: {
                         onInit: function() {
                             $('img.dd-wysiwyg-media-image').each(function () {
-                                const id = $(this).attr('data-id');
-                                const realSrc = top.basefrm.mediaUrls[id];
-                                if (realSrc) {
-                                    $(this).attr('src', realSrc);
+                                let filepath = $(this).attr('data-filepath');
+                                if (!filepath && top.basefrm) {
+                                    const id = $(this).attr('data-id');
+                                    filepath = top.basefrm.mediaUrls[id];
+                                }
+                                if (filepath) {
+                                    $(this).attr('src', filepath);
                                 }
                             });
                         }
