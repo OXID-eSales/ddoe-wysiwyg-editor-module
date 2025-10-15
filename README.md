@@ -11,6 +11,7 @@
 # Compatibility
 
 ### Versions
+* versions `6.0.x` - compatible with OXID eShop compilation 7.4.x and higher
 * versions `5.0.x` - compatible with OXID eShop compilation 7.3.x and higher
 * versions `4.2.x` - compatible with OXID eShop compilation 7.2.x and higher
 * versions `4.0.x - 4.1.x` - compatible with OXID eShop compilation 7.1.x
@@ -29,8 +30,8 @@
 
 In order to install the module via composer run one of the following commands in commandline in your shop base directory
 (where the shop's composer.json file resides).
-* `composer require ddoe/wysiwyg-editor-module:^5.0.0`
-  to install the latest released version compatible with OXID eShop v7.3.x
+* `composer require ddoe/wysiwyg-editor-module:^6.0.0`
+  to install the latest released version compatible with OXID eShop v7.4.x
 * `composer require ddoe/wysiwyg-editor-module:dev-b-7.4.x`
   to install the specific unreleased branch
 
