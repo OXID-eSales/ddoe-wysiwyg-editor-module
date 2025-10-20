@@ -3,7 +3,7 @@
  * See LICENSE file for license details.
  */
 
-export function injectOxidBridge() {
+export function injectOxidBridge(mediaModule) {
 
     var isTextarea = function (node) {
         return node && node.nodeName.toUpperCase() === 'TEXTAREA';
@@ -24,9 +24,9 @@ export function injectOxidBridge() {
                 });
 
                 // switch twig function call with media url
-                var regexMediaUrl = new RegExp(/<img[^>]*src=\s*"([^"]+)"[^>]*data-filepath=\s*"([^">]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi);
-                val = val.replace(regexMediaUrl, function(text, src, filepath) {
-                    text = text.replace(src, filepath);
+                var regexMediaUrl = new RegExp(/<img[^>]*src=\s*"([^"]+)"[^>]*data-id=\s*"([^"]+)"[^>]*class=\s*"[^">]*dd-wysiwyg-media-image[^">]*"[^>]*>/gi);
+                val = val.replace(regexMediaUrl, function(text, src, id) {
+                    text = text.replace(src, mediaModule.getMediaUrl(id));
                     return text;
                 });
             } else {

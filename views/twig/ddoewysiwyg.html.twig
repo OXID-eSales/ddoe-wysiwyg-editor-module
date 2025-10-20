@@ -34,7 +34,8 @@
 
 <script type="module">
     top.basefrm.mediaUrls = {{ contentMediaUrls|json_encode|raw }};
-
+    window.mediaLibraryUrl = "{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/base.min.js') }}";
+    import { preloadMediaUrls } from "{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/base.min.js') }}";
     import { autoInitializeSummernote } from "{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/ddoesummernote.min.js') }}";
 
     top.basefrm.OverlayStyles = '{{ oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/css/overlay.min.css') }}';
@@ -59,5 +60,6 @@
         `;
         baseIframe.head.appendChild(moduleScript);
         autoInitializeSummernote();
+        preloadMediaUrls({{ contentMediaUrls|json_encode|raw }});
     });
 </script>
