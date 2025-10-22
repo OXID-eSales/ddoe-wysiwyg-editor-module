@@ -23,7 +23,7 @@ function overrideTooltip() {
     };
 }
 
-export function initializeSummernote(element, options) {
+export async function initializeSummernote(element, options) {
     const defaultSettings = {
         lang: 'de-DE',
         minHeight: 100,
@@ -53,9 +53,14 @@ export function initializeSummernote(element, options) {
         useProtocol: false,
     };
 
+    const mediaModule = await import(window.mediaLibraryUrl);
+    if (top.basefrm) {
+        mediaModule.preloadMediaUrls(top.basefrm.mediaUrls);
+    }
+
     addMediaPlugin();
     addVideoResponsivePlugin();
-    injectOxidBridge();
+    injectOxidBridge(mediaModule);
     configureLinkDialogModule();
 
     const settings = { ...defaultSettings, ...options };
@@ -79,7 +84,7 @@ export function autoInitializeSummernote() {
 
                 var iHeight = $(this).height();
 
-                var $editor = initializeSummernote($(this), {
+                initializeSummernote($(this), {
                     minHeight: iHeight,
                     lang: $(this).data('lang') == 'de' ? 'de-DE' : 'en-US',
                     defaultProtocol: $(this).data('ssl') == '1' ? 'https://' : 'http://',
@@ -89,24 +94,27 @@ export function autoInitializeSummernote() {
                     callbacks: {
                         onInit: function() {
                             $('img.dd-wysiwyg-media-image').each(function () {
-                                const id = $(this).attr('data-id');
-                                const realSrc = top.basefrm.mediaUrls[id];
-                                if (realSrc) {
-                                    $(this).attr('src', realSrc);
+                                let filepath = $(this).attr('data-filepath');
+                                if (!filepath && top.basefrm) {
+                                    const id = $(this).attr('data-id');
+                                    filepath = top.basefrm.mediaUrls[id];
+                                }
+                                if (filepath) {
+                                    $(this).attr('src', filepath);
                                 }
                             });
                         }
                     }
+                }).then(($editor) => {
+                    if ($(this).attr('disabled') === 'disabled') {
+                        $(this).summernote('disable');
+                    }
+
+                    // todo: check why this activation/deactivation is needed
+                    const editorContext = $editor.data('summernote');
+                    editorContext.invoke('codeview.activate');
+                    editorContext.invoke('codeview.deactivate');
                 });
-
-                if ('disabled' === $(this).attr('disabled')) {
-                    $(this).summernote('disable');
-                }
-
-                // todo: check why this activation/deactivation is needed
-                var editorContext = $editor.data( 'summernote' );
-                editorContext.invoke('codeview.activate');
-                editorContext.invoke('codeview.deactivate');
             }
         });
 
