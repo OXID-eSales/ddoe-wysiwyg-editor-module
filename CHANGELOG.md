@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Undecided] - Unreleased
+
+### Fixed
+- Summernote initialization stealing focus from previously selected input fields (regression from v6.0.0) [#0007104](https://bugs.oxid-esales.com/view.php?id=7104)
+
 ## [6.0.0] - 2025-10-15
 
 ### Added

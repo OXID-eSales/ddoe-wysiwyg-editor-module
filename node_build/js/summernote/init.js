@@ -106,14 +106,9 @@ export function autoInitializeSummernote() {
                         }
                     }
                 }).then(($editor) => {
-                    if ($(this).attr('disabled') === 'disabled') {
-                        $(this).summernote('disable');
+                    if ($editor.attr('disabled') === 'disabled') {
+                        $editor.summernote('disable');
                     }
-
-                    // todo: check why this activation/deactivation is needed
-                    const editorContext = $editor.data('summernote');
-                    editorContext.invoke('codeview.activate');
-                    editorContext.invoke('codeview.deactivate');
                 });
             }
         });
