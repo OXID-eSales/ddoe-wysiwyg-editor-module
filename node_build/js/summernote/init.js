@@ -83,7 +83,7 @@ export async function initializeSummernote(element, options) {
     return summernote;
 }
 
-export function autoInitializeSummernote() {
+export function autoInitializeSummernote(options) {
     overrideTooltip();
 
     if (typeof $().summernote === 'function') {
@@ -97,7 +97,7 @@ export function autoInitializeSummernote() {
 
                 var iHeight = $(this).height();
 
-                initializeSummernote($(this), {
+                initializeSummernote($(this), {...{
                     minHeight: iHeight,
                     lang: $(this).data('lang') == 'de' ? 'de-DE' : 'en-US',
                     defaultProtocol: $(this).data('ssl') == '1' ? 'https://' : 'http://',
@@ -117,7 +117,7 @@ export function autoInitializeSummernote() {
                                 }
                             });
                         }
-                    }
+                    }, ...options}
                 }).then(($editor) => {
                     if ($editor.attr('disabled') === 'disabled') {
                         $editor.summernote('disable');

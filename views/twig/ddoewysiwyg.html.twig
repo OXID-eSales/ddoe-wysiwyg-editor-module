@@ -41,6 +41,31 @@
     top.basefrm.OverlayStyles = '{{ oViewConf.formJsFileUrl(oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/css/overlay.min.css')) }}';
     top.basefrm.editorControllerUrl = '{{ oViewConf.getSelfLink()|cat('cl=ddoemedia_wrapper&overlay=1')|replace({'&amp;':'&'})|raw }}';
 
+    {% block ddoe_wysiwyg_summernote_options %}
+        {# Example customization, can be replaced in child templates #}
+        const summernoteOptions = {
+            styleTags: [
+                'p', 'custom-tag'
+            ],
+            fontNames: [
+                'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Custom Font'
+            ],
+            fontNamesIgnoreCheck: ['Custom Font'],
+            toolbar: [
+                ['style', ['style']],
+                ['formatting', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'clear']],
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['layout', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['table', ['table']],
+                ['insert', ['link', 'videoResponsive', 'hr']],
+                ['misc', ['codeview']]
+            ],
+        };
+    {% endblock %}
+
     document.addEventListener("DOMContentLoaded", function() {
         const baseIframe = top.basefrm.document;
         const moduleScript = baseIframe.createElement("script");
@@ -59,7 +84,7 @@
             })();
         `;
         baseIframe.head.appendChild(moduleScript);
-        autoInitializeSummernote();
+        autoInitializeSummernote(summernoteOptions);
         preloadMediaUrls({{ contentMediaUrls|json_encode|raw }});
     });
 </script>
