@@ -67,6 +67,19 @@ export async function initializeSummernote(element, options) {
     var summernote = element.summernote(settings);
     replaceLinkDialogModule(summernote);
     overrideEditorMethods(summernote);
+
+    // Fix Bootstrap 5 dropdown conflict - add click handlers to toggle via Bootstrap API
+    const context = element.data('summernote');
+    if (context && context.layoutInfo && context.layoutInfo.toolbar) {
+        context.layoutInfo.toolbar.find('.dropdown-toggle').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.bootstrap && window.bootstrap.Dropdown) {
+                window.bootstrap.Dropdown.getOrCreateInstance(this).toggle();
+            }
+        });
+    }
+
     return summernote;
 }
 

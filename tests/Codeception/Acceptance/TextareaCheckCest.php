@@ -15,6 +15,26 @@ use OxidEsales\WysiwygModule\Tests\Codeception\Support\AcceptanceTester;
 #[Group('ddoewysiwyg')]
 final class TextareaCheckCest
 {
+    public function summernoteFontSizeDropdownWorks(AcceptanceTester $I): void
+    {
+        $I->wantToTest('Summernote font size dropdown opens when clicked');
+
+        $adminPanel = $I->loginAdmin();
+        $adminPanel->openProducts();
+        $I->selectEditFrame();
+
+        $I->waitForElement('.note-editor', 15);
+        $I->wait(3);
+
+        $fontSizeDropdownButton = '.note-toolbar .note-fontsize button.dropdown-toggle';
+        $I->waitForElementClickable($fontSizeDropdownButton, 5);
+
+        $I->click($fontSizeDropdownButton);
+        $I->wait(1);
+
+        $I->seeElement('.note-toolbar .note-fontsize .dropdown-menu.show');
+    }
+
     public function productDescriptionTextAreaModified(AcceptanceTester $I): void
     {
         $I->wantToTest('Module improves the product description textarea');
