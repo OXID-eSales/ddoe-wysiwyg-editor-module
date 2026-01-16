@@ -32,6 +32,11 @@
     {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/summernote-de-DE.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {% endif %}
 
+{% block ddoe_wysiwyg_external_plugins %}
+    {# Extend in: views/twig/extensions/modules/ddoewysiwyg/ddoewysiwyg.html.twig #}
+    {# {{ script({ include: oViewConf.getModuleUrl('yourmodule', 'out/js/plugin.js'), priority: 1, dynamic: __oxid_include_dynamic }) }} #}
+{% endblock %}
+
 <script type="module">
     top.basefrm.mediaUrls = {{ contentMediaUrls|json_encode|raw }};
     window.mediaLibraryUrl = "{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/base.min.js') }}";
@@ -42,6 +47,9 @@
     top.basefrm.editorControllerUrl = '{{ oViewConf.getSelfLink()|cat('cl=ddoemedia_wrapper&overlay=1')|replace({'&amp;':'&'})|raw }}';
 
     {% block ddoe_wysiwyg_summernote_options %}
+        {# Extend in: views/twig/extensions/modules/ddoewysiwyg/ddoewysiwyg.html.twig #}
+        {# Customize Summernote options (toolbar, fonts, etc.) #}
+        {# const summernoteOptions = { toolbar: [...], fontNames: [...] }; #}
         const summernoteOptions = {};
     {% endblock %}
 
