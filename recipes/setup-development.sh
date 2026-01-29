@@ -31,17 +31,17 @@ perl -pi\
   containers/httpd/project.conf
 
 perl -pi\
-  -e 's#PHP_VERSION=.*#PHP_VERSION=8.2#g;'\
+  -e 's#PHP_VERSION=.*#PHP_VERSION=8.3#g;'\
   .env
 
 docker compose up --build -d php
 
 docker compose exec -T php git config --global --add safe.directory /var/www
 
-$SCRIPT_PATH/parts/shared/require_shop_edition_packages.sh -e"${edition}" -v"dev-b-7.4.x"
-$SCRIPT_PATH/parts/shared/require_twig_components.sh -e"${edition}" -b"b-7.4.x"
-$SCRIPT_PATH/parts/shared/require_theme_dev.sh -t"apex" -b"b-7.4.x"
-$SCRIPT_PATH/parts/shared/require_demodata_package.sh -e"${edition}" -b"b-7.4.x"
+$SCRIPT_PATH/parts/shared/require_shop_edition_packages.sh -e"${edition}" -v"dev-b-7.5.x"
+$SCRIPT_PATH/parts/shared/require_twig_components.sh -e"${edition}" -b"b-7.5.x"
+$SCRIPT_PATH/parts/shared/require_theme_dev.sh -t"apex" -b"b-7.5.x"
+$SCRIPT_PATH/parts/shared/require_demodata_package.sh -e"${edition}" -b"b-7.5.x"
 
 docker compose exec php composer update --no-interaction
 
