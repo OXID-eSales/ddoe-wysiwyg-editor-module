@@ -11,6 +11,7 @@
 # Compatibility
 
 ### Versions
+* versions `7.0.x` - compatible with OXID eShop compilation 7.5.x and higher
 * versions `6.0.x` - compatible with OXID eShop compilation 7.4.x and higher
 * versions `5.0.x` - compatible with OXID eShop compilation 7.3.x and higher
 * versions `4.2.x` - compatible with OXID eShop compilation 7.2.x and higher
@@ -19,6 +20,7 @@
 * versions `2.x` - compatible with OXID eShop compilation 6.0.x - 6.5.x
 
 ### Branches
+* `b-7.5.x` is compatible with OXID eShop b-7.5.x branch
 * `b-7.4.x` is compatible with OXID eShop b-7.4.x branch
 * `b-7.3.x` is compatible with OXID eShop b-7.3.x branch
 * `b-7.2.x` is compatible with OXID eShop b-7.2.x branch
@@ -41,7 +43,7 @@ After installation, please, activate the module in OXID eShop Admin
 
 # Development installation
 The installation instructions below are shown for the current [SDK](https://github.com/OXID-eSales/docker-eshop-sdk)
-for shop 7.4. Make sure your system meets the requirements of the SDK.
+for shop 7.5. Make sure your system meets the requirements of the SDK.
 
 0. Ensure all docker containers are down to avoid port conflicts
 

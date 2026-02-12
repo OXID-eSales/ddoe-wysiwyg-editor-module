@@ -22,24 +22,24 @@
     "prefer-stable": true,
     "prefer-dist": true,
     "require":     {
-        "php": ">=8.2",
+        "php": "^8.3",
         "symfony/filesystem": "*",
         "ext-gd": "*",
-        "oxid-esales/media-library-module": "dev-b-7.4.x"
+        "oxid-esales/media-library-module": "dev-b-7.5.x"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.1",
         "squizlabs/php_codesniffer": "3.*",
-        "oxid-esales/oxideshop-ce": "dev-b-7.4.x",
+        "oxid-esales/oxideshop-ce": "dev-b-7.5.x",
         "phpunit/phpunit": "^11.2",
         "codeception/codeception": "^5.0",
         "codeception/module-asserts": "^3.0",
         "codeception/module-db": "^3.0",
         "codeception/module-filesystem": "^3.0",
         "codeception/module-webdriver": "^4.0",
-        "oxid-esales/codeception-modules": "dev-b-7.4.x",
-        "oxid-esales/codeception-page-objects": "dev-b-7.4.x",
-        "oxid-esales/developer-tools": "dev-b-7.4.x",
+        "oxid-esales/codeception-modules": "dev-b-7.5.x",
+        "oxid-esales/codeception-page-objects": "dev-b-7.5.x",
+        "oxid-esales/developer-tools": "dev-b-7.5.x",
         "mikey179/vfsstream": "^1.6"
     },
     "autoload":    {
@@ -54,7 +54,7 @@
         }
     },
     "conflict": {
-        "oxid-esales/oxideshop-ce": "<7.4"
+        "oxid-esales/oxideshop-ce": "<7.5"
     },
     "scripts": {
         "phpcs-report": "phpcs --standard=tests/phpcs.xml --report=json --report-file=phpcs.report.json",
