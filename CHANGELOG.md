@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [7.0.0] - Unreleased
 
+### Added
+- Twig blocks `ddoe_wysiwyg_external_plugins` and `ddoe_wysiwyg_summernote_options` to allow other modules to extend Summernote plugins and options
+
 ### Changed
 - Updated to work with OXID eShop 7.5.x
 - Minimum PHP version is now 8.3, tested up to PHP 8.5

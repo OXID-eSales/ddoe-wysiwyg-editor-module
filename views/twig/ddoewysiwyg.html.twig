@@ -32,7 +32,7 @@
     {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/summernote-de-DE.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {% endif %}
 
-{% block ddoe_wysiwyg_external_plugins %}
+{% block ddoe_wysiwyg_plugins %}
     {# Extend in: views/twig/extensions/modules/ddoewysiwyg/ddoewysiwyg.html.twig #}
     {# {{ script({ include: oViewConf.getModuleUrl('yourmodule', 'out/js/plugin.js'), priority: 1, dynamic: __oxid_include_dynamic }) }} #}
 {% endblock %}
@@ -46,11 +46,11 @@
     top.basefrm.OverlayStyles = '{{ oViewConf.formJsFileUrl(oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/css/overlay.min.css')) }}';
     top.basefrm.editorControllerUrl = '{{ oViewConf.getSelfLink()|cat('cl=ddoemedia_wrapper&overlay=1')|replace({'&amp;':'&'})|raw }}';
 
+    let summernoteOptions = {};
     {% block ddoe_wysiwyg_summernote_options %}
         {# Extend in: views/twig/extensions/modules/ddoewysiwyg/ddoewysiwyg.html.twig #}
         {# Customize Summernote options (toolbar, fonts, etc.) #}
-        {# const summernoteOptions = { toolbar: [...], fontNames: [...] }; #}
-        const summernoteOptions = {};
+        {# Object.assign(summernoteOptions, { toolbar: [...], fontNames: [...] }; #}
     {% endblock %}
 
     document.addEventListener("DOMContentLoaded", function() {
