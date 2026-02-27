@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [7.0.0] - Unreleased
 
 ### Added
-- Twig blocks `ddoe_wysiwyg_external_plugins` and `ddoe_wysiwyg_summernote_options` to allow other modules to extend Summernote plugins and options
+- Twig blocks `ddoe_wysiwyg_plugins` and `ddoe_wysiwyg_summernote_options` to allow other modules to extend Summernote plugins and options
 
 ### Changed
 - Updated to work with OXID eShop 7.5.x

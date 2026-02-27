@@ -97,7 +97,7 @@ export function autoInitializeSummernote(options) {
 
                 var iHeight = $(this).height();
 
-                initializeSummernote($(this), {...{
+                initializeSummernote($(this), {
                     minHeight: iHeight,
                     lang: $(this).data('lang') == 'de' ? 'de-DE' : 'en-US',
                     defaultProtocol: $(this).data('ssl') == '1' ? 'https://' : 'http://',
@@ -105,7 +105,7 @@ export function autoInitializeSummernote(options) {
                         top.basefrm.OverlayInstance.showOverlay(context);
                     },
                     callbacks: {
-                        onInit: function() {
+                        onInit: function () {
                             $('img.dd-wysiwyg-media-image').each(function () {
                                 let filepath = $(this).attr('data-filepath');
                                 if (!filepath && top.basefrm) {
@@ -117,7 +117,8 @@ export function autoInitializeSummernote(options) {
                                 }
                             });
                         }
-                    }, ...options}
+                    },
+                    ...options
                 }).then(($editor) => {
                     if ($editor.attr('disabled') === 'disabled') {
                         $editor.summernote('disable');
