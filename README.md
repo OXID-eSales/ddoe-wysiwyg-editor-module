@@ -1,6 +1,6 @@
 # Summernote WYSIWYG Editor for OXID eShop
 
-[![Development](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yaml/badge.svg?branch=b-7.4.x)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yaml)
+[![Development](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yaml/badge.svg?branch=b-7.5.x)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/actions/workflows/trigger.yaml)
 [![Latest Version](https://img.shields.io/packagist/v/ddoe/wysiwyg-editor-module?logo=composer&label=latest&include_prereleases&color=orange)](https://packagist.org/packages/ddoe/wysiwyg-editor-module)
 [![PHP Version](https://img.shields.io/packagist/php-v/ddoe/wysiwyg-editor-module)](https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module)
 
@@ -32,9 +32,9 @@
 
 In order to install the module via composer run one of the following commands in commandline in your shop base directory
 (where the shop's composer.json file resides).
-* `composer require ddoe/wysiwyg-editor-module:^6.0.0`
-  to install the latest released version compatible with OXID eShop v7.4.x
-* `composer require ddoe/wysiwyg-editor-module:dev-b-7.4.x`
+* `composer require ddoe/wysiwyg-editor-module:^7.0.0`
+  to install the released version compatible with OXID eShop v7.5.x
+* `composer require ddoe/wysiwyg-editor-module:dev-b-7.5.x`
   to install the specific unreleased branch
 
 ### Module activation in OXID eShop Admin
@@ -54,7 +54,7 @@ echo MyProject && git clone https://github.com/OXID-eSales/docker-eshop-sdk.git 
 
 2. Clone the repository to the source directory
 ```shell
-git clone --recurse-submodules https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module.git --branch=b-7.4.x ./source
+git clone --recurse-submodules https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module.git --branch=b-7.5.x ./source
 ```
 
 3. Run the recipe to setup the development environment
