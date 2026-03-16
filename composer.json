@@ -40,7 +40,8 @@
         "oxid-esales/codeception-modules": "dev-b-7.5.x",
         "oxid-esales/codeception-page-objects": "dev-b-7.5.x",
         "oxid-esales/developer-tools": "dev-b-7.5.x",
-        "mikey179/vfsstream": "^1.6"
+        "mikey179/vfsstream": "^1.6",
+        "composer/composer": ">=2.0"
     },
     "autoload":    {
         "psr-4": {
