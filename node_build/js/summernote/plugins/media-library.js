@@ -13,7 +13,7 @@ function ddmedia(context) {
     this.initialize = function () {
         // create button
         var button = ui.button({
-            contents: '<i class="fa fa-file-image-o fa-file-image"></i>',
+            contents: '<i class="bi bi-file-earmark-image"></i>',
             tooltip: lang.image.image,
             click: function () {
                 if (typeof context.options.mediaButtonClick === 'function') {

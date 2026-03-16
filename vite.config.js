@@ -15,8 +15,8 @@ export default defineConfig({
                 { src: path.resolve(__dirname, 'node_modules/bootstrap/dist/css/bootstrap.min.css'), dest: 'css' },
                 { src: path.resolve(__dirname, 'node_modules/summernote/dist/summernote-bs5.min.css'), dest: 'css', rename: 'summernote.min.css' },
                 { src: path.resolve(__dirname, 'node_modules/summernote/dist/font'), dest: 'css' },
-                { src: path.resolve(__dirname, 'node_modules/font-awesome/css/font-awesome.min.css'), dest: 'css' },
-                { src: path.resolve(__dirname, 'node_modules/font-awesome/fonts'), dest: '' },
+                { src: path.resolve(__dirname, 'node_modules/bootstrap-icons/font/bootstrap-icons.min.css'), dest: 'css' },
+                { src: path.resolve(__dirname, 'node_modules/bootstrap-icons/font/fonts'), dest: 'css' },
                 { src: path.resolve(__dirname, 'node_build/img/*'), dest: 'img' }
             ]
         }),

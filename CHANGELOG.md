@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Updated to work with OXID eShop 7.5.x
 - Minimum PHP version is now 8.3, tested up to PHP 8.5
+- Replaced Font Awesome with Bootstrap Icons
 
 ## [6.0.2] - Unreleased
 
