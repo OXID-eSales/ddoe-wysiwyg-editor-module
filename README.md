@@ -126,6 +126,35 @@ vendor/bin/oe-console ddoewysiwyg:migrate:urls-to-ids oxcontents OXCONTENT_1
 
 Ensure all fields for which the WYSIWYG editor is used are migrated.
 
+### Media alt texts
+
+The command `ddoewysiwyg:migrate:alt-texts tableName fieldName tableIdKey` adds `oeMediaAlt` placeholders to
+media image `alt` attributes. This enables media alt texts managed in the Media Library to be rendered automatically
+in the frontend. It should be run after the `ddoewysiwyg:migrate:urls-to-ids` migration, as it relies on the
+`data-id` attribute being present on media image tags.
+
+The command handles the following cases:
+- Empty or missing `alt` attribute: replaced with the `oeMediaAlt` placeholder
+- Already migrated (`oeMediaAlt` placeholder present): skipped
+- Custom alt text written manually: **not modified**, but listed in the command output for manual review
+
+Example use:
+```
+vendor/bin/oe-console ddoewysiwyg:migrate:alt-texts oxartextends OXLONGDESC
+vendor/bin/oe-console ddoewysiwyg:migrate:alt-texts oxartextends OXLONGDESC_1
+vendor/bin/oe-console ddoewysiwyg:migrate:alt-texts oxcontents OXCONTENT
+vendor/bin/oe-console ddoewysiwyg:migrate:alt-texts oxcontents OXCONTENT_1
+```
+
+If any media images have custom alt text, the command will output them:
+```
+Warning: The following media images have custom alt text that was NOT modified:
+
+  [OXID=abc123] media-id="68cab835a253c" alt="My product photo"
+
+Please review these entries and update alt texts manually if needed.
+```
+
 ## Bugs and Issues
 
 If you experience any bugs or issues, please report them in the section **WYSIWYG Editor + Media Gallery** of https://bugs.oxid-esales.com.

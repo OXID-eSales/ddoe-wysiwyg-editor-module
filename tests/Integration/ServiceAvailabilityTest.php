@@ -69,6 +69,7 @@ class ServiceAvailabilityTest extends IntegrationTestCase
 
             // Migration
             [\OxidEsales\WysiwygModule\Migration\Command\MigrateMediaUrlsToIdsCommand::class],
+            [\OxidEsales\WysiwygModule\Migration\Command\MigrateMediaAltTextsCommand::class],
 
             // Service
             [\OxidEsales\WysiwygModule\Service\EditorRendererInterface::class],

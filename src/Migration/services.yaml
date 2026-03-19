@@ -16,3 +16,18 @@ services:
       $migrationService: '@OxidEsales\WysiwygModule\Migration\Service\MediaIdAnchorMigrationService'
 
   OxidEsales\WysiwygModule\Migration\Service\MediaIdAnchorMigrationService: ~
+
+  OxidEsales\WysiwygModule\Migration\Command\MigrateMediaAltTextsCommand:
+    class: OxidEsales\WysiwygModule\Migration\Command\MigrateMediaAltTextsCommand
+    tags:
+      - { name: 'console.command', command: 'ddoewysiwyg:migrate:alt-texts' }
+    arguments:
+      $altTextMigrationRepository: '@OxidEsales\WysiwygModule\Migration\Service\MediaAltTextMigrationRepository'
+
+  OxidEsales\WysiwygModule\Migration\Service\MediaAltTextMigrationRepository:
+    class: OxidEsales\WysiwygModule\Migration\Repository\AltTextMigrationRepository
+    arguments:
+      $altTextMigrationService: '@OxidEsales\WysiwygModule\Migration\Service\MediaAltTextMigrationService'
+
+  OxidEsales\WysiwygModule\Migration\Service\MediaAltTextMigrationService:
+    class: OxidEsales\WysiwygModule\Migration\Service\MediaAltTextMigrationService
