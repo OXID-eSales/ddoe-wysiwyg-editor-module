@@ -10,7 +10,11 @@ declare(strict_types=1);
 namespace OxidEsales\WysiwygModule\Migration\Service;
 
 use OxidEsales\WysiwygModule\Migration\DTO\AltTextMigrationResult;
+use OxidEsales\WysiwygModule\Migration\DTO\AltTextMigrationResultInterface;
 
+/**
+ * @phpstan-import-type CustomAltTextTag from AltTextMigrationResultInterface
+ */
 class MediaAltTextMigrationService implements AltTextMigrationServiceInterface
 {
     private const MEDIA_IMAGE_TAG_PATTERN = '/<[^>]+dd-wysiwyg-media-image[^>]+>/msi';
@@ -18,10 +22,10 @@ class MediaAltTextMigrationService implements AltTextMigrationServiceInterface
     private const ALT_ATTRIBUTE_PATTERN = '/alt="(?<alt>[^"]*)"/mi';
     private const ALT_ALREADY_MIGRATED_PATTERN = '/\{\{\s?oeMediaAlt\(/';
 
-    /** @var array<int, array{tag: string, mediaId: string, altText: string}> */
+    /** @var array<int, CustomAltTextTag> */
     private array $customAltTextTags = [];
 
-    public function migrateAltTexts(string $content): AltTextMigrationResult
+    public function migrateAltTexts(string $content): AltTextMigrationResultInterface
     {
         $this->customAltTextTags = [];
 

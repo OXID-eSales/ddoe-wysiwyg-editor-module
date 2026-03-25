@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\WysiwygModule\Tests\Unit\Migration\Service;
 
 use OxidEsales\WysiwygModule\Migration\Service\MediaAltTextMigrationService;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -19,9 +18,11 @@ class MediaAltTextMigrationServiceTest extends TestCase
     #[Test]
     public function noMediaImagesReturnsContentUnchanged(): void
     {
-        $sut = new MediaAltTextMigrationService();
+        $sut = $this->getSut();
 
-        $content = '<p>Some text</p><img src="regular.jpg" alt="regular">';
+        $src = uniqid();
+        $alt = uniqid();
+        $content = '<p>Some text</p><img src="' . $src . '" alt="' . $alt . '">';
         $result = $sut->migrateAltTexts($content);
 
         $this->assertSame($content, $result->getContent());
@@ -31,12 +32,21 @@ class MediaAltTextMigrationServiceTest extends TestCase
     #[Test]
     public function emptyAltIsReplacedWithPlaceholder(): void
     {
-        $sut = new MediaAltTextMigrationService();
+        $sut = $this->getSut();
 
-        // phpcs:disable
-        $content = '<img src="{{oeMediaUrl(\'abc123\')}}" data-id="abc123" data-source="media" class="dd-wysiwyg-media-image" alt="">';
-        $expected = '<img src="{{oeMediaUrl(\'abc123\')}}" data-id="abc123" data-source="media" class="dd-wysiwyg-media-image" alt="{{oeMediaAlt(\'abc123\')}}">';
-        // phpcs:enable
+        $mediaId = uniqid();
+        $content = '<img'
+            . " src=\"{{oeMediaUrl('$mediaId')}}\""
+            . " data-id=\"$mediaId\""
+            . ' data-source="media"'
+            . ' class="dd-wysiwyg-media-image"'
+            . ' alt="">';
+        $expected = '<img'
+            . " src=\"{{oeMediaUrl('$mediaId')}}\""
+            . " data-id=\"$mediaId\""
+            . ' data-source="media"'
+            . ' class="dd-wysiwyg-media-image"'
+            . " alt=\"{{oeMediaAlt('$mediaId')}}\">";
 
         $result = $sut->migrateAltTexts($content);
 
@@ -47,12 +57,20 @@ class MediaAltTextMigrationServiceTest extends TestCase
     #[Test]
     public function missingAltAttributeGetsPlaceholderAdded(): void
     {
-        $sut = new MediaAltTextMigrationService();
+        $sut = $this->getSut();
 
-        // phpcs:disable
-        $content = '<img src="{{oeMediaUrl(\'abc123\')}}" data-id="abc123" data-source="media" class="dd-wysiwyg-media-image">';
-        $expected = '<img src="{{oeMediaUrl(\'abc123\')}}" data-id="abc123" data-source="media" class="dd-wysiwyg-media-image" alt="{{oeMediaAlt(\'abc123\')}}">';
-        // phpcs:enable
+        $mediaId = uniqid();
+        $content = '<img'
+            . " src=\"{{oeMediaUrl('$mediaId')}}\""
+            . " data-id=\"$mediaId\""
+            . ' data-source="media"'
+            . ' class="dd-wysiwyg-media-image">';
+        $expected = '<img'
+            . " src=\"{{oeMediaUrl('$mediaId')}}\""
+            . " data-id=\"$mediaId\""
+            . ' data-source="media"'
+            . ' class="dd-wysiwyg-media-image"'
+            . " alt=\"{{oeMediaAlt('$mediaId')}}\">";
 
         $result = $sut->migrateAltTexts($content);
 
@@ -63,11 +81,15 @@ class MediaAltTextMigrationServiceTest extends TestCase
     #[Test]
     public function alreadyMigratedAltIsSkipped(): void
     {
-        $sut = new MediaAltTextMigrationService();
+        $sut = $this->getSut();
 
-        // phpcs:disable
-        $content = '<img src="{{oeMediaUrl(\'abc123\')}}" data-id="abc123" data-source="media" class="dd-wysiwyg-media-image" alt="{{oeMediaAlt(\'abc123\')}}">';
-        // phpcs:enable
+        $mediaId = uniqid();
+        $content = '<img'
+            . " src=\"{{oeMediaUrl('$mediaId')}}\""
+            . " data-id=\"$mediaId\""
+            . ' data-source="media"'
+            . ' class="dd-wysiwyg-media-image"'
+            . " alt=\"{{oeMediaAlt('$mediaId')}}\">";
 
         $result = $sut->migrateAltTexts($content);
 
@@ -78,26 +100,32 @@ class MediaAltTextMigrationServiceTest extends TestCase
     #[Test]
     public function customAltTextIsNotModifiedButReported(): void
     {
-        $sut = new MediaAltTextMigrationService();
+        $sut = $this->getSut();
 
-        // phpcs:disable
-        $content = '<img src="{{oeMediaUrl(\'abc123\')}}" data-id="abc123" data-source="media" class="dd-wysiwyg-media-image" alt="My custom alt text">';
-        // phpcs:enable
+        $mediaId = uniqid();
+        $altText = uniqid();
+        $content = '<img'
+            . " src=\"{{oeMediaUrl('$mediaId')}}\""
+            . " data-id=\"$mediaId\""
+            . ' data-source="media"'
+            . ' class="dd-wysiwyg-media-image"'
+            . ' alt="' . $altText . '">';
 
         $result = $sut->migrateAltTexts($content);
 
         $this->assertSame($content, $result->getContent());
         $this->assertCount(1, $result->getCustomAltTextTags());
-        $this->assertSame('abc123', $result->getCustomAltTextTags()[0]['mediaId']);
-        $this->assertSame('My custom alt text', $result->getCustomAltTextTags()[0]['altText']);
+        $this->assertSame($mediaId, $result->getCustomAltTextTags()[0]['mediaId']);
+        $this->assertSame($altText, $result->getCustomAltTextTags()[0]['altText']);
     }
 
     #[Test]
     public function tagWithoutDataIdIsLeftUnchanged(): void
     {
-        $sut = new MediaAltTextMigrationService();
+        $sut = $this->getSut();
 
-        $content = '<img src="somefile.jpg" data-source="media" class="dd-wysiwyg-media-image" alt="">';
+        $src = uniqid();
+        $content = '<img src="' . $src . '" data-source="media" class="dd-wysiwyg-media-image" alt="">';
 
         $result = $sut->migrateAltTexts($content);
 
@@ -108,49 +136,57 @@ class MediaAltTextMigrationServiceTest extends TestCase
     #[Test]
     public function multipleImagesMixedCases(): void
     {
-        $sut = new MediaAltTextMigrationService();
+        $sut = $this->getSut();
 
-        // phpcs:disable
-        $content = 'start '
-            . '<img src="{{oeMediaUrl(\'id1\')}}" data-id="id1" class="dd-wysiwyg-media-image" alt="">'
-            . ' middle '
-            . '<img src="{{oeMediaUrl(\'id2\')}}" data-id="id2" class="dd-wysiwyg-media-image" alt="custom">'
-            . ' end '
-            . '<img src="{{oeMediaUrl(\'id3\')}}" data-id="id3" class="dd-wysiwyg-media-image" alt="{{oeMediaAlt(\'id3\')}}">';
+        $id1 = uniqid();
+        $id2 = uniqid();
+        $id3 = uniqid();
+        $customAlt = uniqid();
 
-        $expected = 'start '
-            . '<img src="{{oeMediaUrl(\'id1\')}}" data-id="id1" class="dd-wysiwyg-media-image" alt="{{oeMediaAlt(\'id1\')}}">'
-            . ' middle '
-            . '<img src="{{oeMediaUrl(\'id2\')}}" data-id="id2" class="dd-wysiwyg-media-image" alt="custom">'
-            . ' end '
-            . '<img src="{{oeMediaUrl(\'id3\')}}" data-id="id3" class="dd-wysiwyg-media-image" alt="{{oeMediaAlt(\'id3\')}}">';
-        // phpcs:enable
+        $img1 = '<img src="{{oeMediaUrl(\'' . $id1 . '\')}}"'
+            . ' data-id="' . $id1 . '"'
+            . ' class="dd-wysiwyg-media-image"'
+            . ' alt="">';
+        $img1Migrated = '<img src="{{oeMediaUrl(\'' . $id1 . '\')}}"'
+            . ' data-id="' . $id1 . '"'
+            . ' class="dd-wysiwyg-media-image"'
+            . ' alt="{{oeMediaAlt(\'' . $id1 . '\')}}">';
+        $img2 = '<img src="{{oeMediaUrl(\'' . $id2 . '\')}}"'
+            . ' data-id="' . $id2 . '"'
+            . ' class="dd-wysiwyg-media-image"'
+            . ' alt="' . $customAlt . '">';
+        $img3 = '<img src="{{oeMediaUrl(\'' . $id3 . '\')}}"'
+            . ' data-id="' . $id3 . '"'
+            . ' class="dd-wysiwyg-media-image"'
+            . ' alt="{{oeMediaAlt(\'' . $id3 . '\')}}">';
+
+        $content = 'start ' . $img1 . ' middle ' . $img2 . ' end ' . $img3;
+        $expected = 'start ' . $img1Migrated . ' middle ' . $img2 . ' end ' . $img3;
 
         $result = $sut->migrateAltTexts($content);
 
         $this->assertSame($expected, $result->getContent());
         $this->assertCount(1, $result->getCustomAltTextTags());
-        $this->assertSame('id2', $result->getCustomAltTextTags()[0]['mediaId']);
-        $this->assertSame('custom', $result->getCustomAltTextTags()[0]['altText']);
+        $this->assertSame($id2, $result->getCustomAltTextTags()[0]['mediaId']);
+        $this->assertSame($customAlt, $result->getCustomAltTextTags()[0]['altText']);
     }
 
     #[Test]
     public function multilineTagIsHandledCorrectly(): void
     {
-        $sut = new MediaAltTextMigrationService();
+        $sut = $this->getSut();
 
-        // phpcs:disable
-        $content = '<img src="{{oeMediaUrl(\'abc123\')}}"
-            data-id="abc123"
-            data-source="media"
-            class="dd-wysiwyg-media-image"
-            alt="">';
-        $expected = '<img src="{{oeMediaUrl(\'abc123\')}}"
-            data-id="abc123"
-            data-source="media"
-            class="dd-wysiwyg-media-image"
-            alt="{{oeMediaAlt(\'abc123\')}}">';
-        // phpcs:enable
+        $mediaId = uniqid();
+        $content = "<img src=\"{{oeMediaUrl('$mediaId')}}\"
+            data-id=\"$mediaId\"
+            data-source=\"media\"
+            class=\"dd-wysiwyg-media-image\"
+            alt=\"\">";
+        $expected = "<img src=\"{{oeMediaUrl('$mediaId')}}\"
+            data-id=\"$mediaId\"
+            data-source=\"media\"
+            class=\"dd-wysiwyg-media-image\"
+            alt=\"{{oeMediaAlt('$mediaId')}}\">";
 
         $result = $sut->migrateAltTexts($content);
 
@@ -161,16 +197,24 @@ class MediaAltTextMigrationServiceTest extends TestCase
     #[Test]
     public function stateIsResetBetweenCalls(): void
     {
-        $sut = new MediaAltTextMigrationService();
+        $sut = $this->getSut();
 
-        // phpcs:disable
-        $contentWithCustom = '<img src="{{oeMediaUrl(\'abc\')}}" data-id="abc" class="dd-wysiwyg-media-image" alt="custom">';
-        // phpcs:enable
+        $mediaId = uniqid();
+        $altText = uniqid();
+        $contentWithCustom = '<img src="{{oeMediaUrl(\'' . $mediaId . '\')}}"'
+            . ' data-id="' . $mediaId . '"'
+            . ' class="dd-wysiwyg-media-image"'
+            . ' alt="' . $altText . '">';
 
         $result1 = $sut->migrateAltTexts($contentWithCustom);
         $this->assertCount(1, $result1->getCustomAltTextTags());
 
         $result2 = $sut->migrateAltTexts('no media here');
         $this->assertSame([], $result2->getCustomAltTextTags());
+    }
+
+    private function getSut(): MediaAltTextMigrationService
+    {
+        return new MediaAltTextMigrationService();
     }
 }

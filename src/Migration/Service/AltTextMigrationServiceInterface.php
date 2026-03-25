@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Migration\Service;
 
-use OxidEsales\WysiwygModule\Migration\DTO\AltTextMigrationResult;
+use OxidEsales\WysiwygModule\Migration\DTO\AltTextMigrationResultInterface;
 
 interface AltTextMigrationServiceInterface
 {
-    public function migrateAltTexts(string $content): AltTextMigrationResult;
+    public function migrateAltTexts(string $content): AltTextMigrationResultInterface;
 }

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - Twig blocks `ddoe_wysiwyg_plugins` and `ddoe_wysiwyg_summernote_options` to allow other modules to extend Summernote plugins and options
+- `ddoewysiwyg:migrate:alt-texts` - migration command to replace empty or missing alt attributes on media images with `oeMediaAlt` calls
 
 ### Changed
 - Updated to work with OXID eShop 7.5.x

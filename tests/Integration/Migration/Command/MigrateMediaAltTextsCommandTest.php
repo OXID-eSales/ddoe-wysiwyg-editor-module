@@ -26,20 +26,13 @@ class MigrateMediaAltTextsCommandTest extends TestCase
         $field = uniqid();
         $tableKey = uniqid();
 
-        $repositorySpy = $this->createMock(AltTextMigrationRepositoryInterface::class);
-        $repositorySpy->expects($this->once())
+        $repositoryMock = $this->createMock(AltTextMigrationRepositoryInterface::class);
+        $repositoryMock->expects($this->once())
             ->method('migrateTableField')
             ->with($table, $field, $tableKey)
             ->willReturn([]);
 
-        $sut = new MigrateMediaAltTextsCommand(
-            altTextMigrationRepository: $repositorySpy,
-        );
-
-        $application = new Application();
-        $application->add($sut);
-
-        $commandTester = new CommandTester($sut);
+        $commandTester = new CommandTester($this->getSut($repositoryMock));
         $result = $commandTester->execute([
             'table' => $table,
             'field' => $field,
@@ -57,20 +50,13 @@ class MigrateMediaAltTextsCommandTest extends TestCase
         $field = uniqid();
         $tableKey = 'OXID';
 
-        $repositorySpy = $this->createMock(AltTextMigrationRepositoryInterface::class);
-        $repositorySpy->expects($this->once())
+        $repositoryMock = $this->createMock(AltTextMigrationRepositoryInterface::class);
+        $repositoryMock->expects($this->once())
             ->method('migrateTableField')
             ->with($table, $field, $tableKey)
             ->willReturn([]);
 
-        $sut = new MigrateMediaAltTextsCommand(
-            altTextMigrationRepository: $repositorySpy,
-        );
-
-        $application = new Application();
-        $application->add($sut);
-
-        $commandTester = new CommandTester($sut);
+        $commandTester = new CommandTester($this->getSut($repositoryMock));
         $result = $commandTester->execute([
             'table' => $table,
             'field' => $field,
@@ -85,26 +71,22 @@ class MigrateMediaAltTextsCommandTest extends TestCase
     {
         $table = uniqid();
         $field = uniqid();
+        $key = uniqid();
+        $mediaId = uniqid();
+        $altText = uniqid();
 
         $repositoryStub = $this->createMock(AltTextMigrationRepositoryInterface::class);
         $repositoryStub->method('migrateTableField')
             ->willReturn([
                 [
-                    'key' => 'row123',
+                    'key' => $key,
                     'tag' => '<img>',
-                    'mediaId' => 'media456',
-                    'altText' => 'My custom alt',
+                    'mediaId' => $mediaId,
+                    'altText' => $altText,
                 ],
             ]);
 
-        $sut = new MigrateMediaAltTextsCommand(
-            altTextMigrationRepository: $repositoryStub,
-        );
-
-        $application = new Application();
-        $application->add($sut);
-
-        $commandTester = new CommandTester($sut);
+        $commandTester = new CommandTester($this->getSut($repositoryStub));
         $commandTester->execute([
             'table' => $table,
             'field' => $field,
@@ -112,8 +94,20 @@ class MigrateMediaAltTextsCommandTest extends TestCase
 
         $display = $commandTester->getDisplay();
         $this->assertStringContainsString('custom alt text that was NOT modified', $display);
-        $this->assertStringContainsString('[OXID=row123]', $display);
-        $this->assertStringContainsString('media-id="media456"', $display);
-        $this->assertStringContainsString('alt="My custom alt"', $display);
+        $this->assertStringContainsString("[OXID=$key]", $display);
+        $this->assertStringContainsString("media-id=\"$mediaId\"", $display);
+        $this->assertStringContainsString("alt=\"$altText\"", $display);
+    }
+
+    private function getSut(AltTextMigrationRepositoryInterface $repository): MigrateMediaAltTextsCommand
+    {
+        $sut = new MigrateMediaAltTextsCommand(
+            altTextMigrationRepository: $repository,
+        );
+
+        $application = new Application();
+        $application->add($sut);
+
+        return $sut;
     }
 }
