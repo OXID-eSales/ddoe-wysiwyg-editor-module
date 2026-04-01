@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [6.0.2] - Unreleased
+
+### Fixed
+- Content deleted when emojis are used in text widgets [#0007619](https://bugs.oxid-esales.com/view.php?id=7619)
+
 ## [6.0.1] - 2025-11-10
 
 ### Fixed
