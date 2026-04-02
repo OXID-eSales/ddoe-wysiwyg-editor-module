@@ -23,6 +23,13 @@ function overrideTooltip() {
     };
 }
 
+function encodeEmojisToHtmlEntities(html) {
+    if (!html) return html;
+    return html.replace(/[\u{10000}-\u{10FFFF}]/gu, function(char) {
+        return '&#' + char.codePointAt(0) + ';';
+    });
+}
+
 export async function initializeSummernote(element, options) {
     const defaultSettings = {
         lang: 'de-DE',
@@ -133,14 +140,13 @@ export function autoInitializeSummernote() {
                 // todo: check why this activation/deactivation is needed
                 var context = $( this ).data( 'summernote' );
 
-                // deactivate codeview before getting value
                 if(context.invoke('codeview.isActivated')) {
                     context.invoke( 'codeview.deactivate' );
                 }
                 context.invoke( 'codeview.activate' );
 
-                // use the codeview value as the textarea final value before submit
-                $( this ).val($( this ).summernote('code'));
+                var content = $( this ).summernote('code');
+                $( this ).val(encodeEmojisToHtmlEntities(content));
             });
         });
     }
