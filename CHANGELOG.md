@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [7.0.0] - Unreleased
+## [7.0.0] - 2026-04-09
 
 ### Added
 - Twig blocks `ddoe_wysiwyg_plugins` and `ddoe_wysiwyg_summernote_options` to allow other modules to extend Summernote plugins and options
@@ -191,7 +191,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
-[7.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.1...b-7.5.x
+[7.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.1...v7.0.0
 [6.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.0...v6.0.1
 [6.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v5.0.0...v6.0.0
 [5.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v5.0.0...v5.0.1
