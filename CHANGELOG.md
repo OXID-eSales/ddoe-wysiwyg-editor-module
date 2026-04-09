@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [6.0.2] - Unreleased
+## [6.0.2] - 2026-04-09
 
 ### Fixed
 - Summernote toolbar dropdowns not opening due to Bootstrap 5 event delegation conflict
@@ -180,6 +180,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
+[6.0.2]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.1...v6.0.2
 [6.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.0...v6.0.1
 [6.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v5.0.0...v6.0.0
 [5.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v5.0.0...v5.0.1
