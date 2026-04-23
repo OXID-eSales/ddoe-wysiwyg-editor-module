@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [6.0.3] - unreleased
+
+### Fixed
+- Incorrect Bootstrap style imports affecting shop styles
+
 ## [6.0.2] - 2026-04-09
 
 ### Fixed
