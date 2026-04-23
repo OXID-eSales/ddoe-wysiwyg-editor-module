@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Minimum PHP version is now 8.3, tested up to PHP 8.5
 - Replaced Font Awesome with Bootstrap Icons
 
+## [6.0.3] - unreleased
+
+### Fixed
+- Incorrect Bootstrap style imports affecting shop styles
+
 ## [6.0.2] - 2026-04-09
 
 ### Fixed

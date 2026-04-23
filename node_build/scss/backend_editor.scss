@@ -3,6 +3,8 @@
  * See LICENSE file for license details.
  */
 
+@import "bootstrap";
+
 :root {
     --bs-border-radius: 0;
     --bs-border-radius-sm: 0;
@@ -21,14 +23,9 @@
 }
 
 #ddoew {
-
-    @import "bootstrap.min.css";
-    @import "../../node_modules/bootstrap/scss/mixins/_clearfix.scss";
-
-    $primary:                   #303841;
-
-    $dd-primary-btn:               #3c4e55;
-    $dd-primary-btn-border:        #314046;
+    $primary:               #303841;
+    $dd-primary-btn:        #3c4e55;
+    $dd-primary-btn-border: #314046;
 
     .btn {
         --bs-btn-disabled-border-color: transparent;
