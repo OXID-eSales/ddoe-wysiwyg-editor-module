@@ -35,6 +35,31 @@ final class TextareaCheckCest
         $I->seeElement('.note-toolbar .note-fontsize .dropdown-menu.show');
     }
 
+    public function editorFiltersContent(AcceptanceTester $I): void
+    {
+        $I->wantToTest('Editor normalizes content when switching from code view to preview');
+
+        $adminPanel = $I->loginAdmin();
+        $adminPanel->openProducts();
+        $I->selectEditFrame();
+
+        $I->waitForElement('.note-editor', 15);
+        $I->wait(2);
+
+        $codeviewButton = '.note-toolbar .btn-codeview';
+        $I->waitForElementClickable($codeviewButton);
+        $I->click($codeviewButton);
+        $I->waitForElement('.note-codable');
+
+        $I->fillField('.note-codable', '<img src="x" onerror="window.handlerCalled=true">');
+
+        $I->click($codeviewButton);
+        $I->wait(2);
+
+        $handlerCalled = $I->executeJS('return window.handlerCalled === true');
+        $I->assertFalse($handlerCalled);
+    }
+
     public function productDescriptionTextAreaModified(AcceptanceTester $I): void
     {
         $I->wantToTest('Module improves the product description textarea');
@@ -46,7 +71,7 @@ final class TextareaCheckCest
         $I->seeElementInDOM("#ddoew #editor_oxarticles__oxlongdesc");
     }
 
-    public function contentIsFiltered(AcceptanceTester $I): void
+    public function serverFiltersContent(AcceptanceTester $I): void
     {
         $loadId = 'test_content';
         $template = "<p>par 1</p><script>var filterTest = 'test';</script><p>par 2</p>";

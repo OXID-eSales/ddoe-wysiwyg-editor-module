@@ -28,6 +28,7 @@
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/jquery-ui.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/bootstrap.bundle.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/summernote.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
+{{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/purify.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {% if langabbr == 'de' %}
     {{ script({ include: oViewConf.getModuleUrl('ddoewysiwyg', 'out/src/js/summernote/summernote-de-DE.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {% endif %}
@@ -53,6 +54,13 @@
         {# Object.assign(summernoteOptions, { toolbar: [...], fontNames: [...] }; #}
     {% endblock %}
 
+    let domPurifyConfig = {};
+    {% block ddoe_wysiwyg_dompurify_config %}
+        {# Extend in: views/twig/extensions/modules/ddoewysiwyg/ddoewysiwyg.html.twig #}
+        {# Customize DOMPurify sanitization options, e.g.: #}
+        {# Object.assign(domPurifyConfig, { ALLOWED_ATTR: ['href', 'src', 'class', 'style'] }); #}
+    {% endblock %}
+
     document.addEventListener("DOMContentLoaded", function() {
         const baseIframe = top.basefrm.document;
         const moduleScript = baseIframe.createElement("script");
@@ -71,7 +79,7 @@
             })();
         `;
         baseIframe.head.appendChild(moduleScript);
-        autoInitializeSummernote(summernoteOptions);
+        autoInitializeSummernote(summernoteOptions, domPurifyConfig);
         preloadMediaUrls({{ contentMediaUrls|json_encode|raw }});
     });
 </script>

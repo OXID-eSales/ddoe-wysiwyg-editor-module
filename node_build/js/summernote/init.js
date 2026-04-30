@@ -10,6 +10,7 @@ import { addVideoResponsivePlugin } from "./plugins/video-responsive.js";
 import { injectOxidBridge } from "./plugins/oxid-bridge.js";
 import { configureLinkDialogModule, replaceLinkDialogModule } from "./plugins/link.js";
 import { overrideEditorMethods} from "./plugins/custom-editor.js";
+/* global DOMPurify */
 
 function overrideTooltip() {
     var tooltipPlugin = $.fn.tooltip;
@@ -23,6 +24,25 @@ function overrideTooltip() {
     };
 }
 
+function overrideCodeviewPurify(context, purifyConfig) {
+    if (context?.modules?.codeview?.purify) {
+        const originalPurify = context.modules.codeview.purify.bind(context.modules.codeview);
+        context.modules.codeview.purify = (value) => DOMPurify.sanitize(originalPurify(value), purifyConfig);
+    }
+}
+
+function fixDropdownToggle(context) {
+    if (context?.layoutInfo?.toolbar) {
+        context.layoutInfo.toolbar.find('.dropdown-toggle').on('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.bootstrap && window.bootstrap.Dropdown) {
+                window.bootstrap.Dropdown.getOrCreateInstance(this).toggle();
+            }
+        });
+    }
+}
+
 function encodeEmojisToHtmlEntities(html) {
     if (!html) return html;
     return html.replace(/[\u{10000}-\u{10FFFF}]/gu, function(char) {
@@ -30,7 +50,7 @@ function encodeEmojisToHtmlEntities(html) {
     });
 }
 
-export async function initializeSummernote(element, options) {
+export async function initializeSummernote(element, options, purifyConfig = {}) {
     const defaultSettings = {
         lang: 'de-DE',
         minHeight: 100,
@@ -72,25 +92,18 @@ export async function initializeSummernote(element, options) {
 
     const settings = { ...defaultSettings, ...options };
     var summernote = element.summernote(settings);
+
     replaceLinkDialogModule(summernote);
     overrideEditorMethods(summernote);
 
-    // Fix Bootstrap 5 dropdown conflict - add click handlers to toggle via Bootstrap API
     const context = element.data('summernote');
-    if (context && context.layoutInfo && context.layoutInfo.toolbar) {
-        context.layoutInfo.toolbar.find('.dropdown-toggle').on('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            if (window.bootstrap && window.bootstrap.Dropdown) {
-                window.bootstrap.Dropdown.getOrCreateInstance(this).toggle();
-            }
-        });
-    }
+    overrideCodeviewPurify(context, purifyConfig);
+    fixDropdownToggle(context);
 
     return summernote;
 }
 
-export function autoInitializeSummernote(options) {
+export function autoInitializeSummernote(options, purifyConfig = {}) {
     overrideTooltip();
 
     if (typeof $().summernote === 'function') {
@@ -126,7 +139,7 @@ export function autoInitializeSummernote(options) {
                         }
                     },
                     ...options
-                }).then(($editor) => {
+                }, purifyConfig).then(($editor) => {
                     if ($editor.attr('disabled') === 'disabled') {
                         $editor.summernote('disable');
                     }
@@ -146,7 +159,7 @@ export function autoInitializeSummernote(options) {
                 }
                 context.invoke( 'codeview.activate' );
 
-                var content = $( this ).summernote('code');
+                var content = DOMPurify.sanitize($( this ).summernote('code'), purifyConfig);
                 $( this ).val(encodeEmojisToHtmlEntities(content));
             });
         });
