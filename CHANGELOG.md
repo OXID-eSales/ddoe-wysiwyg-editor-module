@@ -4,11 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [7.0.1] - unreleased
+## [7.0.1] - 2026-05-13
 
 ### Added
 - DOMPurify integration for HTML content normalization in the editor
 - Twig block `ddoe_wysiwyg_dompurify_config` to allow other modules to customize DOMPurify options
+- Changes from v6.0.3
 
 ## [7.0.0] - 2026-04-09
 
@@ -202,6 +203,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
+[7.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v7.0.0...v7.0.1
 [7.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.3...v7.0.0
 [6.0.3]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.2...v6.0.3
 [6.0.2]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.1...v6.0.2
