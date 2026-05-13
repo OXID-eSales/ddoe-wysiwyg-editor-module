@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [6.0.3] - unreleased
+## [6.0.3] - 2026-05-13
 
 ### Fixed
 - Incorrect Bootstrap style imports affecting shop styles
@@ -185,6 +185,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
+[6.0.3]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.2...v6.0.3
 [6.0.2]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.1...v6.0.2
 [6.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.0...v6.0.1
 [6.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v5.0.0...v6.0.0
