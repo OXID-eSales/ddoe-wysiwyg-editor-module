@@ -8,7 +8,7 @@ import '../../scss/backend_editor.scss'
 import { addMediaPlugin } from "./plugins/media-library.js";
 import { addVideoResponsivePlugin } from "./plugins/video-responsive.js";
 import { injectOxidBridge } from "./plugins/oxid-bridge.js";
-import { configureLinkDialogModule, replaceLinkDialogModule } from "./plugins/link.js";
+import { configureLinkDialogModule } from "./plugins/link.js";
 import { overrideEditorMethods} from "./plugins/custom-editor.js";
 
 function overrideTooltip() {
@@ -72,8 +72,7 @@ export async function initializeSummernote(element, options) {
 
     const settings = { ...defaultSettings, ...options };
     var summernote = element.summernote(settings);
-    replaceLinkDialogModule(summernote);
-    overrideEditorMethods(summernote);
+    overrideEditorMethods();
 
     // Fix Bootstrap 5 dropdown conflict - add click handlers to toggle via Bootstrap API
     const context = element.data('summernote');

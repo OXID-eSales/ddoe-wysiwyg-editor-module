@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [6.0.4] - Unreleased
+
+### Fixed
+- Custom link dialog with CMS-Ident field not appearing in dependent modules that reset Summernote instances on open
+
 ## [6.0.3] - 2026-05-13
 
 ### Fixed
