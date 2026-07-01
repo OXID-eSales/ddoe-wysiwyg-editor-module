@@ -1,18 +1,18 @@
-export function overrideEditorMethods(summernote) {
-    const context = summernote.data('summernote');
+export function overrideEditorMethods() {
+    const EditorClass = $.summernote.options.modules.editor;
 
-    const originalCheckLinkUrl = context.modules.editor.checkLinkUrl;
+    if (EditorClass && !EditorClass.prototype._seoUrlPatched) {
+        const originalCheckLinkUrl = EditorClass.prototype.checkLinkUrl;
 
-    context.modules.editor.checkLinkUrl = function(linkUrl) {
-        // check if linkUrl matches with the pattern {{ seo_url({ident: 'someWord'}) }} with an ident for a cms snippet
-        const seoUrlPattern = /^\{{ seo_url\(\{ident: '[^']*'\}\) \}}$/;
-        if ( seoUrlPattern.test( linkUrl ) )
-        {
-            return linkUrl;
-        }
+        EditorClass.prototype.checkLinkUrl = function(linkUrl) {
+            // check if linkUrl matches with the pattern {{ seo_url({ident: 'someWord'}) }} with an ident for a cms snippet
+            const seoUrlPattern = /^\{{ seo_url\(\{ident: '[^']*'\}\) \}}$/;
+            if (seoUrlPattern.test(linkUrl)) {
+                return linkUrl;
+            }
+            return originalCheckLinkUrl.call(this, linkUrl);
+        };
 
-        return originalCheckLinkUrl(linkUrl);
-    };
-
-    return summernote;
+        EditorClass.prototype._seoUrlPatched = true;
+    }
 }

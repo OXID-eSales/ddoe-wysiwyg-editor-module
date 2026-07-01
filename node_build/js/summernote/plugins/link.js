@@ -15,10 +15,6 @@ export function configureLinkDialogModule() {
             },
         },
     });
-}
 
-export function replaceLinkDialogModule(summernote) {
-
-    summernote.summernote("removeModule", "linkDialog");
-    summernote.summernote("module", "linkDialog", LinkDialog);
+    $.summernote.options.modules.linkDialog = LinkDialog;
 }
