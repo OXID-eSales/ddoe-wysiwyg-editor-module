@@ -35,6 +35,26 @@ final class TextareaCheckCest
         $I->seeElement('.note-toolbar .note-fontsize .dropdown-menu.show');
     }
 
+    public function summernoteLinkDialogShowsCmsIdentField(AcceptanceTester $I): void
+    {
+        $I->wantToTest('Summernote link dialog shows the custom CMS-Ident field');
+
+        $adminPanel = $I->loginAdmin();
+        $adminPanel->openProducts();
+        $I->selectEditFrame();
+
+        $I->waitForElement('.note-editor', 15);
+        $I->wait(3);
+
+        $linkButton = "(//div[contains(@class,'note-editor')]//button[.//i[contains(@class,'note-icon-link')]])[1]";
+        $I->waitForElementClickable($linkButton, 5);
+        $I->click($linkButton);
+        $I->wait(1);
+
+        $I->waitForElement('.link-dialog .note-link-cms', 5);
+        $I->seeElement('.link-dialog .note-link-cms');
+    }
+
     public function productDescriptionTextAreaModified(AcceptanceTester $I): void
     {
         $I->wantToTest('Module improves the product description textarea');
