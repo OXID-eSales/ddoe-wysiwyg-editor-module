@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Update module to work with OXID eShop 7.6
 - Updated `squizlabs/php_codesniffer` from `3.*` to `4.*`
 
+## [7.0.2] - Unreleased
+
+### Added
+- Changes from v6.0.4
+
 ## [7.0.1] - 2026-05-13
 
 ### Added
@@ -27,6 +32,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Updated to work with OXID eShop 7.5.x
 - Minimum PHP version is now 8.3, tested up to PHP 8.5
 - Replaced Font Awesome with Bootstrap Icons
+
+## [6.0.4] - Unreleased
+
+### Fixed
+- Custom link dialog with CMS-Ident field not appearing in dependent modules that reset Summernote instances on open
 
 ## [6.0.3] - 2026-05-13
 
@@ -209,8 +219,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
-[7.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v7.0.0...v7.0.1
-[7.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.3...v7.0.0
 [6.0.3]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.2...v6.0.3
 [6.0.2]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.1...v6.0.2
 [6.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.0...v6.0.1
