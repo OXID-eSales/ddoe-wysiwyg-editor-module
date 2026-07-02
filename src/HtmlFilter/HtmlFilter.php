@@ -48,6 +48,15 @@ class HtmlFilter implements HtmlFilterInterface
             $html .= $doc->saveHTML($node);
         }
 
-        return $html;
+        return $this->restoreTwigExpressions($html);
+    }
+
+    private function restoreTwigExpressions(string $html): string
+    {
+        return preg_replace_callback(
+            '/%7B%7B.*?%7D%7D/i',
+            static fn(array $matches): string => rawurldecode($matches[0]),
+            $html
+        );
     }
 }

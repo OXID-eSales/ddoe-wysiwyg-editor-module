@@ -146,7 +146,7 @@ export default class LinkDialog {
 
           deferred.resolve({
             range: linkInfo.range,
-            url: $linkCms.val() ? `{{ seo_url({ident: '${$linkCms.val()}'}) }}` : $linkUrl.val(),
+            url: $linkCms.val() ? `{{ seo_url({type: 'oxcontent', ident: '${$linkCms.val()}'}) }}` : $linkUrl.val(),
             text: $linkText.val(),
             isNewWindow: $openInNewWindow.is(':checked'),
             checkProtocol: $useProtocol.is(':checked'),
