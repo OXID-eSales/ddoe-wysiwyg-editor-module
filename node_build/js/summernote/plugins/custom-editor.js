@@ -5,8 +5,7 @@ export function overrideEditorMethods() {
         const originalCheckLinkUrl = EditorClass.prototype.checkLinkUrl;
 
         EditorClass.prototype.checkLinkUrl = function(linkUrl) {
-            // check if linkUrl matches with the pattern {{ seo_url({ident: 'someWord'}) }} with an ident for a cms snippet
-            const seoUrlPattern = /^\{{ seo_url\(\{ident: '[^']*'\}\) \}}$/;
+            const seoUrlPattern = /^\{\{ seo_url\(\{(?:type: '[^']*', )?ident: '[^']*'\}\) \}\}$/;
             if (seoUrlPattern.test(linkUrl)) {
                 return linkUrl;
             }
