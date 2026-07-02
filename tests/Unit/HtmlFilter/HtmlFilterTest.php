@@ -66,6 +66,25 @@ class HtmlFilterTest extends TestCase
     }
 
     #[Test]
+    #[DataProvider('twigExpressionProvider')]
+    public function filterKeepsTwigExpressionsInAttributesUnencoded(string $html): void
+    {
+        $removerSpy = $this->createMock(HtmlRemoverInterface::class);
+        $filter = new HtmlFilter($removerSpy);
+
+        $this->assertEquals($html, $filter->filter($html));
+    }
+
+    public static function twigExpressionProvider(): array
+    {
+        return [
+            ['html' => '<a href="{{ seo_url({type: \'oxcontent\', ident: \'oxnewstlerinfo\'}) }}">news</a>'],
+            ['html' => '<img src="{{oeMediaUrl(\'abc\')}}" data-id="abc" class="dd-wysiwyg-media-image">'],
+            ['html' => '<a href="{{ seo_url({ident: \'oxnewstlerinfo\'}) }}">legacy</a>'],
+        ];
+    }
+
+    #[Test]
     public function filterRemovesOneClosedScriptTag(): void
     {
         $removerSpy = $this->createMock(HtmlRemoverInterface::class);

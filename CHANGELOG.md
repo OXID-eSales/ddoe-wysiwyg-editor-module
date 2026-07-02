@@ -37,6 +37,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Custom link dialog with CMS-Ident field not appearing in dependent modules that reset Summernote instances on open
+- CMS-Ident links now pass `type: 'oxcontent'` to `seo_url()` so they resolve to the correct storefront URL instead of returning a 404
+- Preserve Twig expressions (`seo_url`, `oeMediaUrl`) in attributes when filtering editor content, so they are no longer percent-encoded (`%7B%7B…`) when displayed in the editor
 
 ## [6.0.3] - 2026-05-13
 
