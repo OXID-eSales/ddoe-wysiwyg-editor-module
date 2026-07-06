@@ -96,4 +96,39 @@ final class TextareaCheckCest
         $isVarDefined = $I->executeJS("return typeof filterTest !== 'undefined'");
         $I->assertFalse($isVarDefined);
     }
+
+    public function cmsIdentTwigExpressionIsPreservedUnencoded(AcceptanceTester $I): void
+    {
+        $I->wantToTest('CMS-Ident seo_url expression survives the editor filter unencoded');
+
+        $loadId = 'twig_preserve_test';
+        $template = '<p><a href="{{ seo_url({type: \'oxcontent\', ident: \'oxnewstlerinfo\'}) }}">news</a></p>';
+
+        $I->haveInDatabase('oxcontents', [
+            'OXID' => md5($loadId),
+            'OXLOADID' => $loadId,
+            'OXCONTENT' => $template,
+            'OXCONTENT_1' => $template,
+            'OXCONTENT_2' => $template,
+            'OXCONTENT_3' => $template,
+        ]);
+
+        $adminPanel = $I->loginAdmin();
+        $adminPanel->openCMSPages();
+
+        $I->selectListFrame();
+        $I->fillField("//input[@name='where[oxcontents][oxloadid]']", $loadId);
+        $I->submitForm('#search', []);
+
+        $I->selectListFrame();
+        $I->click($loadId);
+
+        $I->selectEditFrame();
+        $I->waitForDocumentReadyState();
+        $I->waitForElement('.note-editable', 15);
+
+        $editorHtml = $I->executeJS("return document.querySelector('.note-editable').innerHTML;");
+        $I->assertStringContainsString('seo_url', $editorHtml);
+        $I->assertStringNotContainsString('%7B', $editorHtml);
+    }
 }
