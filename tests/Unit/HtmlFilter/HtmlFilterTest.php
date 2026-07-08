@@ -85,6 +85,32 @@ class HtmlFilterTest extends TestCase
     }
 
     #[Test]
+    #[DataProvider('attributeBreakoutProvider')]
+    public function filterDoesNotDecodeEncodedCharactersIntoAttributeBreakout(
+        string $html,
+        string $mustNotContain
+    ): void {
+        $removerSpy = $this->createMock(HtmlRemoverInterface::class);
+        $filter = new HtmlFilter($removerSpy);
+
+        $this->assertStringNotContainsString($mustNotContain, $filter->filter($html));
+    }
+
+    public static function attributeBreakoutProvider(): array
+    {
+        return [
+            'encoded quote must not become a raw attribute break' => [
+                'html' => '<a href="{{ seo_url({ident: \'&quot; onmouseover=alert(1) x\'}) }}">x</a>',
+                'mustNotContain' => '" onmouseover=',
+            ],
+            'angle brackets must not become a tag' => [
+                'html' => '<a href="{{ foo &lt;img src=x onerror=alert(1)&gt; }}">x</a>',
+                'mustNotContain' => '<img',
+            ],
+        ];
+    }
+
+    #[Test]
     public function filterRemovesOneClosedScriptTag(): void
     {
         $removerSpy = $this->createMock(HtmlRemoverInterface::class);

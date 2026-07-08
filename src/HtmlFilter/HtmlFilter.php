@@ -20,13 +20,32 @@ class HtmlFilter implements HtmlFilterInterface
 
     public function filter(string $html): string
     {
+        $placeholders = [];
+        $html = $this->protectTwigExpressions($html, $placeholders);
+
         $doc = $this->createDoc($html);
         $xpath = new DOMXPath($doc);
         foreach ($xpath->query('//script') as $node) {
             $this->htmlRemover->remove($node);
         }
 
-        return $this->getInnerHtml($doc);
+        return strtr($this->getInnerHtml($doc), $placeholders);
+    }
+
+    private function protectTwigExpressions(string $html, array &$placeholders): string
+    {
+        $nonce = bin2hex(random_bytes(8));
+
+        return preg_replace_callback(
+            '/\{\{[^"<>]*?\}\}/',
+            function (array $matches) use ($nonce, &$placeholders): string {
+                $token = 'TWIGPLACEHOLDER' . $nonce . count($placeholders) . 'END';
+                $placeholders[$token] = $matches[0];
+
+                return $token;
+            },
+            $html
+        );
     }
 
     private function createDoc(string $html): DOMDocument
@@ -48,15 +67,6 @@ class HtmlFilter implements HtmlFilterInterface
             $html .= $doc->saveHTML($node);
         }
 
-        return $this->restoreTwigExpressions($html);
-    }
-
-    private function restoreTwigExpressions(string $html): string
-    {
-        return preg_replace_callback(
-            '/%7B%7B.*?%7D%7D/i',
-            static fn(array $matches): string => rawurldecode($matches[0]),
-            $html
-        );
+        return $html;
     }
 }
