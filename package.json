@@ -1,6 +1,6 @@
 {
   "name": "WysiwygEditor",
-  "version": "6.0.3",
+  "version": "6.0.4",
   "description": "",
   "main": "vite.config.js",
   "type": "module",

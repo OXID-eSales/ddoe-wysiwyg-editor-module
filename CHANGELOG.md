@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [6.0.4] - Unreleased
+## [6.0.4] - 2026-07-09
 
 ### Fixed
 - Custom link dialog with CMS-Ident field not appearing in dependent modules that reset Summernote instances on open
@@ -192,6 +192,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
+[6.0.4]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.3...v6.0.4
 [6.0.3]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.2...v6.0.3
 [6.0.2]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.1...v6.0.2
 [6.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.0...v6.0.1
