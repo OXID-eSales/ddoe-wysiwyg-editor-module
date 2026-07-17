@@ -11,21 +11,26 @@ namespace OxidEsales\WysiwygModule\Migration\Service;
 
 use OxidEsales\MediaLibrary\Compatibility\Exception\MediaNotFoundByFileInformationException;
 use OxidEsales\MediaLibrary\Compatibility\Exception\UnknownPathFormatException;
-use OxidEsales\MediaLibrary\Compatibility\Facade\MediaIdByPathFacadeInterface;
+use OxidEsales\MediaLibrary\Compatibility\Service\MediaByPathImportServiceInterface;
 use Psr\Log\LoggerInterface;
 
 class MediaIdAnchorMigrationService implements MigrationServiceInterface
 {
     public function __construct(
-        private readonly MediaIdByPathFacadeInterface $mediaIdByPathFacade,
+        private readonly MediaByPathImportServiceInterface $mediaByPathImportService,
         private readonly LoggerInterface $logger,
     ) {
     }
 
+    /**
+     * Attributes that may carry a media reference, in priority order
+     */
+    private const MEDIA_ATTRIBUTES = ['src', 'href'];
+
     public function migrateContent(string $content): string
     {
         $content = preg_replace_callback(
-            '/<[^>]+dd-wysiwyg-media-image[^>]+>/msi',
+            '/<(?:img|a)\b[^>]*>/msi',
             [$this, 'modifyMediaTag'],
             $content
         );
@@ -33,29 +38,54 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
         return $content;
     }
 
-    private function modifyMediaTag(array $oneMediaItem): string
+    private function modifyMediaTag(array $matchedTag): string
     {
-        $oneMediaItem = reset($oneMediaItem);
+        $tag = reset($matchedTag);
 
-        if (preg_match('/src="(?<src>[^"]+)"/mi', $oneMediaItem, $matches)) {
-            try {
-                $mediaId = $this->mediaIdByPathFacade->getMediaIdByPath($matches['src']);
+        foreach (self::MEDIA_ATTRIBUTES as $attribute) {
+            if (!preg_match('/' . $attribute . '="(?<value>[^"]+)"/mi', $tag, $matches)) {
+                continue;
+            }
 
-                $oneMediaItem = preg_replace(
-                    '/src="[^"]+"/mi',
-                    'src="{{oeMediaUrl(\'' . $mediaId . '\')}}" data-id="' . $mediaId . '"',
-                    $oneMediaItem
-                );
-
-                $cleanup = ['data-filepath', 'data-filename'];
-                foreach ($cleanup as $key) {
-                    $oneMediaItem = preg_replace('/([<"])[^<"]+' . $key . '="[^"]+"/mi', '$1', $oneMediaItem);
-                }
-            } catch (MediaNotFoundByFileInformationException | UnknownPathFormatException $exception) {
-                $this->logger->warning($exception->getMessage());
+            if ($this->isConvertibleMediaReference($tag, $matches['value'])) {
+                return $this->replaceMediaReference($tag, $attribute, $matches['value']);
             }
         }
 
-        return $oneMediaItem;
+        return $tag;
+    }
+
+    private function replaceMediaReference(string $tag, string $attribute, string $value): string
+    {
+        try {
+            $mediaId = $this->mediaByPathImportService->getOrCreateMediaIdByPath($value);
+
+            $tag = preg_replace(
+                '/' . $attribute . '="[^"]+"/mi',
+                $attribute . '="{{oeMediaUrl(\'' . $mediaId . '\')}}" data-id="' . $mediaId . '"',
+                $tag
+            );
+
+            $cleanup = ['data-filepath', 'data-filename'];
+            foreach ($cleanup as $key) {
+                $tag = preg_replace('/([<"])[^<"]+' . $key . '="[^"]+"/mi', '$1', $tag);
+            }
+        } catch (MediaNotFoundByFileInformationException | UnknownPathFormatException $exception) {
+            $this->logger->warning($exception->getMessage());
+        }
+
+        return $tag;
+    }
+
+    /**
+     * Only images explicitly marked as media (dd-wysiwyg-media-image) or references pointing at a
+     * media-library path are converted. This leaves unrelated images and links (product images,
+     * external URLs, ordinary page links, decorative theme assets) untouched.
+     */
+    private function isConvertibleMediaReference(string $tag, string $value): bool
+    {
+        return str_contains($tag, 'dd-wysiwyg-media-image')
+            || str_contains($value, 'out/pictures/ddmedia/')
+            || str_contains($value, 'oViewConf.getMediaUrl');
     }
 }
