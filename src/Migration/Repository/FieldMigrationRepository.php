@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\WysiwygModule\Migration\Repository;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\WysiwygModule\Migration\Service\MigrationReportInterface;
 use OxidEsales\WysiwygModule\Migration\Service\MigrationServiceInterface;
 
 class FieldMigrationRepository implements FieldMigrationRepositoryInterface
@@ -17,6 +18,7 @@ class FieldMigrationRepository implements FieldMigrationRepositoryInterface
     public function __construct(
         private readonly MigrationServiceInterface $migrationService,
         private readonly QueryBuilderFactoryInterface $queryBuilderFactory,
+        private readonly MigrationReportInterface $report,
     ) {
     }
 
@@ -31,6 +33,8 @@ class FieldMigrationRepository implements FieldMigrationRepositoryInterface
             ->where($tableKey . ' = :keyValue');
 
         while ($originalRow = $originalData->fetchAssociative()) {
+            $this->report->startContext($tableName, $fieldName, (string)$originalRow[$tableKey]);
+
             $updateQueryBuilder->setParameters([
                 ':newValue' => $this->migrationService->migrateContent($originalRow[$fieldName]),
                 ':keyValue' => $originalRow[$tableKey],

@@ -18,6 +18,7 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
 {
     public function __construct(
         private readonly MediaByPathImportServiceInterface $mediaByPathImportService,
+        private readonly MigrationReportInterface $report,
         private readonly LoggerInterface $logger,
     ) {
     }
@@ -58,7 +59,8 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
     private function replaceMediaReference(string $tag, string $attribute, string $value): string
     {
         try {
-            $mediaId = $this->mediaByPathImportService->getOrCreateMediaIdByPath($value);
+            $resolution = $this->mediaByPathImportService->getOrImportMedia($value);
+            $mediaId = $resolution->getMediaId();
 
             $tag = preg_replace(
                 '/' . $attribute . '="[^"]+"/mi',
@@ -70,8 +72,11 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
             foreach ($cleanup as $key) {
                 $tag = preg_replace('/([<"])[^<"]+' . $key . '="[^"]+"/mi', '$1', $tag);
             }
+
+            $this->report->recordConverted($attribute, $value, $mediaId, $resolution->wasImported());
         } catch (MediaNotFoundByFileInformationException | UnknownPathFormatException $exception) {
             $this->logger->warning($exception->getMessage());
+            $this->report->recordFailure($attribute, $value, $exception->getMessage());
         }
 
         return $tag;

@@ -11,6 +11,8 @@ namespace OxidEsales\WysiwygModule\Tests\Integration\Migration\Command;
 
 use Composer\Console\Application;
 use OxidEsales\WysiwygModule\Migration\Command\MigrateMediaUrlsToIdsCommand;
+use OxidEsales\WysiwygModule\Migration\Service\MigrationReport;
+use OxidEsales\WysiwygModule\Migration\Service\MigrationReportCsvWriterInterface;
 use OxidEsales\WysiwygModule\Migration\Repository\FieldMigrationRepositoryInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -31,22 +33,16 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
             ->method('migrateTableField')
             ->with($table, $field, $tableKey);
 
-        $sut = new MigrateMediaUrlsToIdsCommand(
-            fieldMigrationRepository: $repositorySpy,
-        );
+        $sut = $this->getSut($repositorySpy);
 
-        $application = new Application();
-        $application->add($sut);
-
-        $commandTester = new CommandTester($sut);
-        $result = $commandTester->execute([
+        $commandTester = $this->runCommand($sut, [
             'table' => $table,
             'field' => $field,
             'tableKey' => $tableKey,
         ]);
 
-        $this->assertSame(Command::SUCCESS, $result);
-        $this->assertStringContainsString("Done for $table::$field using key $tableKey", $commandTester->getDisplay());
+        $this->assertSame(Command::SUCCESS, $commandTester->getStatusCode());
+        $this->assertStringContainsString("$table::$field (key $tableKey)", $commandTester->getDisplay());
     }
 
     #[Test]
@@ -61,20 +57,34 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
             ->method('migrateTableField')
             ->with($table, $field, $tableKey);
 
-        $sut = new MigrateMediaUrlsToIdsCommand(
-            fieldMigrationRepository: $repositorySpy,
-        );
+        $sut = $this->getSut($repositorySpy);
 
-        $application = new Application();
-        $application->add($sut);
-
-        $commandTester = new CommandTester($sut);
-        $result = $commandTester->execute([
+        $commandTester = $this->runCommand($sut, [
             'table' => $table,
             'field' => $field,
         ]);
 
-        $this->assertSame(Command::SUCCESS, $result);
-        $this->assertStringContainsString("Done for $table::$field using key $tableKey", $commandTester->getDisplay());
+        $this->assertSame(Command::SUCCESS, $commandTester->getStatusCode());
+        $this->assertStringContainsString("$table::$field (key $tableKey)", $commandTester->getDisplay());
+    }
+
+    private function getSut(FieldMigrationRepositoryInterface $repository): MigrateMediaUrlsToIdsCommand
+    {
+        return new MigrateMediaUrlsToIdsCommand(
+            fieldMigrationRepository: $repository,
+            report: new MigrationReport(),
+            reportCsvWriter: $this->createStub(MigrationReportCsvWriterInterface::class),
+        );
+    }
+
+    private function runCommand(MigrateMediaUrlsToIdsCommand $sut, array $arguments): CommandTester
+    {
+        $application = new Application();
+        $application->add($sut);
+
+        $commandTester = new CommandTester($sut);
+        $commandTester->execute($arguments);
+
+        return $commandTester;
     }
 }

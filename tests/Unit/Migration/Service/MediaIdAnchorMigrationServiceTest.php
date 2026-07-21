@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Tests\Unit\Migration\Service;
 
+use OxidEsales\MediaLibrary\Compatibility\DTO\MediaResolution;
 use OxidEsales\MediaLibrary\Compatibility\Exception\MediaNotFoundByFileInformationException;
 use OxidEsales\MediaLibrary\Compatibility\Exception\UnknownPathFormatException;
 use OxidEsales\MediaLibrary\Compatibility\Service\MediaByPathImportServiceInterface;
+use OxidEsales\WysiwygModule\Migration\Service\MigrationReportInterface;
 use OxidEsales\WysiwygModule\Migration\Service\MediaIdAnchorMigrationService;
 use OxidEsales\WysiwygModule\Migration\Service\MigrationServiceInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -60,7 +62,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
     public function migrationDoesntChangeAnythingForCasesWeAreNotInterestedIn(string $original, string $expected): void
     {
         $importServiceSpy = $this->createMock(MediaByPathImportServiceInterface::class);
-        $importServiceSpy->expects($this->never())->method('getOrCreateMediaIdByPath');
+        $importServiceSpy->expects($this->never())->method('getOrImportMedia');
 
         $sut = $this->getSut(mediaByPathImportService: $importServiceSpy);
         $result = $sut->migrateContent($original);
@@ -80,9 +82,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
         // phpcs:enable
 
         $importServiceMock = $this->createMock(MediaByPathImportServiceInterface::class);
-        $importServiceMock->method('getOrCreateMediaIdByPath')
+        $importServiceMock->method('getOrImportMedia')
             ->with($randomSrc)
-            ->willReturn($calculatedMediaId);
+            ->willReturn(new MediaResolution($calculatedMediaId, false));
 
         $sut = $this->getSut(
             mediaByPathImportService: $importServiceMock,
@@ -96,7 +98,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
     public function migrateToMediaIdAnchorsChangesMarkerlessMediaLibraryImagesBySrc(): void
     {
         $calculatedMediaId = uniqid();
-        $src = '/out/pictures/ddmedia/Optimized-Auto_02_Mood_2_rot.jpg';
+        $src = '/out/pictures/ddmedia/1.jpg';
 
         // phpcs:disable
         $input = 'start <img src="' . $src . '" class="card-img card-img-full" alt="Der Sportliche" width="900" height="900"> end';
@@ -105,9 +107,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         $importServiceMock = $this->createMock(MediaByPathImportServiceInterface::class);
         $importServiceMock->expects($this->once())
-            ->method('getOrCreateMediaIdByPath')
+            ->method('getOrImportMedia')
             ->with($src)
-            ->willReturn($calculatedMediaId);
+            ->willReturn(new MediaResolution($calculatedMediaId, true));
 
         $sut = $this->getSut(
             mediaByPathImportService: $importServiceMock,
@@ -130,9 +132,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         $importServiceMock = $this->createMock(MediaByPathImportServiceInterface::class);
         $importServiceMock->expects($this->once())
-            ->method('getOrCreateMediaIdByPath')
+            ->method('getOrImportMedia')
             ->with($href)
-            ->willReturn($calculatedMediaId);
+            ->willReturn(new MediaResolution($calculatedMediaId, true));
 
         $sut = $this->getSut(
             mediaByPathImportService: $importServiceMock,
@@ -159,9 +161,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
         // phpcs:enable
 
         $importServiceMock = $this->createMock(MediaByPathImportServiceInterface::class);
-        $importServiceMock->method('getOrCreateMediaIdByPath')
+        $importServiceMock->method('getOrImportMedia')
             ->with($randomSrc)
-            ->willReturn($calculatedMediaId);
+            ->willReturn(new MediaResolution($calculatedMediaId, false));
 
         $sut = $this->getSut(
             mediaByPathImportService: $importServiceMock,
@@ -197,10 +199,10 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
         // phpcs:enable
 
         $importServiceMock = $this->createMock(MediaByPathImportServiceInterface::class);
-        $importServiceMock->method('getOrCreateMediaIdByPath')
+        $importServiceMock->method('getOrImportMedia')
             ->willReturnMap([
-                [$randomSrc1, $calculatedMediaId1],
-                [$randomSrc2, $calculatedMediaId2],
+                [$randomSrc1, new MediaResolution($calculatedMediaId1, false)],
+                [$randomSrc2, new MediaResolution($calculatedMediaId2, false)],
             ]);
 
         $sut = $this->getSut(
@@ -250,14 +252,14 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         // second src media calculation will throw an exception
         $importServiceMock = $this->createMock(MediaByPathImportServiceInterface::class);
-        $importServiceMock->method('getOrCreateMediaIdByPath')
+        $importServiceMock->method('getOrImportMedia')
             ->willReturnCallback(function ($path) use (
                 $randomSrc1,
                 $calculatedMediaId1,
                 $exception,
             ) {
                 if ($path === $randomSrc1) {
-                    return $calculatedMediaId1;
+                    return new MediaResolution($calculatedMediaId1, false);
                 }
 
                 throw $exception;
@@ -293,7 +295,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
         // phpcs:enable
 
         $importServiceMock = $this->createMock(MediaByPathImportServiceInterface::class);
-        $importServiceMock->method('getOrCreateMediaIdByPath')
+        $importServiceMock->method('getOrImportMedia')
             ->with($randomSrc)
             ->willThrowException($exceptionStub);
 
@@ -312,13 +314,16 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
     private function getSut(
         MediaByPathImportServiceInterface $mediaByPathImportService = null,
+        MigrationReportInterface $report = null,
         LoggerInterface $logger = null,
     ): MigrationServiceInterface {
         $mediaByPathImportService ??= $this->createStub(MediaByPathImportServiceInterface::class);
+        $report ??= $this->createStub(MigrationReportInterface::class);
         $logger ??= $this->createStub(LoggerInterface::class);
 
         return new MediaIdAnchorMigrationService(
             mediaByPathImportService: $mediaByPathImportService,
+            report: $report,
             logger: $logger,
         );
     }

@@ -11,6 +11,7 @@ namespace OxidEsales\WysiwygModule\Tests\Integration\Migration\Repository;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
+use OxidEsales\WysiwygModule\Migration\Service\MigrationReport;
 use OxidEsales\WysiwygModule\Migration\Repository\FieldMigrationRepository;
 use OxidEsales\WysiwygModule\Migration\Service\MigrationServiceInterface;
 
@@ -42,7 +43,8 @@ class FieldMigrationRepositoryTest extends IntegrationTestCase
 
         $sut = new FieldMigrationRepository(
             migrationService: $migrationServiceMock,
-            queryBuilderFactory: $queryBuilderFactory
+            queryBuilderFactory: $queryBuilderFactory,
+            report: new MigrationReport(),
         );
         $sut->migrateTableField($table, $field, 'OXID');
 
