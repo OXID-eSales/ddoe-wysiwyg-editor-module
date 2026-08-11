@@ -9,11 +9,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Tests\Unit\Migration\Service;
 
-use OxidEsales\MediaLibrary\Compatibility\DTO\MediaResolution;
 use OxidEsales\MediaLibrary\Compatibility\Exception\MediaNotFoundByFileInformationException;
 use OxidEsales\MediaLibrary\Compatibility\Exception\UnknownPathFormatException;
-use OxidEsales\MediaLibrary\Compatibility\Service\MediaByPathImportServiceInterface;
-use OxidEsales\WysiwygModule\Migration\Service\MigrationReportInterface;
+use OxidEsales\MediaLibrary\Compatibility\Facade\MediaIdByPathFacadeInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
 use OxidEsales\WysiwygModule\Migration\Service\MediaIdAnchorMigrationService;
 use OxidEsales\WysiwygModule\Migration\Service\MigrationServiceInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -29,44 +28,40 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         yield 'no media anchor' => [
             'original' => $random,
-            'expected' => $random,
         ];
 
         yield 'some images but not the ones we want' => [
             'original' => $random . ' <img src="someurl"> ' . $random,
-            'expected' => $random . ' <img src="someurl"> ' . $random,
         ];
 
         yield 'multiline regular data' => [
             'original' => $random . ' <img src="someurl">
-                ' . $random . ' <img src="someotherurl">',
-            'expected' => $random . ' <img src="someurl">
                 ' . $random . ' <img src="someotherurl">',
         ];
 
         yield 'image whose ddmedia path is only in data-filepath, not src' => [
             'original' => $random . ' <img src="https://external.example/pic.jpg"'
                 . ' data-filepath="/out/pictures/ddmedia/pic.jpg"> ' . $random,
-            'expected' => $random . ' <img src="https://external.example/pic.jpg"'
-                . ' data-filepath="/out/pictures/ddmedia/pic.jpg"> ' . $random,
         ];
 
         yield 'ordinary page link left untouched' => [
             'original' => $random . ' <a href="/en/some-page" class="link">go</a> ' . $random,
-            'expected' => $random . ' <a href="/en/some-page" class="link">go</a> ' . $random,
         ];
     }
 
     #[Test]
     #[DataProvider('noMigrationDataProvider')]
-    public function migrationDoesntChangeAnythingForCasesWeAreNotInterestedIn(string $original, string $expected): void
+    public function migrationDoesntChangeAnythingForCasesWeAreNotInterestedIn(string $original): void
     {
-        $importServiceSpy = $this->createMock(MediaByPathImportServiceInterface::class);
-        $importServiceSpy->expects($this->never())->method('getOrImportMedia');
+        $facadeSpy = $this->createMock(MediaIdByPathFacadeInterface::class);
+        $facadeSpy->expects($this->never())->method('getMediaIdByPath');
 
-        $sut = $this->getSut(mediaByPathImportService: $importServiceSpy);
-        $result = $sut->migrateContent($original);
-        $this->assertSame($expected, $result);
+        $sut = $this->getSut(mediaIdByPathFacade: $facadeSpy);
+
+        $result = $sut->migrateContentWithReferences($original);
+
+        $this->assertSame($original, $result->getContent());
+        $this->assertSame([], $result->getReferences());
     }
 
     #[Test]
@@ -81,17 +76,55 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
         $expected = 'some start <img src="{{oeMediaUrl(\'' . $calculatedMediaId . '\')}}" data-id="' . $calculatedMediaId . '" style="max-width: 100%;" data-source="media" class="dd-wysiwyg-media-image"> some end';
         // phpcs:enable
 
-        $importServiceMock = $this->createMock(MediaByPathImportServiceInterface::class);
-        $importServiceMock->method('getOrImportMedia')
+        $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
+        $facadeMock->method('getMediaIdByPath')
             ->with($randomSrc)
-            ->willReturn(new MediaResolution($calculatedMediaId, false));
+            ->willReturn($calculatedMediaId);
 
-        $sut = $this->getSut(
-            mediaByPathImportService: $importServiceMock,
+        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
+
+        $result = $sut->migrateContentWithReferences($input);
+
+        $this->assertSame($expected, $result->getContent());
+    }
+
+    #[Test]
+    public function migrateContentReturnsTheMigratedContentOnly(): void
+    {
+        $calculatedMediaId = uniqid();
+
+        $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
+        $facadeMock->method('getMediaIdByPath')->willReturn($calculatedMediaId);
+
+        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
+
+        $result = $sut->migrateContent('start <img src="/out/pictures/ddmedia/1.jpg"> end');
+
+        $this->assertSame(
+            'start <img src="{{oeMediaUrl(\'' . $calculatedMediaId . '\')}}" data-id="' . $calculatedMediaId . '"> end',
+            $result
         );
+    }
 
-        $result = $sut->migrateContent($input);
-        $this->assertSame($expected, $result);
+    #[Test]
+    public function migrateReportsTheConvertedReference(): void
+    {
+        $calculatedMediaId = uniqid();
+        $src = '/out/pictures/ddmedia/1.jpg';
+
+        $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
+        $facadeMock->method('getMediaIdByPath')->willReturn($calculatedMediaId);
+
+        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
+
+        $references = $sut->migrateContentWithReferences('start <img src="' . $src . '"> end')->getReferences();
+
+        $this->assertCount(1, $references);
+        $this->assertSame('src', $references[0]->getAttribute());
+        $this->assertSame($src, $references[0]->getPath());
+        $this->assertSame(MigrationOutcome::Converted, $references[0]->getOutcome());
+        $this->assertSame($calculatedMediaId, $references[0]->getMediaId());
+        $this->assertSame('', $references[0]->getDetail());
     }
 
     #[Test]
@@ -105,18 +138,17 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
         $expected = 'start <img src="{{oeMediaUrl(\'' . $calculatedMediaId . '\')}}" data-id="' . $calculatedMediaId . '" class="card-img card-img-full" alt="Der Sportliche" width="900" height="900"> end';
         // phpcs:enable
 
-        $importServiceMock = $this->createMock(MediaByPathImportServiceInterface::class);
-        $importServiceMock->expects($this->once())
-            ->method('getOrImportMedia')
+        $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
+        $facadeMock->expects($this->once())
+            ->method('getMediaIdByPath')
             ->with($src)
-            ->willReturn(new MediaResolution($calculatedMediaId, true));
+            ->willReturn($calculatedMediaId);
 
-        $sut = $this->getSut(
-            mediaByPathImportService: $importServiceMock,
-        );
+        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 
-        $result = $sut->migrateContent($input);
-        $this->assertSame($expected, $result);
+        $result = $sut->migrateContentWithReferences($input);
+
+        $this->assertSame($expected, $result->getContent());
     }
 
     #[Test]
@@ -130,18 +162,18 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
         $expected = 'gallery <a href="{{oeMediaUrl(\'' . $calculatedMediaId . '\')}}" data-id="' . $calculatedMediaId . '" class="stretched-link" target="_blank" data-toggle="lightbox" aria-label="Bild 1"></a> end';
         // phpcs:enable
 
-        $importServiceMock = $this->createMock(MediaByPathImportServiceInterface::class);
-        $importServiceMock->expects($this->once())
-            ->method('getOrImportMedia')
+        $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
+        $facadeMock->expects($this->once())
+            ->method('getMediaIdByPath')
             ->with($href)
-            ->willReturn(new MediaResolution($calculatedMediaId, true));
+            ->willReturn($calculatedMediaId);
 
-        $sut = $this->getSut(
-            mediaByPathImportService: $importServiceMock,
-        );
+        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 
-        $result = $sut->migrateContent($input);
-        $this->assertSame($expected, $result);
+        $result = $sut->migrateContentWithReferences($input);
+
+        $this->assertSame($expected, $result->getContent());
+        $this->assertSame('href', $result->getReferences()[0]->getAttribute());
     }
 
     #[Test]
@@ -160,17 +192,16 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             data-source="media" class="dd-wysiwyg-media-image"> some end';
         // phpcs:enable
 
-        $importServiceMock = $this->createMock(MediaByPathImportServiceInterface::class);
-        $importServiceMock->method('getOrImportMedia')
+        $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
+        $facadeMock->method('getMediaIdByPath')
             ->with($randomSrc)
-            ->willReturn(new MediaResolution($calculatedMediaId, false));
+            ->willReturn($calculatedMediaId);
 
-        $sut = $this->getSut(
-            mediaByPathImportService: $importServiceMock,
-        );
+        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 
-        $result = $sut->migrateContent($input);
-        $this->assertSame($expected, $result);
+        $result = $sut->migrateContentWithReferences($input);
+
+        $this->assertSame($expected, $result->getContent());
     }
 
     #[Test]
@@ -198,19 +229,19 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             class="dd-wysiwyg-media-image">the end';
         // phpcs:enable
 
-        $importServiceMock = $this->createMock(MediaByPathImportServiceInterface::class);
-        $importServiceMock->method('getOrImportMedia')
+        $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
+        $facadeMock->method('getMediaIdByPath')
             ->willReturnMap([
-                [$randomSrc1, new MediaResolution($calculatedMediaId1, false)],
-                [$randomSrc2, new MediaResolution($calculatedMediaId2, false)],
+                [$randomSrc1, $calculatedMediaId1],
+                [$randomSrc2, $calculatedMediaId2],
             ]);
 
-        $sut = $this->getSut(
-            mediaByPathImportService: $importServiceMock,
-        );
+        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 
-        $result = $sut->migrateContent($input);
-        $this->assertSame($expected, $result);
+        $result = $sut->migrateContentWithReferences($input);
+
+        $this->assertSame($expected, $result->getContent());
+        $this->assertCount(2, $result->getReferences());
     }
 
     public static function pathRecognitionIssuesDataProvider(): \Generator
@@ -251,51 +282,54 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
         // phpcs:enable
 
         // second src media calculation will throw an exception
-        $importServiceMock = $this->createMock(MediaByPathImportServiceInterface::class);
-        $importServiceMock->method('getOrImportMedia')
+        $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
+        $facadeMock->method('getMediaIdByPath')
             ->willReturnCallback(function ($path) use (
                 $randomSrc1,
                 $calculatedMediaId1,
                 $exception,
             ) {
                 if ($path === $randomSrc1) {
-                    return new MediaResolution($calculatedMediaId1, false);
+                    return $calculatedMediaId1;
                 }
 
                 throw $exception;
             });
 
-        $sut = $this->getSut(
-            mediaByPathImportService: $importServiceMock,
-        );
+        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 
-        $result = $sut->migrateContent($input);
-        $this->assertSame($expected, $result);
+        $result = $sut->migrateContentWithReferences($input);
+
+        $this->assertSame($expected, $result->getContent());
     }
 
     public static function exceptionCasesDataProvider(): \Generator
     {
         yield 'path format unrecognized' => [
-            'exceptionStub' => new UnknownPathFormatException(),
+            'exceptionStub' => new UnknownPathFormatException('unknown path'),
+            'expectedDetail' => 'not recognized as a media library path',
         ];
 
         yield 'media not found by information' => [
-            'exceptionStub' => new MediaNotFoundByFileInformationException(),
+            'exceptionStub' => new MediaNotFoundByFileInformationException("Media 'x.jpg' not found in folder ''"),
+            'expectedDetail' => 'no matching entry in the media library',
         ];
     }
 
     #[Test]
     #[DataProvider('exceptionCasesDataProvider')]
-    public function migrateToMediaIdAnchorsLogsMediaNotFoundException(\Exception $exceptionStub): void
-    {
+    public function migrateToMediaIdAnchorsLogsAndReportsMediaNotFoundException(
+        \Exception $exceptionStub,
+        string $expectedDetail
+    ): void {
         $randomSrc = uniqid();
 
         // phpcs:disable
         $input = 'some start <img src="' . $randomSrc . '" style="max-width: 100%;" data-filename="237-536x354.jpg" data-filepath="//localhost.local/out/pictures/ddmedia/237-536x354.jpg" data-source="media" class="dd-wysiwyg-media-image"> some end';
         // phpcs:enable
 
-        $importServiceMock = $this->createMock(MediaByPathImportServiceInterface::class);
-        $importServiceMock->method('getOrImportMedia')
+        $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
+        $facadeMock->method('getMediaIdByPath')
             ->with($randomSrc)
             ->willThrowException($exceptionStub);
 
@@ -304,27 +338,23 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             ->method('warning')
             ->with($exceptionStub->getMessage());
 
-        $sut = $this->getSut(
-            mediaByPathImportService: $importServiceMock,
-            logger: $loggerSpy,
-        );
+        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock, logger: $loggerSpy);
 
-        $sut->migrateContent($input);
+        $references = $sut->migrateContentWithReferences($input)->getReferences();
+
+        $this->assertCount(1, $references);
+        $this->assertSame(MigrationOutcome::Failed, $references[0]->getOutcome());
+        $this->assertSame($expectedDetail, $references[0]->getDetail());
+        $this->assertSame('', $references[0]->getMediaId());
     }
 
     private function getSut(
-        MediaByPathImportServiceInterface $mediaByPathImportService = null,
-        MigrationReportInterface $report = null,
-        LoggerInterface $logger = null,
+        ?MediaIdByPathFacadeInterface $mediaIdByPathFacade = null,
+        ?LoggerInterface $logger = null,
     ): MigrationServiceInterface {
-        $mediaByPathImportService ??= $this->createStub(MediaByPathImportServiceInterface::class);
-        $report ??= $this->createStub(MigrationReportInterface::class);
-        $logger ??= $this->createStub(LoggerInterface::class);
-
         return new MediaIdAnchorMigrationService(
-            mediaByPathImportService: $mediaByPathImportService,
-            report: $report,
-            logger: $logger,
+            mediaIdByPathFacade: $mediaIdByPathFacade ?? $this->createStub(MediaIdByPathFacadeInterface::class),
+            logger: $logger ?? $this->createStub(LoggerInterface::class),
         );
     }
 }

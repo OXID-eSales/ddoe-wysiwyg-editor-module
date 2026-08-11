@@ -11,7 +11,6 @@ namespace OxidEsales\WysiwygModule\Migration\DTO;
 
 enum MigrationOutcome: string
 {
-    case ConvertedExisting = 'converted_existing';
-    case Imported = 'imported';
+    case Converted = 'converted';
     case Failed = 'failed';
 }
