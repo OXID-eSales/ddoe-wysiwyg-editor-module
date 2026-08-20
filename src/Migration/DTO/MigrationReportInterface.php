@@ -21,14 +21,9 @@ interface MigrationReportInterface
     public function getTableKey(): string;
 
     /**
-     * @return MigrationReportEntry[]
+     * Every entry of the report, or only the ones with the given outcome.
+     *
+     * @return MediaMigrationResultInterface[]
      */
-    public function getEntries(): array;
-
-    /**
-     * @return MigrationReportEntry[]
-     */
-    public function getFailures(): array;
-
-    public function countByOutcome(MigrationOutcome $outcome): int;
+    public function getEntries(?MigrationOutcome $outcome = null): array;
 }

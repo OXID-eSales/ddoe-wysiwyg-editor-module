@@ -10,18 +10,16 @@ declare(strict_types=1);
 namespace OxidEsales\WysiwygModule\Tests\Integration\Migration\Command;
 
 use Composer\Console\Application;
-use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\WysiwygModule\Migration\Command\MigrateMediaUrlsToIdsCommand;
-use OxidEsales\WysiwygModule\Migration\DTO\MediaReferenceResult;
-use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
-use OxidEsales\WysiwygModule\Migration\DTO\MigrationReport;
-use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportEntry;
+use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
-use OxidEsales\WysiwygModule\Migration\Factory\MigrationReporterFactory;
+use OxidEsales\WysiwygModule\Migration\Factory\MigrationReporterFactoryInterface;
+use OxidEsales\WysiwygModule\Migration\Reporter\MigrationReporterInterface;
 use OxidEsales\WysiwygModule\Migration\Service\FieldMigrationServiceInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class MigrateMediaUrlsToIdsCommandTest extends TestCase
@@ -37,16 +35,15 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
         $serviceSpy->expects($this->once())
             ->method('migrate')
             ->with($table, $field, $tableKey)
-            ->willReturn($this->makeReport($table, $field, $tableKey));
+            ->willReturn($this->createStub(MigrationReportInterface::class));
 
-        $commandTester = $this->runCommand($this->getSut($serviceSpy), [
+        $commandTester = $this->runCommand($this->getSut(fieldMigrationService: $serviceSpy), [
             'table' => $table,
             'field' => $field,
             'tableKey' => $tableKey,
         ]);
 
         $this->assertSame(Command::SUCCESS, $commandTester->getStatusCode());
-        $this->assertStringContainsString("$table::$field (key $tableKey)", $commandTester->getDisplay());
     }
 
     #[Test]
@@ -54,107 +51,108 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
     {
         $table = uniqid();
         $field = uniqid();
-        $tableKey = 'OXID';
 
         $serviceSpy = $this->createMock(FieldMigrationServiceInterface::class);
         $serviceSpy->expects($this->once())
             ->method('migrate')
-            ->with($table, $field, $tableKey)
-            ->willReturn($this->makeReport($table, $field, $tableKey));
+            ->with($table, $field, 'OXID')
+            ->willReturn($this->createStub(MigrationReportInterface::class));
 
-        $commandTester = $this->runCommand($this->getSut($serviceSpy), [
+        $commandTester = $this->runCommand($this->getSut(fieldMigrationService: $serviceSpy), [
             'table' => $table,
             'field' => $field,
         ]);
 
         $this->assertSame(Command::SUCCESS, $commandTester->getStatusCode());
-        $this->assertStringContainsString("$table::$field (key $tableKey)", $commandTester->getDisplay());
     }
 
     #[Test]
-    public function migrationWritesTheReportToTheRequestedFile(): void
+    public function migrationHandsTheReportToTheReporter(): void
     {
-        $table = uniqid();
-        $field = uniqid();
-        $path = sys_get_temp_dir() . '/wysiwyg-media-migration-' . uniqid() . '.csv';
+        $reportStub = $this->createStub(MigrationReportInterface::class);
 
         $serviceStub = $this->createStub(FieldMigrationServiceInterface::class);
-        $serviceStub->method('migrate')->willReturn($this->makeReport($table, $field, 'OXID'));
+        $serviceStub->method('migrate')->willReturn($reportStub);
 
-        try {
-            $commandTester = $this->runCommand($this->getSut($serviceStub), [
-                'table' => $table,
-                'field' => $field,
-                '--report-file' => $path,
-            ]);
+        $reporterSpy = $this->createMock(MigrationReporterInterface::class);
+        $reporterSpy->expects($this->once())
+            ->method('report')
+            ->with($reportStub, $this->isInstanceOf(OutputInterface::class));
 
-            $this->assertSame(Command::SUCCESS, $commandTester->getStatusCode());
-            $this->assertStringContainsString($path, $commandTester->getDisplay());
-            $this->assertFileExists($path);
-        } finally {
-            @unlink($path);
-        }
+        $commandTester = $this->runCommand(
+            $this->getSut(fieldMigrationService: $serviceStub, reporter: $reporterSpy),
+            ['table' => uniqid(), 'field' => uniqid()]
+        );
+
+        $this->assertSame(Command::SUCCESS, $commandTester->getStatusCode());
+    }
+
+    #[Test]
+    public function reporterIsBuiltForTheScreenWhenNoReportFileIsRequested(): void
+    {
+        $factorySpy = $this->createMock(MigrationReporterFactoryInterface::class);
+        $factorySpy->expects($this->once())
+            ->method('create')
+            ->with(null)
+            ->willReturn($this->createStub(MigrationReporterInterface::class));
+
+        $this->runCommand(
+            $this->getSut(reporterFactory: $factorySpy),
+            ['table' => uniqid(), 'field' => uniqid()]
+        );
+    }
+
+    #[Test]
+    public function reporterIsBuiltForTheRequestedReportFile(): void
+    {
+        $reportFilePath = uniqid() . '.csv';
+
+        $factorySpy = $this->createMock(MigrationReporterFactoryInterface::class);
+        $factorySpy->expects($this->once())
+            ->method('create')
+            ->with($reportFilePath)
+            ->willReturn($this->createStub(MigrationReporterInterface::class));
+
+        $this->runCommand($this->getSut(reporterFactory: $factorySpy), [
+            'table' => uniqid(),
+            'field' => uniqid(),
+            '--report-file' => $reportFilePath,
+        ]);
     }
 
     #[Test]
     public function migrationFailsWhenReferencesCouldNotBeConverted(): void
     {
-        $table = uniqid();
-        $field = uniqid();
-
-        $failedEntry = new MigrationReportEntry(
-            key: uniqid(),
-            reference: new MediaReferenceResult(
-                attribute: 'src',
-                path: '/out/pictures/ddmedia/missing.jpg',
-                outcome: MigrationOutcome::Failed,
-                detail: 'media not registered',
-            ),
-        );
+        $reportStub = $this->createStub(MigrationReportInterface::class);
+        $reportStub->method('getEntries')->willReturn([$this->createStub(MediaMigrationResultInterface::class)]);
 
         $serviceStub = $this->createStub(FieldMigrationServiceInterface::class);
-        $serviceStub->method('migrate')->willReturn($this->makeReport($table, $field, 'OXID', [$failedEntry]));
+        $serviceStub->method('migrate')->willReturn($reportStub);
 
-        $commandTester = $this->runCommand($this->getSut($serviceStub), [
-            'table' => $table,
-            'field' => $field,
+        $commandTester = $this->runCommand($this->getSut(fieldMigrationService: $serviceStub), [
+            'table' => uniqid(),
+            'field' => uniqid(),
         ]);
 
         $this->assertSame(Command::FAILURE, $commandTester->getStatusCode());
-        $this->assertStringContainsString('media not registered', $commandTester->getDisplay());
     }
 
-    /**
-     * @param MigrationReportEntry[] $entries
-     */
-    private function makeReport(
-        string $table,
-        string $field,
-        string $tableKey,
-        array $entries = []
-    ): MigrationReportInterface {
-        return new MigrationReport(
-            table: $table,
-            field: $field,
-            tableKey: $tableKey,
-            entries: $entries,
-        );
-    }
+    private function getSut(
+        ?FieldMigrationServiceInterface $fieldMigrationService = null,
+        ?MigrationReporterFactoryInterface $reporterFactory = null,
+        ?MigrationReporterInterface $reporter = null,
+    ): MigrateMediaUrlsToIdsCommand {
+        if ($reporterFactory === null) {
+            $reporterFactory = $this->createStub(MigrationReporterFactoryInterface::class);
+            $reporterFactory->method('create')
+                ->willReturn($reporter ?? $this->createStub(MigrationReporterInterface::class));
+        }
 
-    private function getSut(FieldMigrationServiceInterface $fieldMigrationService): MigrateMediaUrlsToIdsCommand
-    {
         return new MigrateMediaUrlsToIdsCommand(
-            fieldMigrationService: $fieldMigrationService,
-            reporterFactory: new MigrationReporterFactory($this->makeContextStub()),
+            fieldMigrationService: $fieldMigrationService
+                ?? $this->createStub(FieldMigrationServiceInterface::class),
+            reporterFactory: $reporterFactory,
         );
-    }
-
-    private function makeContextStub(): ContextInterface
-    {
-        $contextStub = $this->createStub(ContextInterface::class);
-        $contextStub->method('getLogFilePath')->willReturn(sys_get_temp_dir() . '/oxideshop.log');
-
-        return $contextStub;
     }
 
     private function runCommand(MigrateMediaUrlsToIdsCommand $sut, array $arguments): CommandTester

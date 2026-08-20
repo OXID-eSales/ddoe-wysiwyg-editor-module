@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Migration\Reporter;
 
+use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
 use RuntimeException;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,11 +39,11 @@ class CsvFileMigrationReporter implements MigrationReporterInterface
                     $report->getTable(),
                     $report->getField(),
                     $entry->getKey(),
-                    $entry->getReference()->getAttribute(),
-                    $entry->getReference()->getPath(),
-                    $entry->getReference()->getOutcome()->value,
-                    $entry->getReference()->getMediaId(),
-                    $entry->getReference()->getDetail(),
+                    $entry->getAttribute(),
+                    $entry->getPath(),
+                    $entry->getOutcome()->value,
+                    $entry->getMediaId(),
+                    $entry->getDetail(),
                 ]);
             }
         } finally {
@@ -52,7 +53,7 @@ class CsvFileMigrationReporter implements MigrationReporterInterface
         $output->writeln(sprintf(
             'Report of %d media references (%d failed) written to %s',
             count($report->getEntries()),
-            count($report->getFailures()),
+            count($report->getEntries(MigrationOutcome::Failed)),
             $this->path
         ));
     }

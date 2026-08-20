@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Migration\Command;
 
+use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
 use OxidEsales\WysiwygModule\Migration\Factory\MigrationReporterFactoryInterface;
 use OxidEsales\WysiwygModule\Migration\Service\FieldMigrationServiceInterface;
 use Symfony\Component\Console\Command\Command;
@@ -70,6 +71,6 @@ class MigrateMediaUrlsToIdsCommand extends Command
         $reporter = $this->reporterFactory->create(is_string($reportFilePath) ? $reportFilePath : null);
         $reporter->report($report, $output);
 
-        return $report->getFailures() ? Command::FAILURE : Command::SUCCESS;
+        return $report->getEntries(MigrationOutcome::Failed) ? Command::FAILURE : Command::SUCCESS;
     }
 }

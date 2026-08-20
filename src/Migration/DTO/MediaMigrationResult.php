@@ -9,10 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Migration\DTO;
 
-/**
- * The outcome of one media reference found in migrated content.
- */
-class MediaReferenceResult implements MediaReferenceResultInterface
+class MediaMigrationResult implements MediaMigrationResultInterface
 {
     public function __construct(
         private readonly string $attribute,
@@ -20,7 +17,13 @@ class MediaReferenceResult implements MediaReferenceResultInterface
         private readonly MigrationOutcome $outcome,
         private readonly string $mediaId = '',
         private readonly string $detail = '',
+        private readonly string $key = '',
     ) {
+    }
+
+    public function getKey(): string
+    {
+        return $this->key;
     }
 
     public function getAttribute(): string
@@ -46,5 +49,17 @@ class MediaReferenceResult implements MediaReferenceResultInterface
     public function getDetail(): string
     {
         return $this->detail;
+    }
+
+    public function withKey(string $key): MediaMigrationResultInterface
+    {
+        return new self(
+            attribute: $this->attribute,
+            path: $this->path,
+            outcome: $this->outcome,
+            mediaId: $this->mediaId,
+            detail: $this->detail,
+            key: $key,
+        );
     }
 }

@@ -14,9 +14,9 @@ use OxidEsales\MediaLibrary\Compatibility\Exception\UnknownPathFormatException;
 use OxidEsales\MediaLibrary\Compatibility\Facade\MediaIdByPathFacadeInterface;
 use OxidEsales\WysiwygModule\Migration\DTO\ContentMigrationResult;
 use OxidEsales\WysiwygModule\Migration\DTO\ContentMigrationResultInterface;
-use OxidEsales\WysiwygModule\Migration\DTO\MediaReferenceResult;
+use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResult;
+use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
-use Psr\Log\LoggerInterface;
 
 class MediaIdAnchorMigrationService implements MigrationServiceInterface
 {
@@ -38,18 +38,12 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
 
     public function __construct(
         private readonly MediaIdByPathFacadeInterface $mediaIdByPathFacade,
-        private readonly LoggerInterface $logger,
     ) {
     }
 
-    public function migrateContent(string $content): string
+    public function migrateContent(string $content): ContentMigrationResultInterface
     {
-        return $this->migrateContentWithReferences($content)->getContent();
-    }
-
-    public function migrateContentWithReferences(string $content): ContentMigrationResultInterface
-    {
-        /** @var MediaReferenceResult[] $references */
+        /** @var MediaMigrationResultInterface[] $references */
         $references = [];
 
         $migratedContent = preg_replace_callback(
@@ -64,12 +58,12 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
     }
 
     /**
-     * @param MediaReferenceResult[] $references
+     * @param MediaMigrationResultInterface[] $references
      */
     private function modifyMediaTag(string $tag, array &$references): string
     {
         foreach (self::MEDIA_ATTRIBUTES as $attribute) {
-            if (!preg_match('/' . $attribute . '="(?<value>[^"]+)"/mi', $tag, $matches)) {
+            if (!preg_match($this->attributePattern($attribute), $tag, $matches)) {
                 continue;
             }
 
@@ -82,23 +76,31 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
     }
 
     /**
-     * @param MediaReferenceResult[] $references
+     * Matches the attribute itself only, never an attribute it is the suffix of, e.g. data-src
+     */
+    private function attributePattern(string $attribute): string
+    {
+        return '/(?<![-\w])' . $attribute . '="(?<value>[^"]+)"/mi';
+    }
+
+    /**
+     * @param MediaMigrationResultInterface[] $references
      */
     private function replaceMediaReference(string $tag, string $attribute, string $path, array &$references): string
     {
         try {
             $mediaId = $this->mediaIdByPathFacade->getMediaIdByPath($path);
-        } catch (MediaNotFoundByFileInformationException $exception) {
-            $references[] = $this->reportFailure($attribute, $path, self::NO_ENTRY_DETAIL, $exception);
+        } catch (MediaNotFoundByFileInformationException) {
+            $references[] = $this->failedReference($attribute, $path, self::NO_ENTRY_DETAIL);
 
             return $tag;
-        } catch (UnknownPathFormatException $exception) {
-            $references[] = $this->reportFailure($attribute, $path, self::UNKNOWN_PATH_DETAIL, $exception);
+        } catch (UnknownPathFormatException) {
+            $references[] = $this->failedReference($attribute, $path, self::UNKNOWN_PATH_DETAIL);
 
             return $tag;
         }
 
-        $references[] = new MediaReferenceResult(
+        $references[] = new MediaMigrationResult(
             attribute: $attribute,
             path: $path,
             outcome: MigrationOutcome::Converted,
@@ -108,15 +110,9 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
         return $this->writeMediaId($tag, $attribute, $mediaId);
     }
 
-    private function reportFailure(
-        string $attribute,
-        string $path,
-        string $detail,
-        \Exception $exception
-    ): MediaReferenceResult {
-        $this->logger->warning($exception->getMessage());
-
-        return new MediaReferenceResult(
+    private function failedReference(string $attribute, string $path, string $detail): MediaMigrationResultInterface
+    {
+        return new MediaMigrationResult(
             attribute: $attribute,
             path: $path,
             outcome: MigrationOutcome::Failed,
@@ -127,9 +123,10 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
     private function writeMediaId(string $tag, string $attribute, string $mediaId): string
     {
         $tag = (string)preg_replace(
-            '/' . $attribute . '="[^"]+"/mi',
+            $this->attributePattern($attribute),
             $attribute . '="{{oeMediaUrl(\'' . $mediaId . '\')}}" data-id="' . $mediaId . '"',
-            $tag
+            $tag,
+            1
         );
 
         foreach (self::OBSOLETE_ATTRIBUTES as $key) {

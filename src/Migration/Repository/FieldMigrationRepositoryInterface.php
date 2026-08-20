@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Migration\Repository;
 
-use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportEntry;
+use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
 
 interface FieldMigrationRepositoryInterface
 {
@@ -17,7 +17,7 @@ interface FieldMigrationRepositoryInterface
      * Migrates the media references of one table field and returns every reference
      * the migration came across, located in the row it was found in.
      *
-     * @return MigrationReportEntry[]
+     * @return MediaMigrationResultInterface[]
      */
     public function migrateTableField(string $tableName, string $fieldName, string $tableKey): array;
 }

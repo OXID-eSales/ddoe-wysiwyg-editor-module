@@ -9,85 +9,155 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Tests\Unit\Migration\Reporter;
 
-use OxidEsales\WysiwygModule\Migration\DTO\MediaReferenceResult;
+use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
-use OxidEsales\WysiwygModule\Migration\DTO\MigrationReport;
-use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportEntry;
+use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
+use OxidEsales\WysiwygModule\Migration\Reporter\MigrationReporterInterface;
 use OxidEsales\WysiwygModule\Migration\Reporter\ScreenMigrationReporter;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ScreenMigrationReporterTest extends TestCase
 {
+    private const TABLE = 'oxcontents';
+    private const FIELD = 'OXCONTENT';
+    private const TABLE_KEY = 'OXID';
+
     #[Test]
     public function reportPrintsTheSummaryOfTheRun(): void
     {
-        $output = new BufferedOutput();
-
-        $sut = new ScreenMigrationReporter();
-        $sut->report(
-            $this->makeReport([
-                $this->makeEntry('row1', MigrationOutcome::Converted),
-                $this->makeEntry('row2', MigrationOutcome::Converted),
-            ]),
-            $output
+        $lines = [];
+        $reportStub = $this->makeReportStub(
+            converted: [
+                $this->makeEntryStub(),
+                $this->makeEntryStub(),
+            ],
+            failed: [$this->makeEntryStub()],
         );
 
-        $display = $output->fetch();
+        $sut = $this->getSut();
+        $sut->report($reportStub, $this->makeOutputStub($lines));
 
-        $this->assertStringContainsString('oxcontents::OXCONTENT (key OXID)', $display);
-        $this->assertStringContainsString('Media references found: 2', $display);
-        $this->assertStringContainsString('Converted:              2', $display);
-        $this->assertStringContainsString('Failed:                 0', $display);
+        $display = implode(PHP_EOL, $lines);
+
+        $this->assertStringContainsString(
+            self::TABLE . '::' . self::FIELD . ' (key ' . self::TABLE_KEY . ')',
+            $display
+        );
+        $this->assertMatchesRegularExpression('/^Media references found:\s+3$/m', $display);
+        $this->assertMatchesRegularExpression('/^Converted:\s+2$/m', $display);
+        $this->assertMatchesRegularExpression('/^Failed:\s+1$/m', $display);
     }
 
     #[Test]
     public function reportListsEveryFailureWithItsRowAndReason(): void
     {
-        $output = new BufferedOutput();
-
-        $sut = new ScreenMigrationReporter();
-        $sut->report(
-            $this->makeReport([
-                $this->makeEntry('oxstartslot1', MigrationOutcome::Failed, 'no matching entry in the media library'),
-            ]),
-            $output
+        $lines = [];
+        $reportStub = $this->makeReportStub(
+            failed: [
+                $this->makeEntryStub(
+                    key: 'oxstartslot1',
+                    attribute: 'src',
+                    path: '/out/pictures/ddmedia/missing.jpg',
+                    detail: 'no matching entry in the media library',
+                ),
+                $this->makeEntryStub(
+                    key: 'oxstartslot2',
+                    attribute: 'href',
+                    path: 'https://shop.example/pic.jpg',
+                    detail: 'not recognized as a media library path',
+                ),
+            ],
         );
 
-        $display = $output->fetch();
+        $sut = $this->getSut();
+        $sut->report($reportStub, $this->makeOutputStub($lines));
 
-        $this->assertStringContainsString('Failed:                 1', $display);
+        $display = implode(PHP_EOL, $lines);
+
+        $this->assertMatchesRegularExpression('/^Failed:\s+2$/m', $display);
         $this->assertStringContainsString(
             '[OXID=oxstartslot1] src="/out/pictures/ddmedia/missing.jpg": no matching entry in the media library',
+            $display
+        );
+        $this->assertStringContainsString(
+            '[OXID=oxstartslot2] href="https://shop.example/pic.jpg": not recognized as a media library path',
             $display
         );
         $this->assertStringContainsString('check whether the file exists under out/pictures/ddmedia', $display);
     }
 
-    /**
-     * @param MigrationReportEntry[] $entries
-     */
-    private function makeReport(array $entries): MigrationReport
+    #[Test]
+    public function reportKeepsQuietAboutFailuresWhenEverythingWasConverted(): void
     {
-        return new MigrationReport(
-            table: 'oxcontents',
-            field: 'OXCONTENT',
-            tableKey: 'OXID',
-            entries: $entries,
-        );
+        $lines = [];
+        $reportStub = $this->makeReportStub(converted: [$this->makeEntryStub()]);
+
+        $sut = $this->getSut();
+        $sut->report($reportStub, $this->makeOutputStub($lines));
+
+        $display = implode(PHP_EOL, $lines);
+
+        $this->assertMatchesRegularExpression('/^Failed:\s+0$/m', $display);
+        $this->assertStringNotContainsString('These references were left unchanged', $display);
     }
 
-    private function makeEntry(string $key, MigrationOutcome $outcome, string $detail = ''): MigrationReportEntry
+    /**
+     * @param MediaMigrationResultInterface[] $converted
+     * @param MediaMigrationResultInterface[] $failed
+     */
+    private function makeReportStub(array $converted = [], array $failed = []): MigrationReportInterface
     {
-        return new MigrationReportEntry(
-            key: $key,
-            reference: new MediaReferenceResult(
-                attribute: 'src',
-                path: '/out/pictures/ddmedia/missing.jpg',
-                outcome: $outcome,
-                detail: $detail,
-            ),
+        $reportStub = $this->createStub(MigrationReportInterface::class);
+        $reportStub->method('getTable')->willReturn(self::TABLE);
+        $reportStub->method('getField')->willReturn(self::FIELD);
+        $reportStub->method('getTableKey')->willReturn(self::TABLE_KEY);
+        $reportStub->method('getEntries')->willReturnCallback(
+            static fn(?MigrationOutcome $outcome = null): array => match ($outcome) {
+                MigrationOutcome::Converted => $converted,
+                MigrationOutcome::Failed => $failed,
+                default => [...$converted, ...$failed],
+            }
         );
+
+        return $reportStub;
+    }
+
+    private function makeEntryStub(
+        string $key = 'oxstartslot1',
+        string $attribute = 'src',
+        string $path = '/out/pictures/ddmedia/1.jpg',
+        string $detail = '',
+    ): MediaMigrationResultInterface {
+        $entryStub = $this->createStub(MediaMigrationResultInterface::class);
+        $entryStub->method('getKey')->willReturn($key);
+        $entryStub->method('getAttribute')->willReturn($attribute);
+        $entryStub->method('getPath')->willReturn($path);
+        $entryStub->method('getDetail')->willReturn($detail);
+
+        return $entryStub;
+    }
+
+    /**
+     * Collects everything the reporter writes, so the printed report can be asserted as a whole.
+     *
+     * @param string[] $lines
+     */
+    private function makeOutputStub(array &$lines): OutputInterface
+    {
+        $outputStub = $this->createStub(OutputInterface::class);
+        $outputStub->method('writeln')->willReturnCallback(
+            static function (string $message) use (&$lines): void {
+                $lines[] = $message;
+            }
+        );
+
+        return $outputStub;
+    }
+
+    private function getSut(): MigrationReporterInterface
+    {
+        return new ScreenMigrationReporter();
     }
 }

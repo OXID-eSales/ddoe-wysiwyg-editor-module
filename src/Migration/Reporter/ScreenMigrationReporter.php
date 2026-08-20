@@ -17,7 +17,7 @@ class ScreenMigrationReporter implements MigrationReporterInterface
 {
     public function report(MigrationReportInterface $report, OutputInterface $output): void
     {
-        $failures = $report->getFailures();
+        $failures = $report->getEntries(MigrationOutcome::Failed);
 
         $output->writeln(sprintf(
             '<info>%s::%s (key %s)</info>',
@@ -26,7 +26,9 @@ class ScreenMigrationReporter implements MigrationReporterInterface
             $report->getTableKey()
         ));
         $output->writeln(sprintf('Media references found: %d', count($report->getEntries())));
-        $output->writeln(sprintf('Converted:              %d', $report->countByOutcome(MigrationOutcome::Converted)));
+        $output->writeln(
+            sprintf('Converted:              %d', count($report->getEntries(MigrationOutcome::Converted)))
+        );
         $output->writeln(sprintf('Failed:                 %d', count($failures)));
 
         if (!$failures) {
@@ -40,9 +42,9 @@ class ScreenMigrationReporter implements MigrationReporterInterface
                 '  [%s=%s] %s="%s": %s',
                 $report->getTableKey(),
                 $failure->getKey(),
-                $failure->getReference()->getAttribute(),
-                $failure->getReference()->getPath(),
-                $failure->getReference()->getDetail()
+                $failure->getAttribute(),
+                $failure->getPath(),
+                $failure->getDetail()
             ));
         }
 

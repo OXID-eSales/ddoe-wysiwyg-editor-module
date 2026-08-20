@@ -19,7 +19,7 @@ interface ContentMigrationResultInterface
     /**
      * Every media reference the migration came across, converted or not.
      *
-     * @return MediaReferenceResultInterface[]
+     * @return MediaMigrationResultInterface[]
      */
     public function getReferences(): array;
 }

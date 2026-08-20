@@ -140,6 +140,9 @@ References that cannot be resolved are listed and left unchanged - either the me
 library and has to be added there, or the path in the content is wrong. Nothing is imported into the media library
 by the migration.
 
+Only the `src` and `href` attributes themselves are converted. Media paths in other attributes, e.g. the `data-src`
+of a lazy loading image or a `srcset`, are left untouched.
+
 Pass `--report-file` to write the report as CSV instead of printing it. Relative paths are written to the shop log
 directory, absolute paths are used as they are:
 

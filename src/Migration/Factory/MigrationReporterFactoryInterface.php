@@ -13,9 +13,5 @@ use OxidEsales\WysiwygModule\Migration\Reporter\MigrationReporterInterface;
 
 interface MigrationReporterFactoryInterface
 {
-    /**
-     * Creates the reporter to hand the migration report to: a csv file writer when a report
-     * file path is given, the screen reporter otherwise.
-     */
     public function create(?string $reportFilePath): MigrationReporterInterface;
 }

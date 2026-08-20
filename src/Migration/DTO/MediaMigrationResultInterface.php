@@ -9,8 +9,16 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Migration\DTO;
 
-interface MediaReferenceResultInterface
+/**
+ * The outcome of one media reference found in migrated content, one item of the migration report.
+ */
+interface MediaMigrationResultInterface
 {
+    /**
+     * The value of the table key identifying the migrated row, empty as long as the row is unknown.
+     */
+    public function getKey(): string;
+
     /**
      * The tag attribute the reference was found in, e.g. "src" or "href".
      */
@@ -32,4 +40,9 @@ interface MediaReferenceResultInterface
      * The reason a reference could not be converted, empty on success.
      */
     public function getDetail(): string;
+
+    /**
+     * The same result, located in the row it was found in.
+     */
+    public function withKey(string $key): MediaMigrationResultInterface;
 }

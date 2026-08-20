@@ -11,9 +11,8 @@ namespace OxidEsales\WysiwygModule\Tests\Integration\Migration\Repository;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
-use OxidEsales\WysiwygModule\Migration\DTO\ContentMigrationResult;
-use OxidEsales\WysiwygModule\Migration\DTO\MediaReferenceResult;
-use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
+use OxidEsales\WysiwygModule\Migration\DTO\ContentMigrationResultInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
 use OxidEsales\WysiwygModule\Migration\Repository\FieldMigrationRepository;
 use OxidEsales\WysiwygModule\Migration\Service\MigrationServiceInterface;
 
@@ -38,10 +37,13 @@ class FieldMigrationRepositoryTest extends IntegrationTestCase
             self::FIELD => $insertQueryBuilder->createNamedParameter($originalValue),
         ])->execute();
 
+        $resultStub = $this->createStub(ContentMigrationResultInterface::class);
+        $resultStub->method('getContent')->willReturn($expectedValue);
+
         $migrationServiceMock = $this->createMock(MigrationServiceInterface::class);
-        $migrationServiceMock->method('migrateContentWithReferences')
+        $migrationServiceMock->method('migrateContent')
             ->with($originalValue)
-            ->willReturn(new ContentMigrationResult($expectedValue, []));
+            ->willReturn($resultStub);
 
         $sut = new FieldMigrationRepository(
             migrationService: $migrationServiceMock,
@@ -72,16 +74,20 @@ class FieldMigrationRepositoryTest extends IntegrationTestCase
             self::FIELD => $insertQueryBuilder->createNamedParameter('some content'),
         ])->execute();
 
-        $reference = new MediaReferenceResult(
-            attribute: 'src',
-            path: '/out/pictures/ddmedia/1.jpg',
-            outcome: MigrationOutcome::Converted,
-            mediaId: uniqid(),
-        );
+        $locatedReferenceStub = $this->createStub(MediaMigrationResultInterface::class);
 
-        $migrationServiceStub = $this->createMock(MigrationServiceInterface::class);
-        $migrationServiceStub->method('migrateContentWithReferences')
-            ->willReturn(new ContentMigrationResult('migrated content', [$reference]));
+        $referenceSpy = $this->createMock(MediaMigrationResultInterface::class);
+        $referenceSpy->expects($this->once())
+            ->method('withKey')
+            ->with($oxid)
+            ->willReturn($locatedReferenceStub);
+
+        $resultStub = $this->createStub(ContentMigrationResultInterface::class);
+        $resultStub->method('getContent')->willReturn('migrated content');
+        $resultStub->method('getReferences')->willReturn([$referenceSpy]);
+
+        $migrationServiceStub = $this->createStub(MigrationServiceInterface::class);
+        $migrationServiceStub->method('migrateContent')->willReturn($resultStub);
 
         $sut = new FieldMigrationRepository(
             migrationService: $migrationServiceStub,
@@ -90,8 +96,6 @@ class FieldMigrationRepositoryTest extends IntegrationTestCase
 
         $entries = $sut->migrateTableField(self::TABLE, self::FIELD, 'OXID');
 
-        $this->assertCount(1, $entries);
-        $this->assertSame($oxid, $entries[0]->getKey());
-        $this->assertSame($reference, $entries[0]->getReference());
+        $this->assertSame([$locatedReferenceStub], $entries);
     }
 }

@@ -12,7 +12,7 @@ namespace OxidEsales\WysiwygModule\Migration\DTO;
 class MigrationReport implements MigrationReportInterface
 {
     /**
-     * @param MigrationReportEntry[] $entries
+     * @param MediaMigrationResultInterface[] $entries
      */
     public function __construct(
         private readonly string $table,
@@ -37,29 +37,15 @@ class MigrationReport implements MigrationReportInterface
         return $this->tableKey;
     }
 
-    public function getEntries(): array
+    public function getEntries(?MigrationOutcome $outcome = null): array
     {
-        return $this->entries;
-    }
+        if ($outcome === null) {
+            return $this->entries;
+        }
 
-    public function getFailures(): array
-    {
-        return $this->filterByOutcome(MigrationOutcome::Failed);
-    }
-
-    public function countByOutcome(MigrationOutcome $outcome): int
-    {
-        return count($this->filterByOutcome($outcome));
-    }
-
-    /**
-     * @return MigrationReportEntry[]
-     */
-    private function filterByOutcome(MigrationOutcome $outcome): array
-    {
         return array_values(array_filter(
             $this->entries,
-            static fn(MigrationReportEntry $entry): bool => $entry->getReference()->getOutcome() === $outcome
+            static fn(MediaMigrationResultInterface $entry): bool => $entry->getOutcome() === $outcome
         ));
     }
 }

@@ -18,7 +18,6 @@ use OxidEsales\WysiwygModule\Migration\Service\MigrationServiceInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 class MediaIdAnchorMigrationServiceTest extends TestCase
 {
@@ -44,6 +43,14 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
                 . ' data-filepath="/out/pictures/ddmedia/pic.jpg"> ' . $random,
         ];
 
+        yield 'image whose ddmedia path is only in data-src, not src' => [
+            'original' => $random . ' <img data-src="/out/pictures/ddmedia/lazy.jpg"> ' . $random,
+        ];
+
+        yield 'image whose ddmedia path is only in a lowsrc attribute' => [
+            'original' => $random . ' <img lowsrc="/out/pictures/ddmedia/small.jpg"> ' . $random,
+        ];
+
         yield 'ordinary page link left untouched' => [
             'original' => $random . ' <a href="/en/some-page" class="link">go</a> ' . $random,
         ];
@@ -58,7 +65,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         $sut = $this->getSut(mediaIdByPathFacade: $facadeSpy);
 
-        $result = $sut->migrateContentWithReferences($original);
+        $result = $sut->migrateContent($original);
 
         $this->assertSame($original, $result->getContent());
         $this->assertSame([], $result->getReferences());
@@ -83,27 +90,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 
-        $result = $sut->migrateContentWithReferences($input);
+        $result = $sut->migrateContent($input);
 
         $this->assertSame($expected, $result->getContent());
-    }
-
-    #[Test]
-    public function migrateContentReturnsTheMigratedContentOnly(): void
-    {
-        $calculatedMediaId = uniqid();
-
-        $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
-        $facadeMock->method('getMediaIdByPath')->willReturn($calculatedMediaId);
-
-        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
-
-        $result = $sut->migrateContent('start <img src="/out/pictures/ddmedia/1.jpg"> end');
-
-        $this->assertSame(
-            'start <img src="{{oeMediaUrl(\'' . $calculatedMediaId . '\')}}" data-id="' . $calculatedMediaId . '"> end',
-            $result
-        );
     }
 
     #[Test]
@@ -117,7 +106,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 
-        $references = $sut->migrateContentWithReferences('start <img src="' . $src . '"> end')->getReferences();
+        $references = $sut->migrateContent('start <img src="' . $src . '"> end')->getReferences();
 
         $this->assertCount(1, $references);
         $this->assertSame('src', $references[0]->getAttribute());
@@ -125,6 +114,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
         $this->assertSame(MigrationOutcome::Converted, $references[0]->getOutcome());
         $this->assertSame($calculatedMediaId, $references[0]->getMediaId());
         $this->assertSame('', $references[0]->getDetail());
+        $this->assertSame('', $references[0]->getKey(), 'the row is added by the repository');
     }
 
     #[Test]
@@ -146,7 +136,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 
-        $result = $sut->migrateContentWithReferences($input);
+        $result = $sut->migrateContent($input);
 
         $this->assertSame($expected, $result->getContent());
     }
@@ -170,10 +160,63 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 
-        $result = $sut->migrateContentWithReferences($input);
+        $result = $sut->migrateContent($input);
 
         $this->assertSame($expected, $result->getContent());
         $this->assertSame('href', $result->getReferences()[0]->getAttribute());
+    }
+
+    #[Test]
+    public function migrateConvertsTheMediaAttributeAndLeavesLookalikeAttributesAlone(): void
+    {
+        $calculatedMediaId = uniqid();
+        $src = '/out/pictures/ddmedia/real.jpg';
+
+        // phpcs:disable
+        $input = 'start <img class="dd-wysiwyg-media-image" data-src="/out/pictures/ddmedia/lazy.jpg" src="' . $src . '"> end';
+        $expected = 'start <img class="dd-wysiwyg-media-image" data-src="/out/pictures/ddmedia/lazy.jpg" src="{{oeMediaUrl(\'' . $calculatedMediaId . '\')}}" data-id="' . $calculatedMediaId . '"> end';
+        // phpcs:enable
+
+        $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
+        $facadeMock->expects($this->once())
+            ->method('getMediaIdByPath')
+            ->with($src)
+            ->willReturn($calculatedMediaId);
+
+        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
+
+        $result = $sut->migrateContent($input);
+
+        $this->assertSame($expected, $result->getContent());
+        $this->assertCount(1, $result->getReferences());
+        $this->assertSame($src, $result->getReferences()[0]->getPath());
+    }
+
+    #[Test]
+    public function migrateConvertsTheFirstMediaAttributeOfOneTagOnly(): void
+    {
+        $srcMediaId = uniqid();
+        $src = '/out/pictures/ddmedia/thumbnail.jpg';
+        $href = '/out/pictures/ddmedia/original.jpg';
+
+        // phpcs:disable
+        $input = 'start <img src="' . $src . '" href="' . $href . '" class="dd-wysiwyg-media-image"> end';
+        $expected = 'start <img src="{{oeMediaUrl(\'' . $srcMediaId . '\')}}" data-id="' . $srcMediaId . '" href="' . $href . '" class="dd-wysiwyg-media-image"> end';
+        // phpcs:enable
+
+        $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
+        $facadeMock->expects($this->once())
+            ->method('getMediaIdByPath')
+            ->with($src)
+            ->willReturn($srcMediaId);
+
+        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
+
+        $result = $sut->migrateContent($input);
+
+        $this->assertSame($expected, $result->getContent());
+        $this->assertCount(1, $result->getReferences());
+        $this->assertSame('src', $result->getReferences()[0]->getAttribute());
     }
 
     #[Test]
@@ -199,7 +242,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 
-        $result = $sut->migrateContentWithReferences($input);
+        $result = $sut->migrateContent($input);
 
         $this->assertSame($expected, $result->getContent());
     }
@@ -238,7 +281,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 
-        $result = $sut->migrateContentWithReferences($input);
+        $result = $sut->migrateContent($input);
 
         $this->assertSame($expected, $result->getContent());
         $this->assertCount(2, $result->getReferences());
@@ -298,7 +341,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 
-        $result = $sut->migrateContentWithReferences($input);
+        $result = $sut->migrateContent($input);
 
         $this->assertSame($expected, $result->getContent());
     }
@@ -318,7 +361,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
     #[Test]
     #[DataProvider('exceptionCasesDataProvider')]
-    public function migrateToMediaIdAnchorsLogsAndReportsMediaNotFoundException(
+    public function migrateReportsWhyAReferenceCouldNotBeConverted(
         \Exception $exceptionStub,
         string $expectedDetail
     ): void {
@@ -333,14 +376,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             ->with($randomSrc)
             ->willThrowException($exceptionStub);
 
-        $loggerSpy = $this->createMock(LoggerInterface::class);
-        $loggerSpy->expects($this->once())
-            ->method('warning')
-            ->with($exceptionStub->getMessage());
+        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 
-        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock, logger: $loggerSpy);
-
-        $references = $sut->migrateContentWithReferences($input)->getReferences();
+        $references = $sut->migrateContent($input)->getReferences();
 
         $this->assertCount(1, $references);
         $this->assertSame(MigrationOutcome::Failed, $references[0]->getOutcome());
@@ -348,13 +386,10 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
         $this->assertSame('', $references[0]->getMediaId());
     }
 
-    private function getSut(
-        ?MediaIdByPathFacadeInterface $mediaIdByPathFacade = null,
-        ?LoggerInterface $logger = null,
-    ): MigrationServiceInterface {
+    private function getSut(?MediaIdByPathFacadeInterface $mediaIdByPathFacade = null): MigrationServiceInterface
+    {
         return new MediaIdAnchorMigrationService(
             mediaIdByPathFacade: $mediaIdByPathFacade ?? $this->createStub(MediaIdByPathFacadeInterface::class),
-            logger: $logger ?? $this->createStub(LoggerInterface::class),
         );
     }
 }

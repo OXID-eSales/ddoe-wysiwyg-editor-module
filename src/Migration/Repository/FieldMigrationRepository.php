@@ -12,7 +12,7 @@ namespace OxidEsales\WysiwygModule\Migration\Repository;
 use Doctrine\DBAL\ForwardCompatibility\Result;
 use Generator;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportEntry;
+use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
 use OxidEsales\WysiwygModule\Migration\Service\MigrationServiceInterface;
 
 class FieldMigrationRepository implements FieldMigrationRepositoryInterface
@@ -28,12 +28,12 @@ class FieldMigrationRepository implements FieldMigrationRepositoryInterface
         $entries = [];
 
         foreach ($this->getOriginalContent($tableName, $fieldName, $tableKey) as $keyValue => $content) {
-            $result = $this->migrationService->migrateContentWithReferences($content);
+            $result = $this->migrationService->migrateContent($content);
 
             $this->updateContent($tableName, $fieldName, $tableKey, $keyValue, $result->getContent());
 
             foreach ($result->getReferences() as $reference) {
-                $entries[] = new MigrationReportEntry(key: $keyValue, reference: $reference);
+                $entries[] = $reference->withKey($keyValue);
             }
         }
 

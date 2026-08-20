@@ -9,39 +9,56 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Tests\Unit\Migration\Reporter;
 
-use OxidEsales\WysiwygModule\Migration\DTO\MediaReferenceResult;
+use org\bovigo\vfs\vfsStream;
+use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
-use OxidEsales\WysiwygModule\Migration\DTO\MigrationReport;
-use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportEntry;
+use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
 use OxidEsales\WysiwygModule\Migration\Reporter\CsvFileMigrationReporter;
+use OxidEsales\WysiwygModule\Migration\Reporter\MigrationReporterInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class CsvFileMigrationReporterTest extends TestCase
 {
-    private string $path = '';
+    private const TABLE = 'oxcontents';
+    private const FIELD = 'OXCONTENT';
+    private const PATH = 'vfs://root/media-migration.csv';
+    private const PATH_IN_MISSING_DIRECTORY = 'vfs://root/does/not/exist.csv';
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->path = sys_get_temp_dir() . '/wysiwyg-media-migration-' . uniqid() . '.csv';
-    }
 
-    protected function tearDown(): void
-    {
-        @unlink($this->path);
-        parent::tearDown();
+        vfsStream::setup('root');
     }
 
     #[Test]
     public function reportWritesHeaderAndOneRowPerEntry(): void
     {
-        $sut = new CsvFileMigrationReporter($this->path);
-        $sut->report($this->getReport(), new BufferedOutput());
+        $convertedEntry = $this->makeEntryStub(
+            key: 'oxstartslot1',
+            attribute: 'src',
+            path: '/out/pictures/ddmedia/a.jpg',
+            outcome: MigrationOutcome::Converted,
+            mediaId: 'id-a',
+        );
+        $failedEntry = $this->makeEntryStub(
+            key: 'oxstartslot2',
+            attribute: 'href',
+            path: '/out/pictures/ddmedia/missing.jpg',
+            outcome: MigrationOutcome::Failed,
+            detail: 'media not registered',
+        );
 
-        $rows = array_map('str_getcsv', file($this->path, FILE_IGNORE_NEW_LINES));
+        $sut = $this->getSut();
+        $sut->report(
+            $this->makeReportStub([$convertedEntry, $failedEntry], [$failedEntry]),
+            $this->createStub(OutputInterface::class)
+        );
+
+        $rows = array_map('str_getcsv', file(self::PATH, FILE_IGNORE_NEW_LINES));
 
         $this->assertCount(3, $rows, 'header + two entries');
         $this->assertSame(
@@ -50,8 +67,8 @@ class CsvFileMigrationReporterTest extends TestCase
         );
         $this->assertSame(
             [
-                'oxcontents',
-                'OXCONTENT',
+                self::TABLE,
+                self::FIELD,
                 'oxstartslot1',
                 'src',
                 '/out/pictures/ddmedia/a.jpg',
@@ -63,8 +80,8 @@ class CsvFileMigrationReporterTest extends TestCase
         );
         $this->assertSame(
             [
-                'oxcontents',
-                'OXCONTENT',
+                self::TABLE,
+                self::FIELD,
                 'oxstartslot2',
                 'href',
                 '/out/pictures/ddmedia/missing.jpg',
@@ -77,54 +94,77 @@ class CsvFileMigrationReporterTest extends TestCase
     }
 
     #[Test]
+    public function reportWritesTheHeaderOnlyWhenThereIsNothingToReport(): void
+    {
+        $sut = $this->getSut();
+        $sut->report($this->createStub(MigrationReportInterface::class), $this->createStub(OutputInterface::class));
+
+        $this->assertCount(1, file(self::PATH, FILE_IGNORE_NEW_LINES));
+    }
+
+    #[Test]
     public function reportTellsWhereTheReportWasWritten(): void
     {
-        $output = new BufferedOutput();
+        $failedEntry = $this->makeEntryStub(outcome: MigrationOutcome::Failed);
 
-        $sut = new CsvFileMigrationReporter($this->path);
-        $sut->report($this->getReport(), $output);
+        $outputSpy = $this->createMock(OutputInterface::class);
+        $outputSpy->expects($this->once())
+            ->method('writeln')
+            ->with('Report of 2 media references (1 failed) written to ' . self::PATH);
 
-        $display = $output->fetch();
-
-        $this->assertStringContainsString($this->path, $display);
-        $this->assertStringContainsString('2 media references (1 failed)', $display);
+        $sut = $this->getSut();
+        $sut->report($this->makeReportStub([$this->makeEntryStub(), $failedEntry], [$failedEntry]), $outputSpy);
     }
 
     #[Test]
     public function reportThrowsWhenTheFileCannotBeWritten(): void
     {
-        $sut = new CsvFileMigrationReporter('/does/not/exist/' . uniqid() . '.csv');
+        $sut = $this->getSut(self::PATH_IN_MISSING_DIRECTORY);
 
         $this->expectException(RuntimeException::class);
-        $sut->report($this->getReport(), new BufferedOutput());
+        $sut->report($this->createStub(MigrationReportInterface::class), $this->createStub(OutputInterface::class));
     }
 
-    private function getReport(): MigrationReport
+    /**
+     * @param MediaMigrationResultInterface[] $entries
+     * @param MediaMigrationResultInterface[] $failed
+     */
+    private function makeReportStub(array $entries, array $failed = []): MigrationReportInterface
     {
-        return new MigrationReport(
-            table: 'oxcontents',
-            field: 'OXCONTENT',
-            tableKey: 'OXID',
-            entries: [
-                new MigrationReportEntry(
-                    key: 'oxstartslot1',
-                    reference: new MediaReferenceResult(
-                        attribute: 'src',
-                        path: '/out/pictures/ddmedia/a.jpg',
-                        outcome: MigrationOutcome::Converted,
-                        mediaId: 'id-a',
-                    ),
-                ),
-                new MigrationReportEntry(
-                    key: 'oxstartslot2',
-                    reference: new MediaReferenceResult(
-                        attribute: 'href',
-                        path: '/out/pictures/ddmedia/missing.jpg',
-                        outcome: MigrationOutcome::Failed,
-                        detail: 'media not registered',
-                    ),
-                ),
-            ],
+        $reportStub = $this->createStub(MigrationReportInterface::class);
+        $reportStub->method('getTable')->willReturn(self::TABLE);
+        $reportStub->method('getField')->willReturn(self::FIELD);
+        $reportStub->method('getEntries')->willReturnCallback(
+            static fn(?MigrationOutcome $outcome = null): array => match ($outcome) {
+                MigrationOutcome::Failed => $failed,
+                default => $entries,
+            }
         );
+
+        return $reportStub;
+    }
+
+    private function makeEntryStub(
+        string $key = 'oxstartslot1',
+        string $attribute = 'src',
+        string $path = '/out/pictures/ddmedia/1.jpg',
+        MigrationOutcome $outcome = MigrationOutcome::Converted,
+        string $mediaId = '',
+        string $detail = '',
+    ): MediaMigrationResultInterface {
+        $entryStub = $this->createStub(MediaMigrationResultInterface::class);
+        $entryStub->method('getKey')->willReturn($key);
+        $entryStub->method('getAttribute')->willReturn($attribute);
+        $entryStub->method('getPath')->willReturn($path);
+        $entryStub->method('getOutcome')->willReturn($outcome);
+        $entryStub->method('getMediaId')->willReturn($mediaId);
+        $entryStub->method('getDetail')->willReturn($detail);
+
+        return $entryStub;
+    }
+
+    private function getSut(string $path = self::PATH): MigrationReporterInterface
+    {
+        return new CsvFileMigrationReporter($path);
     }
 }

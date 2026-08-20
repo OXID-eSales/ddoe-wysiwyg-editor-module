@@ -12,7 +12,7 @@ namespace OxidEsales\WysiwygModule\Migration\DTO;
 class ContentMigrationResult implements ContentMigrationResultInterface
 {
     /**
-     * @param MediaReferenceResultInterface[] $references
+     * @param MediaMigrationResultInterface[] $references
      */
     public function __construct(
         private readonly string $content,
