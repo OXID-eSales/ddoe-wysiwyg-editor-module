@@ -25,7 +25,7 @@
         "php": "^8.3",
         "symfony/filesystem": "*",
         "ext-gd": "*",
-        "oxid-esales/media-library-module": "dev-b-7.5.x"
+        "oxid-esales/media-library-module": "dev-b-7.5.x-deleted-image-OXDEV-10555"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.1",
