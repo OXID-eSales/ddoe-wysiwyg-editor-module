@@ -99,6 +99,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
     public function migrateReportsTheConvertedReference(): void
     {
         $calculatedMediaId = uniqid();
+        $key = uniqid();
         $src = '/out/pictures/ddmedia/1.jpg';
 
         $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
@@ -106,15 +107,15 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 
-        $references = $sut->migrateContent('start <img src="' . $src . '"> end')->getReferences();
+        $references = $sut->migrateContent('start <img src="' . $src . '"> end', $key)->getReferences();
 
         $this->assertCount(1, $references);
+        $this->assertSame($key, $references[0]->getKey());
         $this->assertSame('src', $references[0]->getAttribute());
         $this->assertSame($src, $references[0]->getPath());
         $this->assertSame(MigrationOutcome::Converted, $references[0]->getOutcome());
         $this->assertSame($calculatedMediaId, $references[0]->getMediaId());
         $this->assertSame('', $references[0]->getDetail());
-        $this->assertSame('', $references[0]->getKey(), 'the row is added by the repository');
     }
 
     #[Test]
@@ -366,6 +367,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
         string $expectedDetail
     ): void {
         $randomSrc = uniqid();
+        $key = uniqid();
 
         // phpcs:disable
         $input = 'some start <img src="' . $randomSrc . '" style="max-width: 100%;" data-filename="237-536x354.jpg" data-filepath="//localhost.local/out/pictures/ddmedia/237-536x354.jpg" data-source="media" class="dd-wysiwyg-media-image"> some end';
@@ -378,9 +380,10 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 
-        $references = $sut->migrateContent($input)->getReferences();
+        $references = $sut->migrateContent($input, $key)->getReferences();
 
         $this->assertCount(1, $references);
+        $this->assertSame($key, $references[0]->getKey());
         $this->assertSame(MigrationOutcome::Failed, $references[0]->getOutcome());
         $this->assertSame($expectedDetail, $references[0]->getDetail());
         $this->assertSame('', $references[0]->getMediaId());

@@ -17,5 +17,5 @@ interface MigrationServiceInterface
      * Migrates the media references of the given content, reporting every reference it came
      * across, converted or not.
      */
-    public function migrateContent(string $content): ContentMigrationResultInterface;
+    public function migrateContent(string $content, string $key = ''): ContentMigrationResultInterface;
 }

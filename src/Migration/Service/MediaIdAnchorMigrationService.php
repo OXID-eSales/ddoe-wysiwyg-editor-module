@@ -41,15 +41,15 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
     ) {
     }
 
-    public function migrateContent(string $content): ContentMigrationResultInterface
+    public function migrateContent(string $content, string $key = ''): ContentMigrationResultInterface
     {
         /** @var MediaMigrationResultInterface[] $references */
         $references = [];
 
         $migratedContent = preg_replace_callback(
             self::MEDIA_TAG_PATTERN,
-            function (array $matchedTag) use (&$references): string {
-                return $this->modifyMediaTag($matchedTag[0], $references);
+            function (array $matchedTag) use ($key, &$references): string {
+                return $this->modifyMediaTag($matchedTag[0], $key, $references);
             },
             $content
         );
@@ -60,7 +60,7 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
     /**
      * @param MediaMigrationResultInterface[] $references
      */
-    private function modifyMediaTag(string $tag, array &$references): string
+    private function modifyMediaTag(string $tag, string $key, array &$references): string
     {
         foreach (self::MEDIA_ATTRIBUTES as $attribute) {
             if (!preg_match($this->attributePattern($attribute), $tag, $matches)) {
@@ -68,7 +68,7 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
             }
 
             if ($this->isConvertibleMediaReference($tag, $matches['value'])) {
-                return $this->replaceMediaReference($tag, $attribute, $matches['value'], $references);
+                return $this->replaceMediaReference($tag, $key, $attribute, $matches['value'], $references);
             }
         }
 
@@ -86,21 +86,27 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
     /**
      * @param MediaMigrationResultInterface[] $references
      */
-    private function replaceMediaReference(string $tag, string $attribute, string $path, array &$references): string
-    {
+    private function replaceMediaReference(
+        string $tag,
+        string $key,
+        string $attribute,
+        string $path,
+        array &$references
+    ): string {
         try {
             $mediaId = $this->mediaIdByPathFacade->getMediaIdByPath($path);
         } catch (MediaNotFoundByFileInformationException) {
-            $references[] = $this->failedReference($attribute, $path, self::NO_ENTRY_DETAIL);
+            $references[] = $this->failedReference($key, $attribute, $path, self::NO_ENTRY_DETAIL);
 
             return $tag;
         } catch (UnknownPathFormatException) {
-            $references[] = $this->failedReference($attribute, $path, self::UNKNOWN_PATH_DETAIL);
+            $references[] = $this->failedReference($key, $attribute, $path, self::UNKNOWN_PATH_DETAIL);
 
             return $tag;
         }
 
         $references[] = new MediaMigrationResult(
+            key: $key,
             attribute: $attribute,
             path: $path,
             outcome: MigrationOutcome::Converted,
@@ -110,9 +116,14 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
         return $this->writeMediaId($tag, $attribute, $mediaId);
     }
 
-    private function failedReference(string $attribute, string $path, string $detail): MediaMigrationResultInterface
-    {
+    private function failedReference(
+        string $key,
+        string $attribute,
+        string $path,
+        string $detail
+    ): MediaMigrationResultInterface {
         return new MediaMigrationResult(
+            key: $key,
             attribute: $attribute,
             path: $path,
             outcome: MigrationOutcome::Failed,

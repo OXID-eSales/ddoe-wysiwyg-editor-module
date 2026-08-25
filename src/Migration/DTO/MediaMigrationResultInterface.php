@@ -15,7 +15,7 @@ namespace OxidEsales\WysiwygModule\Migration\DTO;
 interface MediaMigrationResultInterface
 {
     /**
-     * The value of the table key identifying the migrated row, empty as long as the row is unknown.
+     * The key the migrated content was identified by.
      */
     public function getKey(): string;
 
@@ -40,9 +40,4 @@ interface MediaMigrationResultInterface
      * The reason a reference could not be converted, empty on success.
      */
     public function getDetail(): string;
-
-    /**
-     * The same result, located in the row it was found in.
-     */
-    public function withKey(string $key): MediaMigrationResultInterface;
 }

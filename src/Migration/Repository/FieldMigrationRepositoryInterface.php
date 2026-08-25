@@ -15,7 +15,7 @@ interface FieldMigrationRepositoryInterface
 {
     /**
      * Migrates the media references of one table field and returns every reference
-     * the migration came across, located in the row it was found in.
+     * the migration came across, each identified by the row it was found in.
      *
      * @return MediaMigrationResultInterface[]
      */

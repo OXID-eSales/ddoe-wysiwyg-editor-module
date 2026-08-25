@@ -86,9 +86,9 @@ class MigrationReporterFactoryTest extends TestCase
         try {
             $reporter = $sut->create($path);
             $reporter->report(
-            $this->createStub(MigrationReportInterface::class),
-            $this->createStub(OutputInterface::class)
-        );
+                $this->createStub(MigrationReportInterface::class),
+                $this->createStub(OutputInterface::class)
+            );
 
             $this->assertFileExists($path);
             $this->assertFileDoesNotExist('vfs://root/' . self::LOG_DIRECTORY . '/' . basename($path));

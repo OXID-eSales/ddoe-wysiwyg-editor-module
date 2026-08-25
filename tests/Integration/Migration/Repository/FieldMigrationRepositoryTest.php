@@ -42,7 +42,7 @@ class FieldMigrationRepositoryTest extends IntegrationTestCase
 
         $migrationServiceMock = $this->createMock(MigrationServiceInterface::class);
         $migrationServiceMock->method('migrateContent')
-            ->with($originalValue)
+            ->with($originalValue, $oxid)
             ->willReturn($resultStub);
 
         $sut = new FieldMigrationRepository(
@@ -74,28 +74,25 @@ class FieldMigrationRepositoryTest extends IntegrationTestCase
             self::FIELD => $insertQueryBuilder->createNamedParameter('some content'),
         ])->execute();
 
-        $locatedReferenceStub = $this->createStub(MediaMigrationResultInterface::class);
-
-        $referenceSpy = $this->createMock(MediaMigrationResultInterface::class);
-        $referenceSpy->expects($this->once())
-            ->method('withKey')
-            ->with($oxid)
-            ->willReturn($locatedReferenceStub);
+        $referenceStub = $this->createStub(MediaMigrationResultInterface::class);
 
         $resultStub = $this->createStub(ContentMigrationResultInterface::class);
         $resultStub->method('getContent')->willReturn('migrated content');
-        $resultStub->method('getReferences')->willReturn([$referenceSpy]);
+        $resultStub->method('getReferences')->willReturn([$referenceStub]);
 
-        $migrationServiceStub = $this->createStub(MigrationServiceInterface::class);
-        $migrationServiceStub->method('migrateContent')->willReturn($resultStub);
+        $migrationServiceMock = $this->createMock(MigrationServiceInterface::class);
+        $migrationServiceMock->expects($this->once())
+            ->method('migrateContent')
+            ->with('some content', $oxid)
+            ->willReturn($resultStub);
 
         $sut = new FieldMigrationRepository(
-            migrationService: $migrationServiceStub,
+            migrationService: $migrationServiceMock,
             queryBuilderFactory: $queryBuilderFactory,
         );
 
         $entries = $sut->migrateTableField(self::TABLE, self::FIELD, 'OXID');
 
-        $this->assertSame([$locatedReferenceStub], $entries);
+        $this->assertSame([$referenceStub], $entries);
     }
 }
