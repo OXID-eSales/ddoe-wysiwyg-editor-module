@@ -20,8 +20,6 @@ use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
 
 class MediaIdAnchorMigrationService implements MigrationServiceInterface
 {
-    private const MEDIA_TAG_PATTERN = '/<(?:img|a)\b[^>]*>/msi';
-
     /**
      * Attributes that may carry a media reference, in priority order
      */
@@ -47,9 +45,9 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
         $references = [];
 
         $migratedContent = preg_replace_callback(
-            self::MEDIA_TAG_PATTERN,
-            function (array $matchedTag) use ($key, &$references): string {
-                return $this->modifyMediaTag($matchedTag[0], $key, $references);
+            '/(?<tag><(?:img|a)\b[^>]*>)/i',
+            function (array $match) use ($key, &$references): string {
+                return $this->modifyMediaTag($match['tag'], $key, $references);
             },
             $content
         );
@@ -76,11 +74,12 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
     }
 
     /**
-     * Matches the attribute itself only, never an attribute it is the suffix of, e.g. data-src
+     * Matches the attribute where it starts one, i.e. after whitespace, so that attributes it is
+     * only the ending of, e.g. data-src or lowsrc, are left alone
      */
     private function attributePattern(string $attribute): string
     {
-        return '/(?<![-\w])' . $attribute . '="(?<value>[^"]+)"/mi';
+        return '/(?<=\s)' . $attribute . '="(?<value>[^"]+)"/i';
     }
 
     /**
@@ -140,8 +139,12 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
             1
         );
 
-        foreach (self::OBSOLETE_ATTRIBUTES as $key) {
-            $tag = (string)preg_replace('/([<"])[^<"]+' . $key . '="[^"]+"/mi', '$1', $tag);
+        foreach (self::OBSOLETE_ATTRIBUTES as $obsoleteAttribute) {
+            $tag = (string)preg_replace_callback(
+                '/(?<boundary>[<"])[^<"]+' . $obsoleteAttribute . '="[^"]+"/i',
+                static fn(array $match): string => $match['boundary'],
+                $tag
+            );
         }
 
         return $tag;
