@@ -15,6 +15,7 @@ use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
 use OxidEsales\WysiwygModule\Migration\Reporter\CsvFileMigrationReporter;
 use OxidEsales\WysiwygModule\Migration\Reporter\MigrationReporterInterface;
+use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -52,9 +53,9 @@ class CsvFileMigrationReporterTest extends TestCase
             detail: 'media not registered',
         );
 
-        $sut = $this->getSut();
+        $sut = $this->getSut(failed: [$failedEntry]);
         $sut->report(
-            $this->makeReportStub([$convertedEntry, $failedEntry], [$failedEntry]),
+            $this->makeReportStub([$convertedEntry, $failedEntry]),
             $this->createStub(OutputInterface::class)
         );
 
@@ -112,14 +113,14 @@ class CsvFileMigrationReporterTest extends TestCase
             ->method('writeln')
             ->with('Report of 2 media references (1 failed) written to ' . self::PATH);
 
-        $sut = $this->getSut();
-        $sut->report($this->makeReportStub([$this->makeEntryStub(), $failedEntry], [$failedEntry]), $outputSpy);
+        $sut = $this->getSut(failed: [$failedEntry]);
+        $sut->report($this->makeReportStub([$this->makeEntryStub(), $failedEntry]), $outputSpy);
     }
 
     #[Test]
     public function reportThrowsWhenTheFileCannotBeWritten(): void
     {
-        $sut = $this->getSut(self::PATH_IN_MISSING_DIRECTORY);
+        $sut = $this->getSut(path: self::PATH_IN_MISSING_DIRECTORY);
 
         $this->expectException(RuntimeException::class);
         $sut->report($this->createStub(MigrationReportInterface::class), $this->createStub(OutputInterface::class));
@@ -127,19 +128,13 @@ class CsvFileMigrationReporterTest extends TestCase
 
     /**
      * @param MediaMigrationResultInterface[] $entries
-     * @param MediaMigrationResultInterface[] $failed
      */
-    private function makeReportStub(array $entries, array $failed = []): MigrationReportInterface
+    private function makeReportStub(array $entries): MigrationReportInterface
     {
         $reportStub = $this->createStub(MigrationReportInterface::class);
         $reportStub->method('getTable')->willReturn(self::TABLE);
         $reportStub->method('getField')->willReturn(self::FIELD);
-        $reportStub->method('getEntries')->willReturnCallback(
-            static fn(?MigrationOutcome $outcome = null): array => match ($outcome) {
-                MigrationOutcome::Failed => $failed,
-                default => $entries,
-            }
-        );
+        $reportStub->method('getEntries')->willReturn($entries);
 
         return $reportStub;
     }
@@ -163,8 +158,16 @@ class CsvFileMigrationReporterTest extends TestCase
         return $entryStub;
     }
 
-    private function getSut(string $path = self::PATH): MigrationReporterInterface
+    /**
+     * @param MediaMigrationResultInterface[] $failed
+     */
+    private function getSut(array $failed = [], string $path = self::PATH): MigrationReporterInterface
     {
-        return new CsvFileMigrationReporter($path);
+        $filterStub = $this->createConfiguredStub(
+            MediaMigrationResultFilterInterface::class,
+            ['filterByOutcome' => $failed]
+        );
+
+        return new CsvFileMigrationReporter($filterStub, $path);
     }
 }

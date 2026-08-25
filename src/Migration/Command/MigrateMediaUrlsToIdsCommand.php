@@ -12,6 +12,7 @@ namespace OxidEsales\WysiwygModule\Migration\Command;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
 use OxidEsales\WysiwygModule\Migration\Factory\MigrationReporterFactoryInterface;
 use OxidEsales\WysiwygModule\Migration\Service\FieldMigrationServiceInterface;
+use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,6 +27,7 @@ class MigrateMediaUrlsToIdsCommand extends Command
     public function __construct(
         private readonly FieldMigrationServiceInterface $fieldMigrationService,
         private readonly MigrationReporterFactoryInterface $reporterFactory,
+        private readonly MediaMigrationResultFilterInterface $resultFilter,
     ) {
         parent::__construct();
     }
@@ -71,6 +73,8 @@ class MigrateMediaUrlsToIdsCommand extends Command
         $reporter = $this->reporterFactory->create(is_string($reportFilePath) ? $reportFilePath : null);
         $reporter->report($report, $output);
 
-        return $report->getEntries(MigrationOutcome::Failed) ? Command::FAILURE : Command::SUCCESS;
+        $failures = $this->resultFilter->filterByOutcome($report->getEntries(), MigrationOutcome::Failed);
+
+        return $failures ? Command::FAILURE : Command::SUCCESS;
     }
 }

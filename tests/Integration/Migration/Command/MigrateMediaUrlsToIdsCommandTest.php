@@ -16,6 +16,7 @@ use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
 use OxidEsales\WysiwygModule\Migration\Factory\MigrationReporterFactoryInterface;
 use OxidEsales\WysiwygModule\Migration\Reporter\MigrationReporterInterface;
 use OxidEsales\WysiwygModule\Migration\Service\FieldMigrationServiceInterface;
+use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
@@ -123,13 +124,9 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
     #[Test]
     public function migrationFailsWhenReferencesCouldNotBeConverted(): void
     {
-        $reportStub = $this->createStub(MigrationReportInterface::class);
-        $reportStub->method('getEntries')->willReturn([$this->createStub(MediaMigrationResultInterface::class)]);
+        $failures = [$this->createStub(MediaMigrationResultInterface::class)];
 
-        $serviceStub = $this->createStub(FieldMigrationServiceInterface::class);
-        $serviceStub->method('migrate')->willReturn($reportStub);
-
-        $commandTester = $this->runCommand($this->getSut(fieldMigrationService: $serviceStub), [
+        $commandTester = $this->runCommand($this->getSut(failures: $failures), [
             'table' => uniqid(),
             'field' => uniqid(),
         ]);
@@ -137,10 +134,14 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
         $this->assertSame(Command::FAILURE, $commandTester->getStatusCode());
     }
 
+    /**
+     * @param MediaMigrationResultInterface[] $failures
+     */
     private function getSut(
         ?FieldMigrationServiceInterface $fieldMigrationService = null,
         ?MigrationReporterFactoryInterface $reporterFactory = null,
         ?MigrationReporterInterface $reporter = null,
+        array $failures = [],
     ): MigrateMediaUrlsToIdsCommand {
         if ($reporterFactory === null) {
             $reporterFactory = $this->createStub(MigrationReporterFactoryInterface::class);
@@ -152,6 +153,10 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
             fieldMigrationService: $fieldMigrationService
                 ?? $this->createStub(FieldMigrationServiceInterface::class),
             reporterFactory: $reporterFactory,
+            resultFilter: $this->createConfiguredStub(
+                MediaMigrationResultFilterInterface::class,
+                ['filterByOutcome' => $failures]
+            ),
         );
     }
 

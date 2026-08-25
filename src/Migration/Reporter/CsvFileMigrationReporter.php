@@ -11,6 +11,7 @@ namespace OxidEsales\WysiwygModule\Migration\Reporter;
 
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
+use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
 use RuntimeException;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -19,6 +20,7 @@ class CsvFileMigrationReporter implements MigrationReporterInterface
     private const HEADER = ['table', 'field', 'key', 'attribute', 'path', 'outcome', 'media_id', 'detail'];
 
     public function __construct(
+        private readonly MediaMigrationResultFilterInterface $resultFilter,
         private readonly string $path,
     ) {
     }
@@ -53,7 +55,7 @@ class CsvFileMigrationReporter implements MigrationReporterInterface
         $output->writeln(sprintf(
             'Report of %d media references (%d failed) written to %s',
             count($report->getEntries()),
-            count($report->getEntries(MigrationOutcome::Failed)),
+            count($this->resultFilter->filterByOutcome($report->getEntries(), MigrationOutcome::Failed)),
             $this->path
         ));
     }

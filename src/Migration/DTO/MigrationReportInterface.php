@@ -21,9 +21,9 @@ interface MigrationReportInterface
     public function getTableKey(): string;
 
     /**
-     * Every entry of the report, or only the ones with the given outcome.
+     * Every media reference the migration came across, converted or not.
      *
      * @return MediaMigrationResultInterface[]
      */
-    public function getEntries(?MigrationOutcome $outcome = null): array;
+    public function getEntries(): array;
 }

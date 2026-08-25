@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\WysiwygModule\Tests\Unit\Migration\DTO;
 
 use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
-use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReport;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
 use PHPUnit\Framework\Attributes\Test;
@@ -37,36 +36,13 @@ class MigrationReportTest extends TestCase
     public function getEntriesReturnsEveryEntryInTheGivenOrder(): void
     {
         $entries = [
-            $this->makeEntryStub(MigrationOutcome::Converted),
-            $this->makeEntryStub(MigrationOutcome::Failed),
+            $this->createStub(MediaMigrationResultInterface::class),
+            $this->createStub(MediaMigrationResultInterface::class),
         ];
 
         $sut = $this->getSut($entries);
 
         $this->assertSame($entries, $sut->getEntries());
-    }
-
-    #[Test]
-    public function getEntriesWithAnOutcomeReturnsOnlyMatchingEntriesReindexed(): void
-    {
-        $failedEntry = $this->makeEntryStub(MigrationOutcome::Failed);
-
-        $sut = $this->getSut([
-            $this->makeEntryStub(MigrationOutcome::Converted),
-            $failedEntry,
-            $this->makeEntryStub(MigrationOutcome::Converted),
-        ]);
-
-        $this->assertSame([$failedEntry], $sut->getEntries(MigrationOutcome::Failed));
-        $this->assertCount(2, $sut->getEntries(MigrationOutcome::Converted));
-    }
-
-    #[Test]
-    public function getEntriesWithAnOutcomeIsEmptyWhenNoEntryMatches(): void
-    {
-        $sut = $this->getSut([$this->makeEntryStub(MigrationOutcome::Converted)]);
-
-        $this->assertSame([], $sut->getEntries(MigrationOutcome::Failed));
     }
 
     /**
@@ -80,13 +56,5 @@ class MigrationReportTest extends TestCase
             tableKey: self::TABLE_KEY,
             entries: $entries,
         );
-    }
-
-    private function makeEntryStub(MigrationOutcome $outcome): MediaMigrationResultInterface
-    {
-        $entryStub = $this->createStub(MediaMigrationResultInterface::class);
-        $entryStub->method('getOutcome')->willReturn($outcome);
-
-        return $entryStub;
     }
 }

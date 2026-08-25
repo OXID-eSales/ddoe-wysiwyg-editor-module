@@ -72,6 +72,7 @@ class ServiceAvailabilityTest extends IntegrationTestCase
             [\OxidEsales\WysiwygModule\Migration\Factory\MigrationReporterFactoryInterface::class],
             [\OxidEsales\WysiwygModule\Migration\Repository\FieldMigrationRepositoryInterface::class],
             [\OxidEsales\WysiwygModule\Migration\Service\FieldMigrationServiceInterface::class],
+            [\OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface::class],
             [\OxidEsales\WysiwygModule\Migration\Service\MigrationServiceInterface::class],
 
             // Service

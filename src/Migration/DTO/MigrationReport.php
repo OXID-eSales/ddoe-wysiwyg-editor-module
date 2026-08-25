@@ -37,15 +37,8 @@ class MigrationReport implements MigrationReportInterface
         return $this->tableKey;
     }
 
-    public function getEntries(?MigrationOutcome $outcome = null): array
+    public function getEntries(): array
     {
-        if ($outcome === null) {
-            return $this->entries;
-        }
-
-        return array_values(array_filter(
-            $this->entries,
-            static fn(MediaMigrationResultInterface $entry): bool => $entry->getOutcome() === $outcome
-        ));
+        return $this->entries;
     }
 }

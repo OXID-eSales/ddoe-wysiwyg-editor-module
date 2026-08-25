@@ -13,21 +13,23 @@ use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\WysiwygModule\Migration\Reporter\CsvFileMigrationReporter;
 use OxidEsales\WysiwygModule\Migration\Reporter\MigrationReporterInterface;
 use OxidEsales\WysiwygModule\Migration\Reporter\ScreenMigrationReporter;
+use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
 
 class MigrationReporterFactory implements MigrationReporterFactoryInterface
 {
     public function __construct(
         private readonly ContextInterface $context,
+        private readonly MediaMigrationResultFilterInterface $resultFilter,
     ) {
     }
 
     public function create(?string $reportFilePath): MigrationReporterInterface
     {
         if ($reportFilePath === null || $reportFilePath === '') {
-            return new ScreenMigrationReporter();
+            return new ScreenMigrationReporter($this->resultFilter);
         }
 
-        return new CsvFileMigrationReporter($this->resolveReportFilePath($reportFilePath));
+        return new CsvFileMigrationReporter($this->resultFilter, $this->resolveReportFilePath($reportFilePath));
     }
 
     /**

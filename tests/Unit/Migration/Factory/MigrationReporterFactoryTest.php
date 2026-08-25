@@ -16,6 +16,7 @@ use OxidEsales\WysiwygModule\Migration\Factory\MigrationReporterFactory;
 use OxidEsales\WysiwygModule\Migration\Factory\MigrationReporterFactoryInterface;
 use OxidEsales\WysiwygModule\Migration\Reporter\CsvFileMigrationReporter;
 use OxidEsales\WysiwygModule\Migration\Reporter\ScreenMigrationReporter;
+use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -102,6 +103,9 @@ class MigrationReporterFactoryTest extends TestCase
         $contextStub = $this->createStub(ContextInterface::class);
         $contextStub->method('getLogFilePath')->willReturn(self::LOG_FILE_PATH);
 
-        return new MigrationReporterFactory($contextStub);
+        return new MigrationReporterFactory(
+            $contextStub,
+            $this->createStub(MediaMigrationResultFilterInterface::class)
+        );
     }
 }

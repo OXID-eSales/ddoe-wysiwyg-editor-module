@@ -11,13 +11,21 @@ namespace OxidEsales\WysiwygModule\Migration\Reporter;
 
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
+use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ScreenMigrationReporter implements MigrationReporterInterface
 {
+    public function __construct(
+        private readonly MediaMigrationResultFilterInterface $resultFilter,
+    ) {
+    }
+
     public function report(MigrationReportInterface $report, OutputInterface $output): void
     {
-        $failures = $report->getEntries(MigrationOutcome::Failed);
+        $entries = $report->getEntries();
+        $failures = $this->resultFilter->filterByOutcome($entries, MigrationOutcome::Failed);
+        $converted = $this->resultFilter->filterByOutcome($entries, MigrationOutcome::Converted);
 
         $output->writeln(sprintf(
             '<info>%s::%s (key %s)</info>',
@@ -25,10 +33,8 @@ class ScreenMigrationReporter implements MigrationReporterInterface
             $report->getField(),
             $report->getTableKey()
         ));
-        $output->writeln(sprintf('Media references found: %d', count($report->getEntries())));
-        $output->writeln(
-            sprintf('Converted:              %d', count($report->getEntries(MigrationOutcome::Converted)))
-        );
+        $output->writeln(sprintf('Media references found: %d', count($entries)));
+        $output->writeln(sprintf('Converted:              %d', count($converted)));
         $output->writeln(sprintf('Failed:                 %d', count($failures)));
 
         if (!$failures) {

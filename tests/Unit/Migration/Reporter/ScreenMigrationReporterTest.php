@@ -14,6 +14,7 @@ use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
 use OxidEsales\WysiwygModule\Migration\Reporter\MigrationReporterInterface;
 use OxidEsales\WysiwygModule\Migration\Reporter\ScreenMigrationReporter;
+use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,16 +29,12 @@ class ScreenMigrationReporterTest extends TestCase
     public function reportPrintsTheSummaryOfTheRun(): void
     {
         $lines = [];
-        $reportStub = $this->makeReportStub(
-            converted: [
-                $this->makeEntryStub(),
-                $this->makeEntryStub(),
-            ],
-            failed: [$this->makeEntryStub()],
-        );
+        $converted = [$this->makeEntryStub(), $this->makeEntryStub()];
+        $failures = [$this->makeEntryStub()];
+        $entries = [...$converted, ...$failures];
 
-        $sut = $this->getSut();
-        $sut->report($reportStub, $this->makeOutputStub($lines));
+        $sut = $this->getSut($entries, $converted, $failures);
+        $sut->report($this->makeReportStub($entries), $this->makeOutputStub($lines));
 
         $display = implode(PHP_EOL, $lines);
 
@@ -54,25 +51,23 @@ class ScreenMigrationReporterTest extends TestCase
     public function reportListsEveryFailureWithItsRowAndReason(): void
     {
         $lines = [];
-        $reportStub = $this->makeReportStub(
-            failed: [
-                $this->makeEntryStub(
-                    key: 'oxstartslot1',
-                    attribute: 'src',
-                    path: '/out/pictures/ddmedia/missing.jpg',
-                    detail: 'no matching entry in the media library',
-                ),
-                $this->makeEntryStub(
-                    key: 'oxstartslot2',
-                    attribute: 'href',
-                    path: 'https://shop.example/pic.jpg',
-                    detail: 'not recognized as a media library path',
-                ),
-            ],
-        );
+        $failures = [
+            $this->makeEntryStub(
+                key: 'oxstartslot1',
+                attribute: 'src',
+                path: '/out/pictures/ddmedia/missing.jpg',
+                detail: 'no matching entry in the media library',
+            ),
+            $this->makeEntryStub(
+                key: 'oxstartslot2',
+                attribute: 'href',
+                path: 'https://shop.example/pic.jpg',
+                detail: 'not recognized as a media library path',
+            ),
+        ];
 
-        $sut = $this->getSut();
-        $sut->report($reportStub, $this->makeOutputStub($lines));
+        $sut = $this->getSut($failures, [], $failures);
+        $sut->report($this->makeReportStub($failures), $this->makeOutputStub($lines));
 
         $display = implode(PHP_EOL, $lines);
 
@@ -92,10 +87,10 @@ class ScreenMigrationReporterTest extends TestCase
     public function reportKeepsQuietAboutFailuresWhenEverythingWasConverted(): void
     {
         $lines = [];
-        $reportStub = $this->makeReportStub(converted: [$this->makeEntryStub()]);
+        $converted = [$this->makeEntryStub()];
 
-        $sut = $this->getSut();
-        $sut->report($reportStub, $this->makeOutputStub($lines));
+        $sut = $this->getSut($converted, $converted, []);
+        $sut->report($this->makeReportStub($converted), $this->makeOutputStub($lines));
 
         $display = implode(PHP_EOL, $lines);
 
@@ -104,22 +99,15 @@ class ScreenMigrationReporterTest extends TestCase
     }
 
     /**
-     * @param MediaMigrationResultInterface[] $converted
-     * @param MediaMigrationResultInterface[] $failed
+     * @param MediaMigrationResultInterface[] $entries
      */
-    private function makeReportStub(array $converted = [], array $failed = []): MigrationReportInterface
+    private function makeReportStub(array $entries): MigrationReportInterface
     {
         $reportStub = $this->createStub(MigrationReportInterface::class);
         $reportStub->method('getTable')->willReturn(self::TABLE);
         $reportStub->method('getField')->willReturn(self::FIELD);
         $reportStub->method('getTableKey')->willReturn(self::TABLE_KEY);
-        $reportStub->method('getEntries')->willReturnCallback(
-            static fn(?MigrationOutcome $outcome = null): array => match ($outcome) {
-                MigrationOutcome::Converted => $converted,
-                MigrationOutcome::Failed => $failed,
-                default => [...$converted, ...$failed],
-            }
-        );
+        $reportStub->method('getEntries')->willReturn($entries);
 
         return $reportStub;
     }
@@ -156,8 +144,19 @@ class ScreenMigrationReporterTest extends TestCase
         return $outputStub;
     }
 
-    private function getSut(): MigrationReporterInterface
+    /**
+     * @param MediaMigrationResultInterface[] $entries
+     * @param MediaMigrationResultInterface[] $converted
+     * @param MediaMigrationResultInterface[] $failed
+     */
+    private function getSut(array $entries = [], array $converted = [], array $failed = []): MigrationReporterInterface
     {
-        return new ScreenMigrationReporter();
+        $filterStub = $this->createStub(MediaMigrationResultFilterInterface::class);
+        $filterStub->method('filterByOutcome')->willReturnMap([
+            [$entries, MigrationOutcome::Converted, $converted],
+            [$entries, MigrationOutcome::Failed, $failed],
+        ]);
+
+        return new ScreenMigrationReporter($filterStub);
     }
 }

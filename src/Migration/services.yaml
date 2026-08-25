@@ -10,6 +10,9 @@ services:
   OxidEsales\WysiwygModule\Migration\Service\FieldMigrationServiceInterface:
     class: OxidEsales\WysiwygModule\Migration\Service\FieldMigrationService
 
+  OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface:
+    class: OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilter
+
   OxidEsales\WysiwygModule\Migration\Service\MigrationServiceInterface:
     class: OxidEsales\WysiwygModule\Migration\Service\MediaIdAnchorMigrationService
 
