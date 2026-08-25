@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Migration\Reporter;
 
+use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
 use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
@@ -16,6 +17,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ScreenMigrationReporter implements MigrationReporterInterface
 {
+    private const FAILURE_HINT = '<comment>These references were left unchanged. Either the media has to be added'
+        . ' to the media library, or the path in the content is wrong - check whether the file exists under'
+        . ' out/pictures/ddmedia.</comment>';
+
     public function __construct(
         private readonly MediaMigrationResultFilterInterface $resultFilter,
     ) {
@@ -24,41 +29,50 @@ class ScreenMigrationReporter implements MigrationReporterInterface
     public function report(MigrationReportInterface $report, OutputInterface $output): void
     {
         $entries = $report->getEntries();
-        $failures = $this->resultFilter->filterByOutcome($entries, MigrationOutcome::Failed);
         $converted = $this->resultFilter->filterByOutcome($entries, MigrationOutcome::Converted);
+        $failures = $this->resultFilter->filterByOutcome($entries, MigrationOutcome::Failed);
 
-        $output->writeln(sprintf(
-            '<info>%s::%s (key %s)</info>',
-            $report->getTable(),
-            $report->getField(),
-            $report->getTableKey()
-        ));
-        $output->writeln(sprintf('Media references found: %d', count($entries)));
-        $output->writeln(sprintf('Converted:              %d', count($converted)));
-        $output->writeln(sprintf('Failed:                 %d', count($failures)));
+        $output->writeln([
+            sprintf(
+                '<info>%s::%s (key %s)</info>',
+                $report->getTable(),
+                $report->getField(),
+                $report->getTableKey()
+            ),
+            sprintf('Media references found: %d', count($entries)),
+            sprintf('Converted:              %d', count($converted)),
+            sprintf('Failed:                 %d', count($failures)),
+            ...$this->failureLines($report->getTableKey(), $failures),
+        ]);
+    }
 
+    /**
+     * @param MediaMigrationResultInterface[] $failures
+     *
+     * @return string[]
+     */
+    private function failureLines(string $tableKey, array $failures): array
+    {
         if (!$failures) {
-            return;
+            return [];
         }
 
-        $output->writeln('');
+        $lines = [''];
 
         foreach ($failures as $failure) {
-            $output->writeln(sprintf(
+            $lines[] = sprintf(
                 '  [%s=%s] %s="%s": %s',
-                $report->getTableKey(),
+                $tableKey,
                 $failure->getKey(),
                 $failure->getAttribute(),
                 $failure->getPath(),
                 $failure->getDetail()
-            ));
+            );
         }
 
-        $output->writeln('');
-        $output->writeln(
-            '<comment>These references were left unchanged. Either the media has to be added to the media'
-            . ' library, or the path in the content is wrong - check whether the file exists under'
-            . ' out/pictures/ddmedia.</comment>'
-        );
+        $lines[] = '';
+        $lines[] = self::FAILURE_HINT;
+
+        return $lines;
     }
 }

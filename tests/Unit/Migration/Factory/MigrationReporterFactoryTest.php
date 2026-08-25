@@ -100,11 +100,8 @@ class MigrationReporterFactoryTest extends TestCase
 
     private function getSut(): MigrationReporterFactoryInterface
     {
-        $contextStub = $this->createStub(ContextInterface::class);
-        $contextStub->method('getLogFilePath')->willReturn(self::LOG_FILE_PATH);
-
         return new MigrationReporterFactory(
-            $contextStub,
+            $this->createConfiguredStub(ContextInterface::class, ['getLogFilePath' => self::LOG_FILE_PATH]),
             $this->createStub(MediaMigrationResultFilterInterface::class)
         );
     }

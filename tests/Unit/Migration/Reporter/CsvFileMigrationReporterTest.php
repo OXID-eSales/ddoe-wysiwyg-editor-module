@@ -38,26 +38,31 @@ class CsvFileMigrationReporterTest extends TestCase
     #[Test]
     public function reportWritesHeaderAndOneRowPerEntry(): void
     {
-        $convertedEntry = $this->makeEntryStub(
-            key: 'oxstartslot1',
-            attribute: 'src',
-            path: '/out/pictures/ddmedia/a.jpg',
-            outcome: MigrationOutcome::Converted,
-            mediaId: 'id-a',
-        );
-        $failedEntry = $this->makeEntryStub(
-            key: 'oxstartslot2',
-            attribute: 'href',
-            path: '/out/pictures/ddmedia/missing.jpg',
-            outcome: MigrationOutcome::Failed,
-            detail: 'media not registered',
-        );
+        $convertedEntry = $this->createConfiguredStub(MediaMigrationResultInterface::class, [
+            'getKey' => 'oxstartslot1',
+            'getAttribute' => 'src',
+            'getPath' => '/out/pictures/ddmedia/a.jpg',
+            'getOutcome' => MigrationOutcome::Converted,
+            'getMediaId' => 'id-a',
+            'getDetail' => '',
+        ]);
+        $failedEntry = $this->createConfiguredStub(MediaMigrationResultInterface::class, [
+            'getKey' => 'oxstartslot2',
+            'getAttribute' => 'href',
+            'getPath' => '/out/pictures/ddmedia/missing.jpg',
+            'getOutcome' => MigrationOutcome::Failed,
+            'getMediaId' => '',
+            'getDetail' => 'media not registered',
+        ]);
+
+        $reportStub = $this->createConfiguredStub(MigrationReportInterface::class, [
+            'getTable' => self::TABLE,
+            'getField' => self::FIELD,
+            'getEntries' => [$convertedEntry, $failedEntry],
+        ]);
 
         $sut = $this->getSut(failed: [$failedEntry]);
-        $sut->report(
-            $this->makeReportStub([$convertedEntry, $failedEntry]),
-            $this->createStub(OutputInterface::class)
-        );
+        $sut->report($reportStub, $this->createStub(OutputInterface::class));
 
         $rows = array_map('str_getcsv', file(self::PATH, FILE_IGNORE_NEW_LINES));
 
@@ -106,7 +111,18 @@ class CsvFileMigrationReporterTest extends TestCase
     #[Test]
     public function reportTellsWhereTheReportWasWritten(): void
     {
-        $failedEntry = $this->makeEntryStub(outcome: MigrationOutcome::Failed);
+        $convertedEntry = $this->createConfiguredStub(
+            MediaMigrationResultInterface::class,
+            ['getOutcome' => MigrationOutcome::Converted]
+        );
+        $failedEntry = $this->createConfiguredStub(
+            MediaMigrationResultInterface::class,
+            ['getOutcome' => MigrationOutcome::Failed]
+        );
+        $reportStub = $this->createConfiguredStub(
+            MigrationReportInterface::class,
+            ['getEntries' => [$convertedEntry, $failedEntry]]
+        );
 
         $outputSpy = $this->createMock(OutputInterface::class);
         $outputSpy->expects($this->once())
@@ -114,7 +130,8 @@ class CsvFileMigrationReporterTest extends TestCase
             ->with('Report of 2 media references (1 failed) written to ' . self::PATH);
 
         $sut = $this->getSut(failed: [$failedEntry]);
-        $sut->report($this->makeReportStub([$this->makeEntryStub(), $failedEntry]), $outputSpy);
+
+        $sut->report($reportStub, $outputSpy);
     }
 
     #[Test]
@@ -127,47 +144,16 @@ class CsvFileMigrationReporterTest extends TestCase
     }
 
     /**
-     * @param MediaMigrationResultInterface[] $entries
-     */
-    private function makeReportStub(array $entries): MigrationReportInterface
-    {
-        $reportStub = $this->createStub(MigrationReportInterface::class);
-        $reportStub->method('getTable')->willReturn(self::TABLE);
-        $reportStub->method('getField')->willReturn(self::FIELD);
-        $reportStub->method('getEntries')->willReturn($entries);
-
-        return $reportStub;
-    }
-
-    private function makeEntryStub(
-        string $key = 'oxstartslot1',
-        string $attribute = 'src',
-        string $path = '/out/pictures/ddmedia/1.jpg',
-        MigrationOutcome $outcome = MigrationOutcome::Converted,
-        string $mediaId = '',
-        string $detail = '',
-    ): MediaMigrationResultInterface {
-        $entryStub = $this->createStub(MediaMigrationResultInterface::class);
-        $entryStub->method('getKey')->willReturn($key);
-        $entryStub->method('getAttribute')->willReturn($attribute);
-        $entryStub->method('getPath')->willReturn($path);
-        $entryStub->method('getOutcome')->willReturn($outcome);
-        $entryStub->method('getMediaId')->willReturn($mediaId);
-        $entryStub->method('getDetail')->willReturn($detail);
-
-        return $entryStub;
-    }
-
-    /**
      * @param MediaMigrationResultInterface[] $failed
      */
     private function getSut(array $failed = [], string $path = self::PATH): MigrationReporterInterface
     {
-        $filterStub = $this->createConfiguredStub(
-            MediaMigrationResultFilterInterface::class,
-            ['filterByOutcome' => $failed]
+        return new CsvFileMigrationReporter(
+            $this->createConfiguredStub(
+                MediaMigrationResultFilterInterface::class,
+                ['filterByOutcome' => $failed]
+            ),
+            $path
         );
-
-        return new CsvFileMigrationReporter($filterStub, $path);
     }
 }

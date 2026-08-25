@@ -327,18 +327,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         // second src media calculation will throw an exception
         $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
-        $facadeMock->method('getMediaIdByPath')
-            ->willReturnCallback(function ($path) use (
-                $randomSrc1,
-                $calculatedMediaId1,
-                $exception,
-            ) {
-                if ($path === $randomSrc1) {
-                    return $calculatedMediaId1;
-                }
-
-                throw $exception;
-            });
+        $facadeMock->method('getMediaIdByPath')->willReturnCallback(
+            fn(string $path): string => $path === $randomSrc1 ? $calculatedMediaId1 : throw $exception
+        );
 
         $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
 

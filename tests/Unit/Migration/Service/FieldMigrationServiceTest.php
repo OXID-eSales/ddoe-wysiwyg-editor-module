@@ -44,8 +44,10 @@ class FieldMigrationServiceTest extends TestCase
             $this->createStub(MediaMigrationResultInterface::class),
         ];
 
-        $repositoryStub = $this->createStub(FieldMigrationRepositoryInterface::class);
-        $repositoryStub->method('migrateTableField')->willReturn($entries);
+        $repositoryStub = $this->createConfiguredStub(
+            FieldMigrationRepositoryInterface::class,
+            ['migrateTableField' => $entries]
+        );
 
         $sut = $this->getSut($repositoryStub);
 
@@ -60,8 +62,10 @@ class FieldMigrationServiceTest extends TestCase
     #[Test]
     public function migrateReportsEmptyRunWhenThereIsNothingToMigrate(): void
     {
-        $repositoryStub = $this->createStub(FieldMigrationRepositoryInterface::class);
-        $repositoryStub->method('migrateTableField')->willReturn([]);
+        $repositoryStub = $this->createConfiguredStub(
+            FieldMigrationRepositoryInterface::class,
+            ['migrateTableField' => []]
+        );
 
         $sut = $this->getSut($repositoryStub);
 

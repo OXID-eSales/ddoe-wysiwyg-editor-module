@@ -37,8 +37,10 @@ class FieldMigrationRepositoryTest extends IntegrationTestCase
             self::FIELD => $insertQueryBuilder->createNamedParameter($originalValue),
         ])->execute();
 
-        $resultStub = $this->createStub(ContentMigrationResultInterface::class);
-        $resultStub->method('getContent')->willReturn($expectedValue);
+        $resultStub = $this->createConfiguredStub(
+            ContentMigrationResultInterface::class,
+            ['getContent' => $expectedValue]
+        );
 
         $migrationServiceMock = $this->createMock(MigrationServiceInterface::class);
         $migrationServiceMock->method('migrateContent')
@@ -76,9 +78,10 @@ class FieldMigrationRepositoryTest extends IntegrationTestCase
 
         $referenceStub = $this->createStub(MediaMigrationResultInterface::class);
 
-        $resultStub = $this->createStub(ContentMigrationResultInterface::class);
-        $resultStub->method('getContent')->willReturn('migrated content');
-        $resultStub->method('getReferences')->willReturn([$referenceStub]);
+        $resultStub = $this->createConfiguredStub(ContentMigrationResultInterface::class, [
+            'getContent' => 'migrated content',
+            'getReferences' => [$referenceStub],
+        ]);
 
         $migrationServiceMock = $this->createMock(MigrationServiceInterface::class);
         $migrationServiceMock->expects($this->once())

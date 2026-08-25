@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Tests\Integration\Migration\Command;
 
-use Composer\Console\Application;
 use OxidEsales\WysiwygModule\Migration\Command\MigrateMediaUrlsToIdsCommand;
 use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
@@ -38,11 +37,8 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
             ->with($table, $field, $tableKey)
             ->willReturn($this->createStub(MigrationReportInterface::class));
 
-        $commandTester = $this->runCommand($this->getSut(fieldMigrationService: $serviceSpy), [
-            'table' => $table,
-            'field' => $field,
-            'tableKey' => $tableKey,
-        ]);
+        $commandTester = new CommandTester($this->getSut(fieldMigrationService: $serviceSpy));
+        $commandTester->execute(['table' => $table, 'field' => $field, 'tableKey' => $tableKey]);
 
         $this->assertSame(Command::SUCCESS, $commandTester->getStatusCode());
     }
@@ -59,10 +55,8 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
             ->with($table, $field, 'OXID')
             ->willReturn($this->createStub(MigrationReportInterface::class));
 
-        $commandTester = $this->runCommand($this->getSut(fieldMigrationService: $serviceSpy), [
-            'table' => $table,
-            'field' => $field,
-        ]);
+        $commandTester = new CommandTester($this->getSut(fieldMigrationService: $serviceSpy));
+        $commandTester->execute(['table' => $table, 'field' => $field]);
 
         $this->assertSame(Command::SUCCESS, $commandTester->getStatusCode());
     }
@@ -72,18 +66,24 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
     {
         $reportStub = $this->createStub(MigrationReportInterface::class);
 
-        $serviceStub = $this->createStub(FieldMigrationServiceInterface::class);
-        $serviceStub->method('migrate')->willReturn($reportStub);
-
         $reporterSpy = $this->createMock(MigrationReporterInterface::class);
         $reporterSpy->expects($this->once())
             ->method('report')
             ->with($reportStub, $this->isInstanceOf(OutputInterface::class));
 
-        $commandTester = $this->runCommand(
-            $this->getSut(fieldMigrationService: $serviceStub, reporter: $reporterSpy),
-            ['table' => uniqid(), 'field' => uniqid()]
+        $sut = $this->getSut(
+            fieldMigrationService: $this->createConfiguredStub(
+                FieldMigrationServiceInterface::class,
+                ['migrate' => $reportStub]
+            ),
+            reporterFactory: $this->createConfiguredStub(
+                MigrationReporterFactoryInterface::class,
+                ['create' => $reporterSpy]
+            ),
         );
+
+        $commandTester = new CommandTester($sut);
+        $commandTester->execute(['table' => uniqid(), 'field' => uniqid()]);
 
         $this->assertSame(Command::SUCCESS, $commandTester->getStatusCode());
     }
@@ -97,10 +97,8 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
             ->with(null)
             ->willReturn($this->createStub(MigrationReporterInterface::class));
 
-        $this->runCommand(
-            $this->getSut(reporterFactory: $factorySpy),
-            ['table' => uniqid(), 'field' => uniqid()]
-        );
+        $commandTester = new CommandTester($this->getSut(reporterFactory: $factorySpy));
+        $commandTester->execute(['table' => uniqid(), 'field' => uniqid()]);
     }
 
     #[Test]
@@ -114,7 +112,8 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
             ->with($reportFilePath)
             ->willReturn($this->createStub(MigrationReporterInterface::class));
 
-        $this->runCommand($this->getSut(reporterFactory: $factorySpy), [
+        $commandTester = new CommandTester($this->getSut(reporterFactory: $factorySpy));
+        $commandTester->execute([
             'table' => uniqid(),
             'field' => uniqid(),
             '--report-file' => $reportFilePath,
@@ -124,12 +123,10 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
     #[Test]
     public function migrationFailsWhenReferencesCouldNotBeConverted(): void
     {
-        $failures = [$this->createStub(MediaMigrationResultInterface::class)];
+        $sut = $this->getSut(failures: [$this->createStub(MediaMigrationResultInterface::class)]);
 
-        $commandTester = $this->runCommand($this->getSut(failures: $failures), [
-            'table' => uniqid(),
-            'field' => uniqid(),
-        ]);
+        $commandTester = new CommandTester($sut);
+        $commandTester->execute(['table' => uniqid(), 'field' => uniqid()]);
 
         $this->assertSame(Command::FAILURE, $commandTester->getStatusCode());
     }
@@ -140,34 +137,20 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
     private function getSut(
         ?FieldMigrationServiceInterface $fieldMigrationService = null,
         ?MigrationReporterFactoryInterface $reporterFactory = null,
-        ?MigrationReporterInterface $reporter = null,
         array $failures = [],
     ): MigrateMediaUrlsToIdsCommand {
-        if ($reporterFactory === null) {
-            $reporterFactory = $this->createStub(MigrationReporterFactoryInterface::class);
-            $reporterFactory->method('create')
-                ->willReturn($reporter ?? $this->createStub(MigrationReporterInterface::class));
-        }
-
         return new MigrateMediaUrlsToIdsCommand(
             fieldMigrationService: $fieldMigrationService
                 ?? $this->createStub(FieldMigrationServiceInterface::class),
-            reporterFactory: $reporterFactory,
+            reporterFactory: $reporterFactory
+                ?? $this->createConfiguredStub(
+                    MigrationReporterFactoryInterface::class,
+                    ['create' => $this->createStub(MigrationReporterInterface::class)]
+                ),
             resultFilter: $this->createConfiguredStub(
                 MediaMigrationResultFilterInterface::class,
                 ['filterByOutcome' => $failures]
             ),
         );
-    }
-
-    private function runCommand(MigrateMediaUrlsToIdsCommand $sut, array $arguments): CommandTester
-    {
-        $application = new Application();
-        $application->add($sut);
-
-        $commandTester = new CommandTester($sut);
-        $commandTester->execute($arguments);
-
-        return $commandTester;
     }
 }
