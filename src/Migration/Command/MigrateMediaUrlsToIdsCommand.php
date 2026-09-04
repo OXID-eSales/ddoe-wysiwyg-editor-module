@@ -71,7 +71,9 @@ class MigrateMediaUrlsToIdsCommand extends Command
 
         $reportFilePath = $input->getOption('report-file');
         $reporter = $this->reporterFactory->create(is_string($reportFilePath) ? $reportFilePath : null);
-        $reporter->report($report, $output);
+        $summary = $reporter->report($report);
+
+        $output->writeln($summary->getLines());
 
         $failures = $this->resultFilter->filterByOutcome($report->getEntries(), MigrationOutcome::Failed);
 

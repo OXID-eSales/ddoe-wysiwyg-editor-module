@@ -16,7 +16,6 @@ use OxidEsales\WysiwygModule\Migration\Factory\MigrationReporterFactory;
 use OxidEsales\WysiwygModule\Migration\Factory\MigrationReporterFactoryInterface;
 use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
 use PHPUnit\Framework\Attributes\Test;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrationReporterFactoryTest extends IntegrationTestCase
 {
@@ -48,10 +47,7 @@ class MigrationReporterFactoryTest extends IntegrationTestCase
         );
 
         $reporter = $sut->create(self::REPORT_FILE_NAME);
-        $reporter->report(
-            $this->createStub(MigrationReportInterface::class),
-            $this->createStub(OutputInterface::class)
-        );
+        $reporter->report($this->createStub(MigrationReportInterface::class));
 
         $this->assertFileExists($this->logDirectory . '/' . self::REPORT_FILE_NAME);
     }
@@ -67,10 +63,7 @@ class MigrationReporterFactoryTest extends IntegrationTestCase
 
         try {
             $reporter = $sut->create($absoluteReportPath);
-            $reporter->report(
-                $this->createStub(MigrationReportInterface::class),
-                $this->createStub(OutputInterface::class)
-            );
+            $reporter->report($this->createStub(MigrationReportInterface::class));
 
             $this->assertFileExists($absoluteReportPath);
             $this->assertFileDoesNotExist($this->logDirectory . '/' . basename($absoluteReportPath));

@@ -5,14 +5,12 @@
  * See LICENSE file for license details.
  */
 
-declare(strict_types=1);
-
 namespace OxidEsales\WysiwygModule\Migration\Reporter;
 
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\MigrationSummaryInterface;
 
 interface MigrationReporterInterface
 {
-    public function report(MigrationReportInterface $report, OutputInterface $output): void;
+    public function report(MigrationReportInterface $report): MigrationSummaryInterface;
 }

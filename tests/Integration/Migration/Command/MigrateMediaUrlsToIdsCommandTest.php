@@ -12,6 +12,7 @@ namespace OxidEsales\WysiwygModule\Tests\Integration\Migration\Command;
 use OxidEsales\WysiwygModule\Migration\Command\MigrateMediaUrlsToIdsCommand;
 use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\MigrationSummaryInterface;
 use OxidEsales\WysiwygModule\Migration\Factory\MigrationReporterFactoryInterface;
 use OxidEsales\WysiwygModule\Migration\Reporter\MigrationReporterInterface;
 use OxidEsales\WysiwygModule\Migration\Service\FieldMigrationServiceInterface;
@@ -19,7 +20,6 @@ use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterfa
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class MigrateMediaUrlsToIdsCommandTest extends TestCase
@@ -75,7 +75,7 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
         $reporterSpy = $this->createMock(MigrationReporterInterface::class);
         $reporterSpy->expects($this->once())
             ->method('report')
-            ->with($reportStub, $this->isInstanceOf(OutputInterface::class));
+            ->with($reportStub);
 
         $sut = $this->getSut(
             fieldMigrationService: $this->createConfiguredStub(
@@ -110,6 +110,9 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
         $commandTester->execute(['table' => uniqid(), 'field' => uniqid()]);
     }
 
+    /**
+     * @todo-high: double-check, something is wrong here with the previous and this one
+     */
     #[Test]
     public function reporterIsBuiltForTheRequestedReportFile(): void
     {
@@ -130,6 +133,44 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
             'field' => uniqid(),
             '--report-file' => $reportFilePath,
         ]);
+    }
+
+    #[Test]
+    public function summaryLinesAreWrittenToTheOutput(): void
+    {
+        $summaryLines = [uniqid('line-'), '', uniqid('line-')];
+
+        $reportStub = $this->createStub(MigrationReportInterface::class);
+        $summaryStub = $this->createConfiguredStub(
+            MigrationSummaryInterface::class,
+            ['getLines' => $summaryLines]
+        );
+
+        $reporterMock = $this->createMock(MigrationReporterInterface::class);
+        $reporterMock->method('report')
+            ->with($reportStub)
+            ->willReturn($summaryStub);
+
+        $serviceStub = $this->createConfiguredStub(
+            FieldMigrationServiceInterface::class,
+            ['migrate' => $reportStub]
+        );
+        $factoryStub = $this->createConfiguredStub(
+            MigrationReporterFactoryInterface::class,
+            ['create' => $reporterMock]
+        );
+
+        $sut = $this->getSut(
+            fieldMigrationService: $serviceStub,
+            reporterFactory: $factoryStub
+        );
+
+        $commandTester = new CommandTester($sut);
+        $commandTester->execute(['table' => uniqid(), 'field' => uniqid()]);
+
+        $printedLines = explode(PHP_EOL, rtrim($commandTester->getDisplay(), PHP_EOL));
+
+        $this->assertSame($summaryLines, $printedLines);
     }
 
     #[Test]

@@ -17,7 +17,6 @@ use OxidEsales\WysiwygModule\Migration\Reporter\ScreenMigrationReporter;
 use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class ScreenMigrationReporterTest extends TestCase
 {
@@ -46,19 +45,21 @@ class ScreenMigrationReporterTest extends TestCase
             [$converted, MigrationOutcome::Failed, []],
         ]);
 
-        $outputSpy = $this->createMock(OutputInterface::class);
-        $outputSpy->expects($this->once())
-            ->method('writeln')
-            ->with([
+        $sut = $this->getSut(
+            resultFilter: $filterStub
+        );
+
+        $summary = $sut->report($reportStub);
+
+        $this->assertSame(
+            [
                 '<info>oxcontents::OXCONTENT (key OXID)</info>',
                 'Media references found: 2',
                 'Converted:              2',
                 'Failed:                 0',
-            ]);
-
-        $sut = $this->getSut($filterStub);
-
-        $sut->report($reportStub, $outputSpy);
+            ],
+            $summary->getLines()
+        );
     }
 
     #[Test]
@@ -94,10 +95,14 @@ class ScreenMigrationReporterTest extends TestCase
             [$entries, MigrationOutcome::Failed, $failures],
         ]);
 
-        $outputSpy = $this->createMock(OutputInterface::class);
-        $outputSpy->expects($this->once())
-            ->method('writeln')
-            ->with([
+        $sut = $this->getSut(
+            resultFilter: $filterStub
+        );
+
+        $summary = $sut->report($reportStub);
+
+        $this->assertSame(
+            [
                 '<info>oxcontents::OXCONTENT (key OXID)</info>',
                 'Media references found: 3',
                 'Converted:              1',
@@ -109,11 +114,9 @@ class ScreenMigrationReporterTest extends TestCase
                 '<comment>These references were left unchanged. Either the media has to be added'
                     . ' to the media library, or the path in the content is wrong - check whether the file exists under'
                     . ' out/pictures/ddmedia.</comment>',
-            ]);
-
-        $sut = $this->getSut($filterStub);
-
-        $sut->report($reportStub, $outputSpy);
+            ],
+            $summary->getLines()
+        );
     }
 
     private function getSut(

@@ -19,7 +19,6 @@ use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterfa
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class CsvFileMigrationReporterTest extends TestCase
 {
@@ -69,7 +68,7 @@ class CsvFileMigrationReporterTest extends TestCase
         $sut = $this->getSut(
             resultFilter: $filterStub
         );
-        $sut->report($reportStub, $this->createStub(OutputInterface::class));
+        $sut->report($reportStub);
 
         $rows = array_map('str_getcsv', file(self::PATH, FILE_IGNORE_NEW_LINES));
 
@@ -110,7 +109,8 @@ class CsvFileMigrationReporterTest extends TestCase
     public function reportWritesTheHeaderOnlyWhenThereIsNothingToReport(): void
     {
         $sut = $this->getSut();
-        $sut->report($this->createStub(MigrationReportInterface::class), $this->createStub(OutputInterface::class));
+
+        $sut->report($this->createStub(MigrationReportInterface::class));
 
         $this->assertCount(1, file(self::PATH, FILE_IGNORE_NEW_LINES));
     }
@@ -131,11 +131,6 @@ class CsvFileMigrationReporterTest extends TestCase
             ['getEntries' => [$convertedEntry, $failedEntry]]
         );
 
-        $outputSpy = $this->createMock(OutputInterface::class);
-        $outputSpy->expects($this->once())
-            ->method('writeln')
-            ->with('Report of 2 media references (1 failed) written to ' . self::PATH);
-
         $filterStub = $this->createConfiguredStub(
             MediaMigrationResultFilterInterface::class,
             ['filterByOutcome' => [$failedEntry]]
@@ -145,7 +140,12 @@ class CsvFileMigrationReporterTest extends TestCase
             resultFilter: $filterStub
         );
 
-        $sut->report($reportStub, $outputSpy);
+        $summary = $sut->report($reportStub);
+
+        $this->assertSame(
+            ['Report of 2 media references (1 failed) written to ' . self::PATH],
+            $summary->getLines()
+        );
     }
 
     #[Test]
@@ -156,7 +156,7 @@ class CsvFileMigrationReporterTest extends TestCase
         );
 
         $this->expectException(RuntimeException::class);
-        $sut->report($this->createStub(MigrationReportInterface::class), $this->createStub(OutputInterface::class));
+        $sut->report($this->createStub(MigrationReportInterface::class));
     }
 
     private function getSut(

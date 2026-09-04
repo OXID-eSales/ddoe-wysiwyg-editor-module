@@ -11,9 +11,10 @@ namespace OxidEsales\WysiwygModule\Migration\Reporter;
 
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\MigrationSummary;
+use OxidEsales\WysiwygModule\Migration\DTO\MigrationSummaryInterface;
 use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
 use RuntimeException;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class CsvFileMigrationReporter implements MigrationReporterInterface
 {
@@ -25,7 +26,7 @@ class CsvFileMigrationReporter implements MigrationReporterInterface
     ) {
     }
 
-    public function report(MigrationReportInterface $report, OutputInterface $output): void
+    public function report(MigrationReportInterface $report): MigrationSummaryInterface
     {
         $handle = @fopen($this->path, 'w');
 
@@ -52,11 +53,17 @@ class CsvFileMigrationReporter implements MigrationReporterInterface
             fclose($handle);
         }
 
-        $output->writeln(sprintf(
-            'Report of %d media references (%d failed) written to %s',
-            count($report->getEntries()),
-            count($this->resultFilter->filterByOutcome($report->getEntries(), MigrationOutcome::Failed)),
-            $this->path
-        ));
+        $failures = $this->resultFilter->filterByOutcome($report->getEntries(), MigrationOutcome::Failed);
+
+        return new MigrationSummary(
+            lines: [
+                sprintf(
+                    'Report of %d media references (%d failed) written to %s',
+                    count($report->getEntries()),
+                    count($failures),
+                    $this->path
+                ),
+            ],
+        );
     }
 }

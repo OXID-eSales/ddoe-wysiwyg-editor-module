@@ -12,8 +12,9 @@ namespace OxidEsales\WysiwygModule\Migration\Reporter;
 use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\MigrationSummary;
+use OxidEsales\WysiwygModule\Migration\DTO\MigrationSummaryInterface;
 use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class ScreenMigrationReporter implements MigrationReporterInterface
 {
@@ -26,24 +27,26 @@ class ScreenMigrationReporter implements MigrationReporterInterface
     ) {
     }
 
-    public function report(MigrationReportInterface $report, OutputInterface $output): void
+    public function report(MigrationReportInterface $report): MigrationSummaryInterface
     {
         $entries = $report->getEntries();
         $converted = $this->resultFilter->filterByOutcome($entries, MigrationOutcome::Converted);
         $failures = $this->resultFilter->filterByOutcome($entries, MigrationOutcome::Failed);
 
-        $output->writeln([
-            sprintf(
-                '<info>%s::%s (key %s)</info>',
-                $report->getTable(),
-                $report->getField(),
-                $report->getTableKey()
-            ),
-            sprintf('Media references found: %d', count($entries)),
-            sprintf('Converted:              %d', count($converted)),
-            sprintf('Failed:                 %d', count($failures)),
-            ...$this->failureLines($report->getTableKey(), $failures),
-        ]);
+        return new MigrationSummary(
+            lines: [
+                sprintf(
+                    '<info>%s::%s (key %s)</info>',
+                    $report->getTable(),
+                    $report->getField(),
+                    $report->getTableKey()
+                ),
+                sprintf('Media references found: %d', count($entries)),
+                sprintf('Converted:              %d', count($converted)),
+                sprintf('Failed:                 %d', count($failures)),
+                ...$this->failureLines($report->getTableKey(), $failures),
+            ],
+        );
     }
 
     /**
