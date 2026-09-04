@@ -61,8 +61,13 @@ class CsvFileMigrationReporterTest extends TestCase
             'getEntries' => [$convertedEntry, $failedEntry],
         ]);
 
+        $filterStub = $this->createConfiguredStub(
+            MediaMigrationResultFilterInterface::class,
+            ['filterByOutcome' => [$failedEntry]]
+        );
+
         $sut = $this->getSut(
-            failed: [$failedEntry]
+            resultFilter: $filterStub
         );
         $sut->report($reportStub, $this->createStub(OutputInterface::class));
 
@@ -131,8 +136,13 @@ class CsvFileMigrationReporterTest extends TestCase
             ->method('writeln')
             ->with('Report of 2 media references (1 failed) written to ' . self::PATH);
 
+        $filterStub = $this->createConfiguredStub(
+            MediaMigrationResultFilterInterface::class,
+            ['filterByOutcome' => [$failedEntry]]
+        );
+
         $sut = $this->getSut(
-            failed: [$failedEntry]
+            resultFilter: $filterStub
         );
 
         $sut->report($reportStub, $outputSpy);
@@ -149,15 +159,11 @@ class CsvFileMigrationReporterTest extends TestCase
         $sut->report($this->createStub(MigrationReportInterface::class), $this->createStub(OutputInterface::class));
     }
 
-    /**
-     * @param MediaMigrationResultInterface[] $failed
-     */
-    private function getSut(array $failed = [], string $path = self::PATH): MigrationReporterInterface
-    {
-        $resultFilter = $this->createConfiguredStub(
-            MediaMigrationResultFilterInterface::class,
-            ['filterByOutcome' => $failed]
-        );
+    private function getSut(
+        ?MediaMigrationResultFilterInterface $resultFilter = null,
+        string $path = self::PATH
+    ): MigrationReporterInterface {
+        $resultFilter ??= $this->createStub(MediaMigrationResultFilterInterface::class);
 
         return new CsvFileMigrationReporter(
             resultFilter: $resultFilter,

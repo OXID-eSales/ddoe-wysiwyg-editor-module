@@ -135,8 +135,13 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
     #[Test]
     public function migrationFailsWhenReferencesCouldNotBeConverted(): void
     {
+        $filterStub = $this->createConfiguredStub(
+            MediaMigrationResultFilterInterface::class,
+            ['filterByOutcome' => [$this->createStub(MediaMigrationResultInterface::class)]]
+        );
+
         $sut = $this->getSut(
-            failures: [$this->createStub(MediaMigrationResultInterface::class)]
+            resultFilter: $filterStub
         );
 
         $commandTester = new CommandTester($sut);
@@ -145,23 +150,14 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
         $this->assertSame(Command::FAILURE, $commandTester->getStatusCode());
     }
 
-    /**
-     * @param MediaMigrationResultInterface[] $failures
-     */
     private function getSut(
         ?FieldMigrationServiceInterface $fieldMigrationService = null,
         ?MigrationReporterFactoryInterface $reporterFactory = null,
-        array $failures = [],
+        ?MediaMigrationResultFilterInterface $resultFilter = null,
     ): MigrateMediaUrlsToIdsCommand {
         $fieldMigrationService ??= $this->createStub(FieldMigrationServiceInterface::class);
-        $reporterFactory ??= $this->createConfiguredStub(
-            MigrationReporterFactoryInterface::class,
-            ['create' => $this->createStub(MigrationReporterInterface::class)]
-        );
-        $resultFilter = $this->createConfiguredStub(
-            MediaMigrationResultFilterInterface::class,
-            ['filterByOutcome' => $failures]
-        );
+        $reporterFactory ??= $this->createStub(MigrationReporterFactoryInterface::class);
+        $resultFilter ??= $this->createStub(MediaMigrationResultFilterInterface::class);
 
         return new MigrateMediaUrlsToIdsCommand(
             fieldMigrationService: $fieldMigrationService,
