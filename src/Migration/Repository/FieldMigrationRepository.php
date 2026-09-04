@@ -29,7 +29,9 @@ class FieldMigrationRepository implements FieldMigrationRepositoryInterface
         foreach ($this->getOriginalContent($tableName, $fieldName, $tableKey) as $keyValue => $content) {
             $result = $this->migrationService->migrateContent($content, $keyValue);
 
-            $this->updateContent($tableName, $fieldName, $tableKey, $keyValue, $result->getContent());
+            if ($result->getContent() !== $content) {
+                $this->updateContent($tableName, $fieldName, $tableKey, $keyValue, $result->getContent());
+            }
 
             array_push($entries, ...$result->getReferences());
         }

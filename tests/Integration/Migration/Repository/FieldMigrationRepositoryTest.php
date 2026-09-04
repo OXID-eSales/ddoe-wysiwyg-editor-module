@@ -63,6 +63,43 @@ class FieldMigrationRepositoryTest extends IntegrationTestCase
         $this->assertSame($expectedValue, $actualValue);
     }
 
+    public function testMigrateTableFieldReportsReferencesOfRowsThatStayUnchanged()
+    {
+        $queryBuilderFactory = $this->get(QueryBuilderFactoryInterface::class);
+
+        $cleanupTableQueryBuilder = $queryBuilderFactory->create();
+        $cleanupTableQueryBuilder->delete(self::TABLE)->execute();
+
+        $unchangedContent = 'content with a reference we could not convert ' . uniqid();
+
+        $insertQueryBuilder = $queryBuilderFactory->create();
+        $insertQueryBuilder->insert(self::TABLE)->values([
+            'OXID' => $insertQueryBuilder->createNamedParameter($oxid = uniqid()),
+            self::FIELD => $insertQueryBuilder->createNamedParameter($unchangedContent),
+        ])->execute();
+
+        $failedReferenceStub = $this->createStub(MediaMigrationResultInterface::class);
+
+        $resultStub = $this->createConfiguredStub(ContentMigrationResultInterface::class, [
+            'getContent' => $unchangedContent,
+            'getReferences' => [$failedReferenceStub],
+        ]);
+
+        $migrationServiceMock = $this->createMock(MigrationServiceInterface::class);
+        $migrationServiceMock->method('migrateContent')
+            ->with($unchangedContent, $oxid)
+            ->willReturn($resultStub);
+
+        $sut = new FieldMigrationRepository(
+            migrationService: $migrationServiceMock,
+            queryBuilderFactory: $queryBuilderFactory,
+        );
+
+        $entries = $sut->migrateTableField(self::TABLE, self::FIELD, 'OXID');
+
+        $this->assertSame([$failedReferenceStub], $entries);
+    }
+
     public function testMigrateTableFieldReturnsFoundReferencesLocatedInTheirRow()
     {
         $queryBuilderFactory = $this->get(QueryBuilderFactoryInterface::class);
