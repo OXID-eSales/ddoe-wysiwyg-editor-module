@@ -23,6 +23,11 @@ class MigrationReporterFactory implements MigrationReporterFactoryInterface
     ) {
     }
 
+    /**
+     * @todo-high: not all reporters need the path
+     * @todo-high: the filter is injected here, but its not used, just transfered.
+     * @todo-high: as well as the context, used for path calculation in csv reporter case.
+     */
     public function create(?string $reportFilePath): MigrationReporterInterface
     {
         if ($reportFilePath === null || $reportFilePath === '') {
@@ -34,6 +39,8 @@ class MigrationReporterFactory implements MigrationReporterFactoryInterface
 
     /**
      * Absolute paths are used as given, everything else lands in the shop log directory
+     *
+     * @todo-high: this calculation should not be here at all.
      */
     private function resolveReportFilePath(string $reportFilePath): string
     {
