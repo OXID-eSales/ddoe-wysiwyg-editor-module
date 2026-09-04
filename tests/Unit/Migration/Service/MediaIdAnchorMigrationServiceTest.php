@@ -63,7 +63,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
         $facadeSpy = $this->createMock(MediaIdByPathFacadeInterface::class);
         $facadeSpy->expects($this->never())->method('getMediaIdByPath');
 
-        $sut = $this->getSut(mediaIdByPathFacade: $facadeSpy);
+        $sut = $this->getSut(
+            mediaIdByPathFacade: $facadeSpy
+        );
 
         $result = $sut->migrateContent($original);
 
@@ -88,7 +90,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             ->with($randomSrc)
             ->willReturn($calculatedMediaId);
 
-        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
+        $sut = $this->getSut(
+            mediaIdByPathFacade: $facadeMock
+        );
 
         $result = $sut->migrateContent($input);
 
@@ -105,7 +109,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
         $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
         $facadeMock->method('getMediaIdByPath')->willReturn($calculatedMediaId);
 
-        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
+        $sut = $this->getSut(
+            mediaIdByPathFacade: $facadeMock
+        );
 
         $references = $sut->migrateContent('start <img src="' . $src . '"> end', $key)->getReferences();
 
@@ -135,7 +141,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             ->with($src)
             ->willReturn($calculatedMediaId);
 
-        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
+        $sut = $this->getSut(
+            mediaIdByPathFacade: $facadeMock
+        );
 
         $result = $sut->migrateContent($input);
 
@@ -159,7 +167,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             ->with($href)
             ->willReturn($calculatedMediaId);
 
-        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
+        $sut = $this->getSut(
+            mediaIdByPathFacade: $facadeMock
+        );
 
         $result = $sut->migrateContent($input);
 
@@ -184,7 +194,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             ->with($src)
             ->willReturn($calculatedMediaId);
 
-        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
+        $sut = $this->getSut(
+            mediaIdByPathFacade: $facadeMock
+        );
 
         $result = $sut->migrateContent($input);
 
@@ -211,7 +223,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             ->with($src)
             ->willReturn($srcMediaId);
 
-        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
+        $sut = $this->getSut(
+            mediaIdByPathFacade: $facadeMock
+        );
 
         $result = $sut->migrateContent($input);
 
@@ -241,7 +255,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             ->with($randomSrc)
             ->willReturn($calculatedMediaId);
 
-        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
+        $sut = $this->getSut(
+            mediaIdByPathFacade: $facadeMock
+        );
 
         $result = $sut->migrateContent($input);
 
@@ -280,7 +296,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
                 [$randomSrc2, $calculatedMediaId2],
             ]);
 
-        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
+        $sut = $this->getSut(
+            mediaIdByPathFacade: $facadeMock
+        );
 
         $result = $sut->migrateContent($input);
 
@@ -331,7 +349,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             fn(string $path): string => $path === $randomSrc1 ? $calculatedMediaId1 : throw $exception
         );
 
-        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
+        $sut = $this->getSut(
+            mediaIdByPathFacade: $facadeMock
+        );
 
         $result = $sut->migrateContent($input);
 
@@ -369,7 +389,9 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
             ->with($randomSrc)
             ->willThrowException($exceptionStub);
 
-        $sut = $this->getSut(mediaIdByPathFacade: $facadeMock);
+        $sut = $this->getSut(
+            mediaIdByPathFacade: $facadeMock
+        );
 
         $references = $sut->migrateContent($input, $key)->getReferences();
 
@@ -382,8 +404,10 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
     private function getSut(?MediaIdByPathFacadeInterface $mediaIdByPathFacade = null): MigrationServiceInterface
     {
+        $mediaIdByPathFacade ??= $this->createStub(MediaIdByPathFacadeInterface::class);
+
         return new MediaIdAnchorMigrationService(
-            mediaIdByPathFacade: $mediaIdByPathFacade ?? $this->createStub(MediaIdByPathFacadeInterface::class),
+            mediaIdByPathFacade: $mediaIdByPathFacade,
         );
     }
 }

@@ -74,8 +74,13 @@ class FieldMigrationServiceTest extends TestCase
         $this->assertSame([], $report->getEntries());
     }
 
-    private function getSut(FieldMigrationRepositoryInterface $fieldMigrationRepository): FieldMigrationServiceInterface
-    {
-        return new FieldMigrationService($fieldMigrationRepository);
+    private function getSut(
+        ?FieldMigrationRepositoryInterface $fieldMigrationRepository = null
+    ): FieldMigrationServiceInterface {
+        $fieldMigrationRepository ??= $this->createStub(FieldMigrationRepositoryInterface::class);
+
+        return new FieldMigrationService(
+            fieldMigrationRepository: $fieldMigrationRepository,
+        );
     }
 }

@@ -116,8 +116,13 @@ class ScreenMigrationReporterTest extends TestCase
         $sut->report($reportStub, $outputSpy);
     }
 
-    private function getSut(MediaMigrationResultFilterInterface $resultFilter): MigrationReporterInterface
-    {
-        return new ScreenMigrationReporter($resultFilter);
+    private function getSut(
+        ?MediaMigrationResultFilterInterface $resultFilter = null
+    ): MigrationReporterInterface {
+        $resultFilter ??= $this->createStub(MediaMigrationResultFilterInterface::class);
+
+        return new ScreenMigrationReporter(
+            resultFilter: $resultFilter,
+        );
     }
 }

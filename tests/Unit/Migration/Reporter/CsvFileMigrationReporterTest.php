@@ -61,7 +61,9 @@ class CsvFileMigrationReporterTest extends TestCase
             'getEntries' => [$convertedEntry, $failedEntry],
         ]);
 
-        $sut = $this->getSut(failed: [$failedEntry]);
+        $sut = $this->getSut(
+            failed: [$failedEntry]
+        );
         $sut->report($reportStub, $this->createStub(OutputInterface::class));
 
         $rows = array_map('str_getcsv', file(self::PATH, FILE_IGNORE_NEW_LINES));
@@ -129,7 +131,9 @@ class CsvFileMigrationReporterTest extends TestCase
             ->method('writeln')
             ->with('Report of 2 media references (1 failed) written to ' . self::PATH);
 
-        $sut = $this->getSut(failed: [$failedEntry]);
+        $sut = $this->getSut(
+            failed: [$failedEntry]
+        );
 
         $sut->report($reportStub, $outputSpy);
     }
@@ -137,7 +141,9 @@ class CsvFileMigrationReporterTest extends TestCase
     #[Test]
     public function reportThrowsWhenTheFileCannotBeWritten(): void
     {
-        $sut = $this->getSut(path: self::PATH_IN_MISSING_DIRECTORY);
+        $sut = $this->getSut(
+            path: self::PATH_IN_MISSING_DIRECTORY
+        );
 
         $this->expectException(RuntimeException::class);
         $sut->report($this->createStub(MigrationReportInterface::class), $this->createStub(OutputInterface::class));
@@ -148,12 +154,14 @@ class CsvFileMigrationReporterTest extends TestCase
      */
     private function getSut(array $failed = [], string $path = self::PATH): MigrationReporterInterface
     {
+        $resultFilter = $this->createConfiguredStub(
+            MediaMigrationResultFilterInterface::class,
+            ['filterByOutcome' => $failed]
+        );
+
         return new CsvFileMigrationReporter(
-            $this->createConfiguredStub(
-                MediaMigrationResultFilterInterface::class,
-                ['filterByOutcome' => $failed]
-            ),
-            $path
+            resultFilter: $resultFilter,
+            path: $path,
         );
     }
 }

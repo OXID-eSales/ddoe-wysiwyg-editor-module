@@ -37,7 +37,10 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
             ->with($table, $field, $tableKey)
             ->willReturn($this->createStub(MigrationReportInterface::class));
 
-        $commandTester = new CommandTester($this->getSut(fieldMigrationService: $serviceSpy));
+        $sut = $this->getSut(
+            fieldMigrationService: $serviceSpy
+        );
+        $commandTester = new CommandTester($sut);
         $commandTester->execute(['table' => $table, 'field' => $field, 'tableKey' => $tableKey]);
 
         $this->assertSame(Command::SUCCESS, $commandTester->getStatusCode());
@@ -55,7 +58,10 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
             ->with($table, $field, 'OXID')
             ->willReturn($this->createStub(MigrationReportInterface::class));
 
-        $commandTester = new CommandTester($this->getSut(fieldMigrationService: $serviceSpy));
+        $sut = $this->getSut(
+            fieldMigrationService: $serviceSpy
+        );
+        $commandTester = new CommandTester($sut);
         $commandTester->execute(['table' => $table, 'field' => $field]);
 
         $this->assertSame(Command::SUCCESS, $commandTester->getStatusCode());
@@ -97,7 +103,10 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
             ->with(null)
             ->willReturn($this->createStub(MigrationReporterInterface::class));
 
-        $commandTester = new CommandTester($this->getSut(reporterFactory: $factorySpy));
+        $sut = $this->getSut(
+            reporterFactory: $factorySpy
+        );
+        $commandTester = new CommandTester($sut);
         $commandTester->execute(['table' => uniqid(), 'field' => uniqid()]);
     }
 
@@ -112,7 +121,10 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
             ->with($reportFilePath)
             ->willReturn($this->createStub(MigrationReporterInterface::class));
 
-        $commandTester = new CommandTester($this->getSut(reporterFactory: $factorySpy));
+        $sut = $this->getSut(
+            reporterFactory: $factorySpy
+        );
+        $commandTester = new CommandTester($sut);
         $commandTester->execute([
             'table' => uniqid(),
             'field' => uniqid(),
@@ -123,7 +135,9 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
     #[Test]
     public function migrationFailsWhenReferencesCouldNotBeConverted(): void
     {
-        $sut = $this->getSut(failures: [$this->createStub(MediaMigrationResultInterface::class)]);
+        $sut = $this->getSut(
+            failures: [$this->createStub(MediaMigrationResultInterface::class)]
+        );
 
         $commandTester = new CommandTester($sut);
         $commandTester->execute(['table' => uniqid(), 'field' => uniqid()]);
@@ -139,18 +153,20 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
         ?MigrationReporterFactoryInterface $reporterFactory = null,
         array $failures = [],
     ): MigrateMediaUrlsToIdsCommand {
+        $fieldMigrationService ??= $this->createStub(FieldMigrationServiceInterface::class);
+        $reporterFactory ??= $this->createConfiguredStub(
+            MigrationReporterFactoryInterface::class,
+            ['create' => $this->createStub(MigrationReporterInterface::class)]
+        );
+        $resultFilter = $this->createConfiguredStub(
+            MediaMigrationResultFilterInterface::class,
+            ['filterByOutcome' => $failures]
+        );
+
         return new MigrateMediaUrlsToIdsCommand(
-            fieldMigrationService: $fieldMigrationService
-                ?? $this->createStub(FieldMigrationServiceInterface::class),
-            reporterFactory: $reporterFactory
-                ?? $this->createConfiguredStub(
-                    MigrationReporterFactoryInterface::class,
-                    ['create' => $this->createStub(MigrationReporterInterface::class)]
-                ),
-            resultFilter: $this->createConfiguredStub(
-                MediaMigrationResultFilterInterface::class,
-                ['filterByOutcome' => $failures]
-            ),
+            fieldMigrationService: $fieldMigrationService,
+            reporterFactory: $reporterFactory,
+            resultFilter: $resultFilter,
         );
     }
 }
