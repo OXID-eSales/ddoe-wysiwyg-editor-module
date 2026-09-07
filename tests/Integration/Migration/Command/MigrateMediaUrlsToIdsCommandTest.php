@@ -9,9 +9,14 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Tests\Integration\Migration\Command;
 
-use Composer\Console\Application;
 use OxidEsales\WysiwygModule\Migration\Command\MigrateMediaUrlsToIdsCommand;
-use OxidEsales\WysiwygModule\Migration\Repository\FieldMigrationRepositoryInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\MigrationSummaryInterface;
+use OxidEsales\WysiwygModule\Migration\Factory\MigrationReporterFactoryInterface;
+use OxidEsales\WysiwygModule\Migration\Reporter\MigrationReporterInterface;
+use OxidEsales\WysiwygModule\Migration\Service\FieldMigrationServiceInterface;
+use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
@@ -20,61 +25,185 @@ use Symfony\Component\Console\Tester\CommandTester;
 class MigrateMediaUrlsToIdsCommandTest extends TestCase
 {
     #[Test]
-    public function migrationCallsRepositoryWithCorrectParams(): void
+    public function migrationCallsServiceWithCorrectParams(): void
     {
         $table = uniqid();
         $field = uniqid();
         $tableKey = uniqid();
 
-        $repositorySpy = $this->createMock(FieldMigrationRepositoryInterface::class);
-        $repositorySpy->expects($this->once())
-            ->method('migrateTableField')
-            ->with($table, $field, $tableKey);
+        $serviceSpy = $this->createMock(FieldMigrationServiceInterface::class);
+        $serviceSpy->expects($this->once())
+            ->method('migrate')
+            ->with($table, $field, $tableKey)
+            ->willReturn($this->createStub(MigrationReportInterface::class));
 
-        $sut = new MigrateMediaUrlsToIdsCommand(
-            fieldMigrationRepository: $repositorySpy,
+        $sut = $this->getSut(
+            fieldMigrationService: $serviceSpy
         );
-
-        $application = new Application();
-        $application->add($sut);
-
         $commandTester = new CommandTester($sut);
-        $result = $commandTester->execute([
-            'table' => $table,
-            'field' => $field,
-            'tableKey' => $tableKey,
-        ]);
+        $commandTester->execute(['table' => $table, 'field' => $field, 'tableKey' => $tableKey]);
 
-        $this->assertSame(Command::SUCCESS, $result);
-        $this->assertStringContainsString("Done for $table::$field using key $tableKey", $commandTester->getDisplay());
+        $this->assertSame(Command::SUCCESS, $commandTester->getStatusCode());
     }
 
     #[Test]
-    public function migrationCallsRepositoryWithDefaultTableKey(): void
+    public function migrationCallsServiceWithDefaultTableKey(): void
     {
         $table = uniqid();
         $field = uniqid();
-        $tableKey = 'OXID';
 
-        $repositorySpy = $this->createMock(FieldMigrationRepositoryInterface::class);
-        $repositorySpy->expects($this->once())
-            ->method('migrateTableField')
-            ->with($table, $field, $tableKey);
+        $serviceSpy = $this->createMock(FieldMigrationServiceInterface::class);
+        $serviceSpy->expects($this->once())
+            ->method('migrate')
+            ->with($table, $field, 'OXID')
+            ->willReturn($this->createStub(MigrationReportInterface::class));
 
-        $sut = new MigrateMediaUrlsToIdsCommand(
-            fieldMigrationRepository: $repositorySpy,
+        $sut = $this->getSut(
+            fieldMigrationService: $serviceSpy
+        );
+        $commandTester = new CommandTester($sut);
+        $commandTester->execute(['table' => $table, 'field' => $field]);
+
+        $this->assertSame(Command::SUCCESS, $commandTester->getStatusCode());
+    }
+
+    #[Test]
+    public function migrationHandsTheReportToTheReporter(): void
+    {
+        $reportStub = $this->createStub(MigrationReportInterface::class);
+
+        $reporterSpy = $this->createMock(MigrationReporterInterface::class);
+        $reporterSpy->expects($this->once())
+            ->method('report')
+            ->with($reportStub);
+
+        $sut = $this->getSut(
+            fieldMigrationService: $this->createConfiguredStub(
+                FieldMigrationServiceInterface::class,
+                ['migrate' => $reportStub]
+            ),
+            reporterFactory: $this->createConfiguredStub(
+                MigrationReporterFactoryInterface::class,
+                ['create' => $reporterSpy]
+            ),
         );
 
-        $application = new Application();
-        $application->add($sut);
+        $commandTester = new CommandTester($sut);
+        $commandTester->execute(['table' => uniqid(), 'field' => uniqid()]);
+
+        $this->assertSame(Command::SUCCESS, $commandTester->getStatusCode());
+    }
+
+    #[Test]
+    public function reporterIsBuiltForTheScreenWhenNoReportFileIsRequested(): void
+    {
+        $factorySpy = $this->createMock(MigrationReporterFactoryInterface::class);
+        $factorySpy->expects($this->once())
+            ->method('create')
+            ->with(null)
+            ->willReturn($this->createStub(MigrationReporterInterface::class));
+
+        $sut = $this->getSut(
+            reporterFactory: $factorySpy
+        );
+        $commandTester = new CommandTester($sut);
+        $commandTester->execute(['table' => uniqid(), 'field' => uniqid()]);
+    }
+
+    /**
+     * @todo-high: double-check, something is wrong here with the previous and this one
+     */
+    #[Test]
+    public function reporterIsBuiltForTheRequestedReportFile(): void
+    {
+        $reportFilePath = uniqid() . '.csv';
+
+        $factorySpy = $this->createMock(MigrationReporterFactoryInterface::class);
+        $factorySpy->expects($this->once())
+            ->method('create')
+            ->with($reportFilePath)
+            ->willReturn($this->createStub(MigrationReporterInterface::class));
+
+        $sut = $this->getSut(
+            reporterFactory: $factorySpy
+        );
+        $commandTester = new CommandTester($sut);
+        $commandTester->execute([
+            'table' => uniqid(),
+            'field' => uniqid(),
+            '--report-file' => $reportFilePath,
+        ]);
+    }
+
+    #[Test]
+    public function summaryLinesAreWrittenToTheOutput(): void
+    {
+        $summaryLines = [uniqid('line-'), '', uniqid('line-')];
+
+        $reportStub = $this->createStub(MigrationReportInterface::class);
+        $summaryStub = $this->createConfiguredStub(
+            MigrationSummaryInterface::class,
+            ['getLines' => $summaryLines]
+        );
+
+        $reporterMock = $this->createMock(MigrationReporterInterface::class);
+        $reporterMock->method('report')
+            ->with($reportStub)
+            ->willReturn($summaryStub);
+
+        $serviceStub = $this->createConfiguredStub(
+            FieldMigrationServiceInterface::class,
+            ['migrate' => $reportStub]
+        );
+        $factoryStub = $this->createConfiguredStub(
+            MigrationReporterFactoryInterface::class,
+            ['create' => $reporterMock]
+        );
+
+        $sut = $this->getSut(
+            fieldMigrationService: $serviceStub,
+            reporterFactory: $factoryStub
+        );
 
         $commandTester = new CommandTester($sut);
-        $result = $commandTester->execute([
-            'table' => $table,
-            'field' => $field,
-        ]);
+        $commandTester->execute(['table' => uniqid(), 'field' => uniqid()]);
 
-        $this->assertSame(Command::SUCCESS, $result);
-        $this->assertStringContainsString("Done for $table::$field using key $tableKey", $commandTester->getDisplay());
+        $printedLines = explode(PHP_EOL, rtrim($commandTester->getDisplay(), PHP_EOL));
+
+        $this->assertSame($summaryLines, $printedLines);
+    }
+
+    #[Test]
+    public function migrationFailsWhenReferencesCouldNotBeConverted(): void
+    {
+        $filterStub = $this->createConfiguredStub(
+            MediaMigrationResultFilterInterface::class,
+            ['filterByOutcome' => [$this->createStub(MediaMigrationResultInterface::class)]]
+        );
+
+        $sut = $this->getSut(
+            resultFilter: $filterStub
+        );
+
+        $commandTester = new CommandTester($sut);
+        $commandTester->execute(['table' => uniqid(), 'field' => uniqid()]);
+
+        $this->assertSame(Command::FAILURE, $commandTester->getStatusCode());
+    }
+
+    private function getSut(
+        ?FieldMigrationServiceInterface $fieldMigrationService = null,
+        ?MigrationReporterFactoryInterface $reporterFactory = null,
+        ?MediaMigrationResultFilterInterface $resultFilter = null,
+    ): MigrateMediaUrlsToIdsCommand {
+        $fieldMigrationService ??= $this->createStub(FieldMigrationServiceInterface::class);
+        $reporterFactory ??= $this->createStub(MigrationReporterFactoryInterface::class);
+        $resultFilter ??= $this->createStub(MediaMigrationResultFilterInterface::class);
+
+        return new MigrateMediaUrlsToIdsCommand(
+            fieldMigrationService: $fieldMigrationService,
+            reporterFactory: $reporterFactory,
+            resultFilter: $resultFilter,
+        );
     }
 }

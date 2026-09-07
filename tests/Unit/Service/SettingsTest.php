@@ -91,12 +91,15 @@ class SettingsTest extends TestCase
     }
 
     protected function getSut(
-        Config $shopConfig = null,
-        Language $shopLanguage = null,
+        ?Config $shopConfig = null,
+        ?Language $shopLanguage = null,
     ): Settings {
+        $shopConfig ??= $this->createStub(Config::class);
+        $shopLanguage ??= $this->createStub(Language::class);
+
         return new Settings(
-            shopConfig: $shopConfig ?? $this->createStub(Config::class),
-            shopLanguage: $shopLanguage ?? $this->createStub(Language::class),
+            shopConfig: $shopConfig,
+            shopLanguage: $shopLanguage,
         );
     }
 }

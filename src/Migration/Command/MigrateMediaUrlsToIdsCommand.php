@@ -9,10 +9,14 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Migration\Command;
 
-use OxidEsales\WysiwygModule\Migration\Repository\FieldMigrationRepositoryInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
+use OxidEsales\WysiwygModule\Migration\Factory\MigrationReporterFactoryInterface;
+use OxidEsales\WysiwygModule\Migration\Service\FieldMigrationServiceInterface;
+use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrateMediaUrlsToIdsCommand extends Command
@@ -21,7 +25,9 @@ class MigrateMediaUrlsToIdsCommand extends Command
     private const COMMAND_DESCRIPTION = 'Migrates media urls of one field in one table to the new (id relation) format';
 
     public function __construct(
-        private readonly FieldMigrationRepositoryInterface $fieldMigrationRepository,
+        private readonly FieldMigrationServiceInterface $fieldMigrationService,
+        private readonly MigrationReporterFactoryInterface $reporterFactory,
+        private readonly MediaMigrationResultFilterInterface $resultFilter,
     ) {
         parent::__construct();
     }
@@ -45,23 +51,32 @@ class MigrateMediaUrlsToIdsCommand extends Command
                 InputArgument::OPTIONAL,
                 'Unique table key field to use during migration',
                 'OXID'
+            )
+            ->addOption(
+                'report-file',
+                'r',
+                InputOption::VALUE_REQUIRED,
+                'Write the report as csv to this file instead of printing it to the screen.'
+                . ' Relative paths are written to the shop log directory'
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $tableName = $input->getArgument('table');
-        $fieldName = $input->getArgument('field');
-        $tableKey = $input->getArgument('tableKey');
-
-        $this->fieldMigrationRepository->migrateTableField(
-            $tableName,
-            $fieldName,
-            $tableKey
+        $report = $this->fieldMigrationService->migrate(
+            (string)$input->getArgument('table'),
+            (string)$input->getArgument('field'),
+            (string)$input->getArgument('tableKey'),
         );
 
-        $output->writeln("Done for $tableName::$fieldName using key $tableKey");
+        $reportFilePath = $input->getOption('report-file');
+        $reporter = $this->reporterFactory->create(is_string($reportFilePath) ? $reportFilePath : null);
+        $summary = $reporter->report($report);
 
-        return COMMAND::SUCCESS;
+        $output->writeln($summary->getLines());
+
+        $failures = $this->resultFilter->filterByOutcome($report->getEntries(), MigrationOutcome::Failed);
+
+        return $failures ? Command::FAILURE : Command::SUCCESS;
     }
 }

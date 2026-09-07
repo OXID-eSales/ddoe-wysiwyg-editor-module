@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [7.1.0] - Unreleased
+
+- Changes from v6.1.0
+
 ## [7.0.2] - 2026-07-09
 
 ### Added
@@ -26,6 +30,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Updated to work with OXID eShop 7.5.x
 - Minimum PHP version is now 8.3, tested up to PHP 8.5
 - Replaced Font Awesome with Bootstrap Icons
+
+## [6.1.0] - Unreleased
+
+### Added
+- `ddoewysiwyg:migrate:urls-to-ids` reports every media reference it converted and every one it could not resolve
+- `--report-file` option for `ddoewysiwyg:migrate:urls-to-ids`, writing that report as CSV instead of printing it
+
+### Changed
+- `ddoewysiwyg:migrate:urls-to-ids` converts media library references in all `img src` and `a href` attributes, not only in images marked with `dd-wysiwyg-media-image`
 
 ## [6.0.4] - 2026-07-09
 
@@ -215,9 +228,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
+[7.1.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v7.0.2...b-7.5.x
 [7.0.2]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v7.0.1...v7.0.2
 [7.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v7.0.0...v7.0.1
 [7.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.3...v7.0.0
+[6.1.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.4...b-7.4.x
 [6.0.4]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.3...v6.0.4
 [6.0.3]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.2...v6.0.3
 [6.0.2]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.1...v6.0.2
