@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Migration\Repository;
 
+use Doctrine\DBAL\ForwardCompatibility\Result;
+use Generator;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\WysiwygModule\Migration\Service\MigrationServiceInterface;
 
@@ -20,21 +22,52 @@ class FieldMigrationRepository implements FieldMigrationRepositoryInterface
     ) {
     }
 
-    public function migrateTableField(string $tableName, string $fieldName, string $tableKey): void
+    public function migrateTableField(string $tableName, string $fieldName, string $tableKey): array
+    {
+        $entries = [];
+
+        foreach ($this->getOriginalContent($tableName, $fieldName, $tableKey) as $keyValue => $content) {
+            $result = $this->migrationService->migrateContent($content, $keyValue);
+
+            if ($result->getContent() !== $content) {
+                $this->updateContent($tableName, $fieldName, $tableKey, $keyValue, $result->getContent());
+            }
+
+            array_push($entries, ...$result->getReferences());
+        }
+
+        return $entries;
+    }
+
+    /**
+     * @return Generator<string, string> key of the row => content of the field to migrate
+     */
+    private function getOriginalContent(string $tableName, string $fieldName, string $tableKey): Generator
     {
         $selectionQueryBuilder = $this->queryBuilderFactory->create();
+
+        /** @var Result $originalData */
         $originalData = $selectionQueryBuilder->select($tableKey, $fieldName)->from($tableName)->execute();
 
+        foreach ($originalData->iterateAssociative() as $originalRow) {
+            yield (string)$originalRow[$tableKey] => (string)$originalRow[$fieldName];
+        }
+    }
+
+    private function updateContent(
+        string $tableName,
+        string $fieldName,
+        string $tableKey,
+        string $keyValue,
+        string $content
+    ): void {
         $updateQueryBuilder = $this->queryBuilderFactory->create();
         $updateQueryBuilder->update($tableName)
             ->set($fieldName, ':newValue')
-            ->where($tableKey . ' = :keyValue');
-
-        while ($originalRow = $originalData->fetchAssociative()) {
-            $updateQueryBuilder->setParameters([
-                ':newValue' => $this->migrationService->migrateContent($originalRow[$fieldName]),
-                ':keyValue' => $originalRow[$tableKey],
+            ->where($tableKey . ' = :keyValue')
+            ->setParameters([
+                ':newValue' => $content,
+                ':keyValue' => $keyValue,
             ])->execute();
-        }
     }
 }

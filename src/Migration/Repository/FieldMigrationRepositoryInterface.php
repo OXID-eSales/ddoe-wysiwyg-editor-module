@@ -5,11 +5,17 @@
  * See LICENSE file for license details.
  */
 
-declare(strict_types=1);
-
 namespace OxidEsales\WysiwygModule\Migration\Repository;
+
+use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
 
 interface FieldMigrationRepositoryInterface
 {
-    public function migrateTableField(string $tableName, string $fieldName, string $tableKey): void;
+    /**
+     * Migrates the media references of one table field and returns every reference
+     * the migration came across, each identified by the row it was found in.
+     *
+     * @return MediaMigrationResultInterface[]
+     */
+    public function migrateTableField(string $tableName, string $fieldName, string $tableKey): array;
 }

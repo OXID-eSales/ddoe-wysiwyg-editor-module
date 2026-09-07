@@ -80,9 +80,12 @@ class MediaUrlsExtractorServiceTest extends TestCase
     }
 
     private function getSut(
-        MediaIdParserServiceInterface $mediaIdParserService = null,
-        MediaFacadeInterface $mediaFacade = null,
+        ?MediaIdParserServiceInterface $mediaIdParserService = null,
+        ?MediaFacadeInterface $mediaFacade = null,
     ): MediaUrlsExtractorService {
+        $mediaIdParserService ??= $this->createStub(MediaIdParserServiceInterface::class);
+        $mediaFacade ??= $this->createStub(MediaFacadeInterface::class);
+
         return new MediaUrlsExtractorService(
             mediaIdParserService: $mediaIdParserService,
             mediaFacade: $mediaFacade,
