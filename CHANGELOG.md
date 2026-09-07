@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [6.1.0] - Unreleased
+
+### Added
+- `ddoewysiwyg:migrate:urls-to-ids` reports every media reference it converted and every one it could not resolve
+- `--report-file` option for `ddoewysiwyg:migrate:urls-to-ids`, writing that report as CSV instead of printing it
+
+### Changed
+- `ddoewysiwyg:migrate:urls-to-ids` converts media library references in all `img src` and `a href` attributes, not only in images marked with `dd-wysiwyg-media-image`
+
 ## [6.0.4] - 2026-07-09
 
 ### Fixed

@@ -272,18 +272,21 @@ class EditorRendererTest extends TestCase
     }
 
     private function getSut(
-        TemplateRendererInterface $templateRenderer = null,
-        SettingsInterface $settingsService = null,
-        HtmlFilterInterface $htmlFilter = null,
-        MediaUrlsExtractorServiceInterface $mediaUrlsExtractor = null,
+        ?TemplateRendererInterface $templateRenderer = null,
+        ?SettingsInterface $settingsService = null,
+        ?HtmlFilterInterface $htmlFilter = null,
+        ?MediaUrlsExtractorServiceInterface $mediaUrlsExtractor = null,
     ): EditorRenderer {
-        $mediaUrlsExtractor ??= $this->createMock(MediaUrlsExtractorServiceInterface::class);
+        $templateRenderer ??= $this->createStub(TemplateRendererInterface::class);
+        $settingsService ??= $this->createStub(SettingsInterface::class);
+        $htmlFilter ??= $this->createStub(HtmlFilterInterface::class);
+        $mediaUrlsExtractor ??= $this->createStub(MediaUrlsExtractorServiceInterface::class);
 
         return new EditorRenderer(
-            templateRenderer: $templateRenderer ?? $this->createStub(TemplateRendererInterface::class),
-            settingsService: $settingsService ?? $this->createStub(SettingsInterface::class),
-            htmlFilter: $htmlFilter ?? $this->createStub(HtmlFilterInterface::class),
-            mediaUrlsExtractorService: $mediaUrlsExtractor
+            templateRenderer: $templateRenderer,
+            settingsService: $settingsService,
+            htmlFilter: $htmlFilter,
+            mediaUrlsExtractorService: $mediaUrlsExtractor,
         );
     }
 }

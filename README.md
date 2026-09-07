@@ -124,6 +124,35 @@ vendor/bin/oe-console ddoewysiwyg:migrate:urls-to-ids oxcontents OXCONTENT_1
 
 Ensure all fields for which the WYSIWYG editor is used are migrated.
 
+Media references in `img src` and `a href` attributes are converted. 
+The command reports how many media references it found and converted, and lists the ones it could not resolve:
+
+```
+oxcontents::OXCONTENT (key OXID)
+Media references found: 40
+Converted:              39
+Failed:                 1
+
+  [OXID=mediaid] src="/out/pictures/ddmedia/medianame.jpg": no matching entry in the media library
+```
+
+References that cannot be resolved are listed and left unchanged - either the media is not registered in the media
+library and has to be added there, or the path in the content is wrong. Nothing is imported into the media library
+by the migration.
+
+Only the `src` and `href` attributes themselves are converted. Media paths in other attributes, e.g. the `data-src`
+of a lazy loading image or a `srcset`, are left untouched.
+
+Pass `--report-file` to write the report as CSV instead of printing it. Relative paths are written to the shop log
+directory, absolute paths are used as they are:
+
+```
+vendor/bin/oe-console ddoewysiwyg:migrate:urls-to-ids oxcontents OXCONTENT --report-file=media-migration.csv
+```
+
+The file holds one row per media reference with the columns `table`, `field`, `key`, `attribute`, `path`,
+`outcome`, `media_id` and `detail`.
+
 ## Bugs and Issues
 
 If you experience any bugs or issues, please report them in the section **WYSIWYG Editor + Media Gallery** of https://bugs.oxid-esales.com.
