@@ -24,6 +24,7 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
     public static function noMigrationDataProvider(): \Generator
     {
         $random = uniqid();
+        $convertedMediaId = uniqid();
 
         yield 'no media anchor' => [
             'original' => $random,
@@ -53,6 +54,21 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
 
         yield 'ordinary page link left untouched' => [
             'original' => $random . ' <a href="/en/some-page" class="link">go</a> ' . $random,
+        ];
+
+        yield 'image already converted to a media id anchor' => [
+            'original' => $random . ' <img src="{{oeMediaUrl(\'' . $convertedMediaId . '\')}}"'
+                . ' data-id="' . $convertedMediaId . '" class="dd-wysiwyg-media-image"> ' . $random,
+        ];
+
+        yield 'image link already converted to a media id anchor' => [
+            'original' => $random . ' <a href="{{oeMediaUrl(\'' . $convertedMediaId . '\')}}"'
+                . ' data-id="' . $convertedMediaId . '" data-toggle="lightbox"></a> ' . $random,
+        ];
+
+        yield 'already converted anchor written with whitespace in the placeholder' => [
+            'original' => $random . ' <img src="{{ oeMediaUrl(\'' . $convertedMediaId . '\') }}"'
+                . ' data-id="' . $convertedMediaId . '" class="dd-wysiwyg-media-image"> ' . $random,
         ];
     }
 

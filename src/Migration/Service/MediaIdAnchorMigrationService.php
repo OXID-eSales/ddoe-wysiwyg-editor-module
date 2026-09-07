@@ -34,6 +34,8 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
     private const MEDIA_DIRECTORY_MARKER = 'out/pictures/ddmedia/';
     private const MEDIA_URL_MARKER = 'oViewConf.getMediaUrl';
 
+    private const CONVERTED_ANCHOR_PATTERN = '/{{\s*oeMediaUrl\(/i';
+
     public function __construct(
         private readonly MediaIdByPathFacadeInterface $mediaIdByPathFacade,
     ) {
@@ -152,13 +154,23 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
 
     /**
      * Only images explicitly marked as media (dd-wysiwyg-media-image) or references pointing at a
-     * media-library path are converted. This leaves unrelated images and links (product images,
-     * external URLs, ordinary page links, decorative theme assets) untouched.
+     * media-library path are converted, and only as long as they do not already carry a media id
+     * anchor. This leaves unrelated images and links (product images, external URLs, ordinary page
+     * links, decorative theme assets) and already migrated content untouched.
      */
     private function isConvertibleMediaReference(string $tag, string $value): bool
     {
+        if ($this->isAlreadyConvertedAnchor($value)) {
+            return false;
+        }
+
         return str_contains($tag, self::MEDIA_IMAGE_MARKER)
             || str_contains($value, self::MEDIA_DIRECTORY_MARKER)
             || str_contains($value, self::MEDIA_URL_MARKER);
+    }
+
+    private function isAlreadyConvertedAnchor(string $value): bool
+    {
+        return preg_match(self::CONVERTED_ANCHOR_PATTERN, $value) === 1;
     }
 }
