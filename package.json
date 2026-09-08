@@ -14,10 +14,10 @@
     "eslint": "^9.18.0",
     "husky": "^9.1.7",
     "less": "^4.2.2",
-    "sass": "~1.60.0",
-    "vite": "^6.0.11",
+    "sass": "~1.80.0",
+    "vite": "^8.2.2",
     "vite-plugin-eslint": "^1.8.1",
-    "vite-plugin-static-copy": "^2.2.0",
+    "vite-plugin-static-copy": "^4.1.1",
     "yarn": "^1.22.19"
   },
   "scripts": {

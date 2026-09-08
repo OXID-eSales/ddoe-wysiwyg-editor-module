@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Update module to work with OXID eShop 7.6
 - Updated `squizlabs/php_codesniffer` from `3.*` to `4.*`
+- Assets are built with Vite 8 and Sass 1.80 now, which requires Node 22.12 or newer (or Node 24 and newer)
+- Bootstrap is imported in `node_build/scss/_bootstrap.scss` through bare package specifiers instead of relative paths
+- Deprecated Sass syntax replaced in the module styles
 
 ## [7.0.2] - 2026-07-09
 
