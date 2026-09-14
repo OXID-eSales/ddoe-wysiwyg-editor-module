@@ -142,9 +142,9 @@ class MediaIdAnchorMigrationService implements MigrationServiceInterface
         );
 
         foreach (self::OBSOLETE_ATTRIBUTES as $obsoleteAttribute) {
-            $tag = (string)preg_replace_callback(
-                '/(?<boundary>[<"])[^<"]+' . $obsoleteAttribute . '="[^"]+"/i',
-                static fn(array $match): string => $match['boundary'],
+            $tag = (string)preg_replace(
+                '/\s+' . $obsoleteAttribute . '="[^"]*"/i',
+                '',
                 $tag
             );
         }

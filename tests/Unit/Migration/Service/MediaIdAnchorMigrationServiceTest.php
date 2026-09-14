@@ -166,6 +166,46 @@ class MediaIdAnchorMigrationServiceTest extends TestCase
         $this->assertSame($expected, $result->getContent());
     }
 
+    public static function obsoleteFirstAttributeDataProvider(): \Generator
+    {
+        yield 'data-filepath first' => [
+            'obsoleteAttribute' => 'data-filepath',
+            'obsoleteValue' => '//localhost.local/out/pictures/ddmedia/01_SUV_Vorn.jpg',
+        ];
+
+        yield 'data-filename first' => [
+            'obsoleteAttribute' => 'data-filename',
+            'obsoleteValue' => '01_SUV_Vorn.jpg',
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('obsoleteFirstAttributeDataProvider')]
+    public function migrateDropsAnObsoleteAttributeStandingFirstWithoutBreakingTheTag(
+        string $obsoleteAttribute,
+        string $obsoleteValue
+    ): void {
+        $mediaId = uniqid();
+        $src = '/out/pictures/ddmedia/01_SUV_Vorn.jpg';
+
+        $input = 'start <img ' . $obsoleteAttribute . '="' . $obsoleteValue . '" src="' . $src . '" alt="t2"> end';
+        $expected = 'start <img src="{{oeMediaUrl(\'' . $mediaId . '\')}}" data-id="' . $mediaId . '" alt="t2"> end';
+
+        $facadeMock = $this->createMock(MediaIdByPathFacadeInterface::class);
+        $facadeMock->expects($this->once())
+            ->method('getMediaIdByPath')
+            ->with($src)
+            ->willReturn($mediaId);
+
+        $sut = $this->getSut(
+            mediaIdByPathFacade: $facadeMock
+        );
+
+        $result = $sut->migrateContent($input);
+
+        $this->assertSame($expected, $result->getContent());
+    }
+
     #[Test]
     public function migrateConvertsImageLinkAnchorsByHref(): void
     {
