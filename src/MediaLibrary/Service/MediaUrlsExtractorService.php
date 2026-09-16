@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\MediaLibrary\Service;
 
+use OxidEsales\MediaLibrary\Media\DataType\MediaLookupContext;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface;
 
@@ -28,7 +29,10 @@ class MediaUrlsExtractorService implements MediaUrlsExtractorServiceInterface
         $result = [];
         foreach ($ids as $oneId) {
             try {
-                $mediaUrl = $this->mediaFacade->getMediaUrl($oneId);
+                $mediaUrl = $this->mediaFacade->getMediaUrl(
+                    $oneId,
+                    new MediaLookupContext(trigger: 'Wysiwyg/MediaUrlsExtractor')
+                );
             } catch (MediaNotFoundException) {
                 $mediaUrl = '';
             }

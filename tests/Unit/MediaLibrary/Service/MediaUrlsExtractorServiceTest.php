@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace MediaLibrary\Service;
 
+use OxidEsales\MediaLibrary\Media\DataType\MediaLookupContextInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface;
 use OxidEsales\WysiwygModule\MediaLibrary\Service\MediaIdParserServiceInterface;
@@ -23,25 +24,27 @@ class MediaUrlsExtractorServiceTest extends TestCase
     {
         $input = uniqid();
 
-        $mediaParser = $this->createMock(MediaIdParserServiceInterface::class);
-        $mediaParser->method('parseMediaIdsFromContent')
+        $mediaParserMock = $this->createMock(MediaIdParserServiceInterface::class);
+        $mediaParserMock->method('parseMediaIdsFromContent')
             ->with($input)
             ->willReturn([$id1 = uniqid(), $id2 = uniqid()]);
 
         $preloadExpectation = [$id1, $id2];
-        $mediaFacadeMock = $this->createMock(MediaFacadeInterface::class);
-        $mediaFacadeMock->expects($this->once())
+        $mediaFacadeSpy = $this->createMock(MediaFacadeInterface::class);
+        $mediaFacadeSpy->expects($this->once())
             ->method('registerForPreload')
             ->with(...$preloadExpectation);
-        $mediaFacadeMock->method('getMediaUrl')
-            ->willReturnMap([
-                [$id1, $url1 = uniqid()],
-                [$id2, $url2 = uniqid()],
-            ]);
+
+        $urlMap = [
+            $id1 => $url1 = uniqid(),
+            $id2 => $url2 = uniqid()
+        ];
+        $mediaFacadeSpy->method('getMediaUrl')
+            ->willReturnCallback(fn(string $mediaId): string => $urlMap[$mediaId]);
 
         $sut = $this->getSut(
-            mediaIdParserService: $mediaParser,
-            mediaFacade: $mediaFacadeMock,
+            mediaIdParserService: $mediaParserMock,
+            mediaFacade: $mediaFacadeSpy,
         );
 
         $result = $sut->getContentMediaUrls($input);
@@ -53,8 +56,8 @@ class MediaUrlsExtractorServiceTest extends TestCase
     {
         $input = uniqid();
 
-        $mediaParser = $this->createMock(MediaIdParserServiceInterface::class);
-        $mediaParser->method('parseMediaIdsFromContent')
+        $mediaParserMock = $this->createMock(MediaIdParserServiceInterface::class);
+        $mediaParserMock->method('parseMediaIdsFromContent')
             ->with($input)
             ->willReturn([$id1 = uniqid(), $id2 = uniqid()]);
 
@@ -62,21 +65,53 @@ class MediaUrlsExtractorServiceTest extends TestCase
 
         $mediaFacadeMock = $this->createMock(MediaFacadeInterface::class);
         $mediaFacadeMock->method('getMediaUrl')
-            ->willReturnCallback(function (string $mediaId) use ($id2, $url2) {
-                if ($mediaId === $id2) {
+            ->willReturnCallback(function (string $mediaId) use ($id2, $url2): string {
+                if ($mediaId == $id2) {
                     return $url2;
-                } else {
-                    throw new MediaNotFoundException();
                 }
+
+                throw new MediaNotFoundException();
             });
 
         $sut = $this->getSut(
-            mediaIdParserService: $mediaParser,
+            mediaIdParserService: $mediaParserMock,
             mediaFacade: $mediaFacadeMock,
         );
 
         $result = $sut->getContentMediaUrls($input);
         $this->assertEquals([$id1 => '', $id2 => $url2], $result);
+    }
+
+    #[Test]
+    public function getContentMediaUrlsCallsFacadeWithCorrectContexts()
+    {
+        $input = uniqid();
+
+        $mediaParserMock = $this->createMock(MediaIdParserServiceInterface::class);
+        $mediaParserMock->method('parseMediaIdsFromContent')
+            ->with($input)
+            ->willReturn([$id1 = uniqid(), $id2 = uniqid()]);
+
+        $mediaFacadeSpy = $this->createMock(MediaFacadeInterface::class);
+        $mediaFacadeSpy->expects($this->exactly(2))
+            ->method('getMediaUrl')
+            ->willReturnCallback(
+                function (string $mediaId, MediaLookupContextInterface $context): string {
+                    $this->assertSame('Wysiwyg/MediaUrlsExtractor', $context->getTrigger());
+
+                    // identifier should be empty for context, as we cannot say what object it is coming from
+                    $this->assertSame('', $context->getIdentifier());
+
+                    return uniqid();
+                }
+            );
+
+        $sut = $this->getSut(
+            mediaIdParserService: $mediaParserMock,
+            mediaFacade: $mediaFacadeSpy,
+        );
+
+        $sut->getContentMediaUrls($input);
     }
 
     private function getSut(
