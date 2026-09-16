@@ -3,6 +3,8 @@
  * See LICENSE file for license details.
  */
 
+@use "sass:color";
+
 @import 'custom-variables';
 @import 'bootstrap/scss/functions';
 @import 'bootstrap/scss/variables';
@@ -125,7 +127,7 @@
         .dd-overlay-dialog-apply {
             float: right;
 
-            @include button-variant(#fff, #25A685, darken(#25A685, 5%));
+            @include button-variant(#fff, #25A685, color.adjust(#25A685, $lightness: -5%));
         }
 
         .dd-overlay-dialog-cancel {

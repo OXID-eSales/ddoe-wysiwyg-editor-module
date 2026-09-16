@@ -85,6 +85,10 @@ docker compose exec -T php composer tests-coverage
 ```
 
 ## Rebuilding the assets
+
+The build requires Node 22.12 or newer. The odd Node releases 21 and 23 are not supported by
+the toolchain, so use either the 22 line from 22.12 upwards, or Node 24 and newer.
+
 To rebuild the assets, latest node docker container can be used. The one is pulled automatically if you are using the
 installation method from the previous section. What is left - connect to the container, install the npm dependencies
 and run the assets building process
