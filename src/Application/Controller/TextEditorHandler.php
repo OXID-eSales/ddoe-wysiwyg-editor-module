@@ -40,6 +40,9 @@ class TextEditorHandler extends TextEditorHandler_parent
         );
     }
 
+    /**
+     * @todo-high Use the getService() method instead
+     */
     public function getWysiwywEditorRenderer(): EditorRendererInterface
     {
         return ContainerFacade::get(EditorRendererInterface::class);

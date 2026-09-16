@@ -11,6 +11,9 @@ namespace OxidEsales\WysiwygModule\MediaLibrary\Service;
 
 class MediaIdParserService implements MediaIdParserServiceInterface
 {
+    /**
+     * @todo-critical - regex covers oeMediaUrl only, but there are other media functions now.
+     */
     public function parseMediaIdsFromContent(string $content): array
     {
         preg_match_all(
