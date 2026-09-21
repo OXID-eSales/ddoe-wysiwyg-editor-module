@@ -3,39 +3,10 @@
  * See LICENSE file for license details.
  */
 
-var MEDIA_IMAGE_CLASS = 'dd-wysiwyg-media-image';
+import { anchorMediaUrlsInMarkup, replaceMediaImageSrcValues } from "../media-image-markup.js";
 
 function isTextarea(node) {
     return node && node.nodeName.toUpperCase() === 'TEXTAREA';
-}
-
-function getTagAttributeValue(tag, attributeName) {
-    var match = tag.match(new RegExp('\\s' + attributeName + '\\s*=\\s*"([^"]*)"', 'i'));
-
-    return match ? match[1] : null;
-}
-
-function checkTagHasMediaImageClass(tag) {
-    var classAttribute = getTagAttributeValue(tag, 'class') || '';
-
-    return classAttribute.split(/\s+/).indexOf(MEDIA_IMAGE_CLASS) !== -1;
-}
-
-function rewriteMediaImageSourceInMarkup(markup, buildSourceCallback) {
-    return markup.replace(/<img\s[^>]*>/gi, function (tag) {
-        var id = getTagAttributeValue(tag, 'data-id');
-
-        if (!id || !checkTagHasMediaImageClass(tag)) {
-            return tag;
-        }
-
-        var newSourceValue = buildSourceCallback(id);
-
-        // replaces to new source value in the src attribute of the specific tag string
-        return tag.replace(/(\ssrc\s*=\s*")[^"]*(")/i, function (match, start, end) {
-            return start + newSourceValue + end;
-        });
-    });
 }
 
 export function injectOxidBridge(mediaModule) {
@@ -54,7 +25,7 @@ export function injectOxidBridge(mediaModule) {
                 });
 
                 // switch twig function call with media url
-                val = rewriteMediaImageSourceInMarkup(val, function (id) {
+                val = replaceMediaImageSrcValues(val, function (id) {
                     return mediaModule.getMediaUrl(id);
                 });
             } else {
@@ -87,9 +58,7 @@ export function injectOxidBridge(mediaModule) {
             }
 
             // set media smarty or twig tags
-            markup = rewriteMediaImageSourceInMarkup(markup, function (id) {
-                return "{{oeMediaUrl('" + id + "')}}";
-            });
+            markup = anchorMediaUrlsInMarkup(markup);
 
             return markup;
         }

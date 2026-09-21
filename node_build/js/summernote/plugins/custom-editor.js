@@ -1,3 +1,7 @@
+/**
+ * todo-medium: double-check if this can be dropped and reworked to be
+ *   working through the buildContentValueFromEditorFeatures
+ */
 export function overrideEditorMethods() {
     const EditorClass = $.summernote.options.modules.editor;
 
