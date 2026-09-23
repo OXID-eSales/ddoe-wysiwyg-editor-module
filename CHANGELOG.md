@@ -40,6 +40,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - `ddoewysiwyg:migrate:urls-to-ids` converts media library references in all `img src` and `a href` attributes, not only in images marked with `dd-wysiwyg-media-image`
 
+### Fixed
+- Media library image urls are now correctly saved as `oeMediaUrl` calls instead of hardcoded urls.
+- Use new storage setting for image url cache - fixes the not available urls in cache issue. 
+
 ## [6.0.4] - 2026-07-09
 
 ### Fixed
