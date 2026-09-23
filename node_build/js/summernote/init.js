@@ -8,6 +8,8 @@ import '../../scss/backend_editor.scss'
 import { addMediaPlugin } from "./plugins/media-library.js";
 import { addVideoResponsivePlugin } from "./plugins/video-responsive.js";
 import { injectOxidBridge } from "./plugins/oxid-bridge.js";
+import { anchorMediaUrlsInMarkup } from "./media-image-markup.js";
+import { createNoteSyncModule } from "./plugins/note-sync.js";
 import { configureLinkDialogModule } from "./plugins/link.js";
 import { overrideEditorMethods} from "./plugins/custom-editor.js";
 
@@ -70,7 +72,19 @@ export async function initializeSummernote(element, options) {
     injectOxidBridge(mediaModule);
     configureLinkDialogModule();
 
-    const settings = { ...defaultSettings, ...options };
+    const settings = {
+        ...defaultSettings,
+        ...options,
+        // the options are merged shallowly, so the remaining modules have to be carried over
+        modules: {
+            ...$.summernote.options.modules,
+            autoSync: createNoteSyncModule((editorContent) => {
+                const anchoredContent = anchorMediaUrlsInMarkup(editorContent);
+
+                return encodeEmojisToHtmlEntities(anchoredContent);
+            }),
+        },
+    };
     var summernote = element.summernote(settings);
     overrideEditorMethods();
 
@@ -130,23 +144,6 @@ export function autoInitializeSummernote() {
                     }
                 });
             }
-        });
-
-        var $form = $('.ddoe-wysiwyg-editor').first().closest('form');
-
-        $form.find('*[type="submit"]').first().on('click', function() {
-            $('.ddoe-wysiwyg-editor > textarea', $form).each(function () {
-                // todo: check why this activation/deactivation is needed
-                var context = $( this ).data( 'summernote' );
-
-                if(context.invoke('codeview.isActivated')) {
-                    context.invoke( 'codeview.deactivate' );
-                }
-                context.invoke( 'codeview.activate' );
-
-                var content = $( this ).summernote('code');
-                $( this ).val(encodeEmojisToHtmlEntities(content));
-            });
         });
     }
 }
