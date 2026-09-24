@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Changes from v6.1.0
 
+### Removed
+- Separately loaded `out/src/js/summernote/purify.min.js` and global `window.DOMPurify`; DOMPurify is now bundled into the editor script
+
 ## [7.0.2] - 2026-07-09
 
 ### Added

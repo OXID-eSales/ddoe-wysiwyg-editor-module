@@ -24,7 +24,6 @@ export default defineConfig({
                 { src: path.resolve(import.meta.dirname, 'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'), dest: 'js', rename: { stripBase: true } },
                 { src: path.resolve(import.meta.dirname, 'node_modules/summernote/dist/summernote-bs5.min.js'), dest: 'js/summernote', rename: { stripBase: true, name: 'summernote.min.js' } },
                 { src: path.resolve(import.meta.dirname, 'node_modules/summernote/dist/lang/summernote-de-DE.min.js'), dest: 'js/summernote', rename: { stripBase: true } },
-                { src: path.resolve(import.meta.dirname, 'node_modules/dompurify/dist/purify.min.js'), dest: 'js/summernote', rename: { stripBase: true } },
                 { src: path.resolve(import.meta.dirname, 'node_modules/summernote/dist/summernote-bs5.min.css'), dest: 'css', rename: { stripBase: true, name: 'summernote.min.css' } },
                 { src: path.resolve(import.meta.dirname, 'node_modules/summernote/dist/font'), dest: 'css/font', rename: { stripBase: true } },
                 { src: path.resolve(import.meta.dirname, 'node_modules/bootstrap-icons/font/bootstrap-icons.min.css'), dest: 'css', rename: { stripBase: true } },

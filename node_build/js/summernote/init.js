@@ -12,7 +12,7 @@ import { anchorMediaUrlsInMarkup } from "./media-image-markup.js";
 import { createNoteSyncModule } from "./plugins/note-sync.js";
 import { configureLinkDialogModule } from "./plugins/link.js";
 import { overrideEditorMethods} from "./plugins/custom-editor.js";
-/* global DOMPurify */
+import DOMPurify from 'dompurify';
 
 function overrideTooltip() {
     var tooltipPlugin = $.fn.tooltip;
@@ -26,10 +26,10 @@ function overrideTooltip() {
     };
 }
 
-function overrideCodeviewPurify(context, purifyConfig) {
+function overrideCodeviewPurify(context, sanitize) {
     if (context?.modules?.codeview?.purify) {
         const originalPurify = context.modules.codeview.purify.bind(context.modules.codeview);
-        context.modules.codeview.purify = (value) => DOMPurify.sanitize(originalPurify(value), purifyConfig);
+        context.modules.codeview.purify = (value) => sanitize(originalPurify(value));
     }
 }
 
@@ -53,6 +53,8 @@ function encodeEmojisToHtmlEntities(html) {
 }
 
 export async function initializeSummernote(element, options, purifyConfig = {}) {
+    const sanitize = (html) => DOMPurify.sanitize(html, purifyConfig);
+
     const defaultSettings = {
         lang: 'de-DE',
         minHeight: 100,
@@ -100,17 +102,19 @@ export async function initializeSummernote(element, options, purifyConfig = {}) 
             ...$.summernote.options.modules,
             autoSync: createNoteSyncModule((editorContent) => {
                 let anchoredContent = anchorMediaUrlsInMarkup(editorContent);
-                anchoredContent = DOMPurify.sanitize(anchoredContent, purifyConfig);
+                anchoredContent = sanitize(anchoredContent);
                 return encodeEmojisToHtmlEntities(anchoredContent);
             }),
         },
     };
+
+    element.val(sanitize(element.val()));
     var summernote = element.summernote(settings);
 
     overrideEditorMethods();
 
     const context = element.data('summernote');
-    overrideCodeviewPurify(context, purifyConfig);
+    overrideCodeviewPurify(context, sanitize);
     fixDropdownToggle(context);
 
     return summernote;
