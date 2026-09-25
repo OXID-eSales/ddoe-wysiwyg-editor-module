@@ -26,6 +26,7 @@ class Events
 
     private static function executeMigrations(): void
     {
+        // @todo-high: migrations should not be running here at all
         $migrations = (new MigrationsBuilder())->build();
 
         $output = new BufferedOutput();
