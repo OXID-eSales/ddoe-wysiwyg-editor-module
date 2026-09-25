@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [8.0.0] - unreleased
 
+### Added
+- Some context added for media object lookup point to give more information where the search was done from.
+
 ### Changed
 - Update module to work with OXID eShop 7.6
 - Updated `squizlabs/php_codesniffer` from `3.*` to `4.*`
