@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [7.1.0] - Unreleased
+## [7.1.0] - 2026-10-08
 
 - Changes from v6.1.0
 
@@ -235,7 +235,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Smarty tags are parsed correct now
 - Correct protocol usage for image urls
 
-[7.1.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v7.0.2...b-7.5.x
+[7.1.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v7.0.2...v7.1.0
 [7.0.2]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v7.0.1...v7.0.2
 [7.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v7.0.0...v7.0.1
 [7.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.3...v7.0.0
