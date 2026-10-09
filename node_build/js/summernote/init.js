@@ -79,6 +79,8 @@ export async function initializeSummernote(element, options, purifyConfig = {}) 
 
         disableDragAndDrop: true,
         codeviewFilter: true,
+        // summernote default without "style"
+        codeviewFilterRegex: /<\/*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|ilayer|l(?:ayer|ink)|meta|object|script|t(?:itle|extarea)|xml)[^>]*?>/gi,
         codeviewIframeFilter: true,
 
         useProtocol: false,
