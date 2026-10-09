@@ -53,7 +53,8 @@ function encodeEmojisToHtmlEntities(html) {
 }
 
 export async function initializeSummernote(element, options, purifyConfig = {}) {
-    const sanitize = (html) => DOMPurify.sanitize(html, purifyConfig);
+    // without FORCE_BODY a leading <style> is parsed into <head> and lost
+    const sanitize = (html) => DOMPurify.sanitize(html, { FORCE_BODY: true, ...purifyConfig });
 
     const defaultSettings = {
         lang: 'de-DE',
