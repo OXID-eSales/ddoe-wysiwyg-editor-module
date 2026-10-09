@@ -53,7 +53,8 @@ function encodeEmojisToHtmlEntities(html) {
 }
 
 export async function initializeSummernote(element, options, purifyConfig = {}) {
-    const sanitize = (html) => DOMPurify.sanitize(html, purifyConfig);
+    // without FORCE_BODY a leading <style> is parsed into <head> and lost
+    const sanitize = (html) => DOMPurify.sanitize(html, { FORCE_BODY: true, ...purifyConfig });
 
     const defaultSettings = {
         lang: 'de-DE',
@@ -79,6 +80,8 @@ export async function initializeSummernote(element, options, purifyConfig = {}) 
 
         disableDragAndDrop: true,
         codeviewFilter: true,
+        // summernote default without "style", which is sanitized by DOMPurify
+        codeviewFilterRegex: /<\/*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|ilayer|l(?:ayer|ink)|meta|object|script|t(?:itle|extarea)|xml)[^>]*?>/gi,
         codeviewIframeFilter: true,
 
         useProtocol: false,
