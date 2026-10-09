@@ -131,4 +131,51 @@ final class TextareaCheckCest
         $I->assertStringContainsString('seo_url', $editorHtml);
         $I->assertStringNotContainsString('%7B', $editorHtml);
     }
+
+    public function codeviewPreservesStyleTag(AcceptanceTester $I): void
+    {
+        $I->wantToTest('Style tag entered in code view is kept on save');
+
+        $loadId = uniqid('style_codeview_');
+        $template = '<p>initial content</p>';
+        $styleTag = '<style>.' . uniqid('class_') . ' { color: red; }</style>';
+
+        $I->haveInDatabase('oxcontents', [
+            'OXID' => md5($loadId),
+            'OXLOADID' => $loadId,
+            'OXCONTENT' => $template,
+            'OXCONTENT_1' => $template,
+            'OXCONTENT_2' => $template,
+            'OXCONTENT_3' => $template,
+        ]);
+
+        $adminPanel = $I->loginAdmin();
+        $adminPanel->openCMSPages();
+
+        $I->selectListFrame();
+        $I->fillField("//input[@name='where[oxcontents][oxloadid]']", $loadId);
+        $I->submitForm('#search', []);
+
+        $I->selectListFrame();
+        $I->click($loadId);
+
+        $I->selectEditFrame();
+        $I->waitForDocumentReadyState();
+        $I->waitForElement('.note-editable', 15);
+
+        $codeviewButton = '.note-toolbar .btn-codeview';
+        $I->waitForElementClickable($codeviewButton);
+        $I->click($codeviewButton);
+        $I->waitForElement('.note-codable');
+
+        $I->fillField('.note-codable', '<p>intro</p>' . $styleTag . '<p>outro</p>');
+
+        $I->click($codeviewButton);
+        $I->waitForElementNotVisible('.note-codable');
+
+        $I->click("//input[@type='submit']");
+
+        $savedContent = $I->grabFromDatabase('oxcontents', 'OXCONTENT', ['OXID' => md5($loadId)]);
+        $I->assertStringContainsString($styleTag, $savedContent);
+    }
 }
