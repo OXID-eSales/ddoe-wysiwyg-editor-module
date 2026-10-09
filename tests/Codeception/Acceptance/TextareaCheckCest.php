@@ -94,67 +94,27 @@ final class TextareaCheckCest
     public function serverFiltersContent(AcceptanceTester $I): void
     {
         $loadId = 'test_content';
-        $template = "<p>par 1</p><script>var filterTest = 'test';</script><p>par 2</p>";
+        $this->haveCmsContent($I, $loadId, "<p>par 1</p><script>var filterTest = 'test';</script><p>par 2</p>");
 
-        $I->haveInDatabase('oxcontents', [
-            'OXID' => md5($loadId),
-            'OXLOADID' => $loadId,
-            'OXCONTENT' => $template,
-            'OXCONTENT_1' => $template,
-            'OXCONTENT_2' => $template,
-            'OXCONTENT_3' => $template,
-        ]);
-
-        $adminPanel = $I->loginAdmin();
-        $adminPanel->openCMSPages();
-
-        $I->selectListFrame();
-        $I->fillField("//input[@name='where[oxcontents][oxloadid]']", $loadId);
-        $I->submitForm('#search', []);
-
-        $I->selectListFrame();
-        $I->click($loadId);
-
-        $I->selectEditFrame();
-        $I->waitForDocumentReadyState();
+        $this->openCmsContentInEditor($I, $loadId);
 
         $isVarDefined = $I->executeJS("return typeof filterTest !== 'undefined'");
         $I->assertFalse($isVarDefined);
     }
 
-    public function cmsIdentTwigExpressionIsPreservedUnencoded(AcceptanceTester $I): void
+    public function editorPreservesLeadingStyleTag(AcceptanceTester $I): void
     {
-        $I->wantToTest('CMS-Ident seo_url expression survives the editor filter unencoded');
+        $I->wantToTest('Leading style tag is kept on save');
 
-        $loadId = 'twig_preserve_test';
-        $template = '<p><a href="{{ seo_url({type: \'oxcontent\', ident: \'oxnewstlerinfo\'}) }}">news</a></p>';
+        $loadId = uniqid('style_preserve_');
+        $styleTag = $this->createStyleTag();
+        $this->haveCmsContent($I, $loadId, $styleTag . '<p>styled content</p>');
 
-        $I->haveInDatabase('oxcontents', [
-            'OXID' => md5($loadId),
-            'OXLOADID' => $loadId,
-            'OXCONTENT' => $template,
-            'OXCONTENT_1' => $template,
-            'OXCONTENT_2' => $template,
-            'OXCONTENT_3' => $template,
-        ]);
+        $this->openCmsContentInEditor($I, $loadId);
+        $I->click("//input[@type='submit']");
 
-        $adminPanel = $I->loginAdmin();
-        $adminPanel->openCMSPages();
-
-        $I->selectListFrame();
-        $I->fillField("//input[@name='where[oxcontents][oxloadid]']", $loadId);
-        $I->submitForm('#search', []);
-
-        $I->selectListFrame();
-        $I->click($loadId);
-
-        $I->selectEditFrame();
-        $I->waitForDocumentReadyState();
-        $I->waitForElement('.note-editable', 15);
-
-        $editorHtml = $I->executeJS("return document.querySelector('.note-editable').innerHTML;");
-        $I->assertStringContainsString('seo_url', $editorHtml);
-        $I->assertStringNotContainsString('%7B', $editorHtml);
+        $savedContent = $I->grabFromDatabase('oxcontents', 'OXCONTENT', ['OXID' => md5($loadId)]);
+        $I->assertStringContainsString($styleTag, $savedContent);
     }
 
     public function codeviewPreservesStyleTag(AcceptanceTester $I): void
@@ -162,31 +122,10 @@ final class TextareaCheckCest
         $I->wantToTest('Style tag entered in code view is kept on save');
 
         $loadId = uniqid('style_codeview_');
-        $template = '<p>initial content</p>';
-        $styleTag = '<style>.' . uniqid('class_') . ' { color: red; }</style>';
+        $styleTag = $this->createStyleTag();
+        $this->haveCmsContent($I, $loadId, '<p>initial content</p>');
 
-        $I->haveInDatabase('oxcontents', [
-            'OXID' => md5($loadId),
-            'OXLOADID' => $loadId,
-            'OXCONTENT' => $template,
-            'OXCONTENT_1' => $template,
-            'OXCONTENT_2' => $template,
-            'OXCONTENT_3' => $template,
-        ]);
-
-        $adminPanel = $I->loginAdmin();
-        $adminPanel->openCMSPages();
-
-        $I->selectListFrame();
-        $I->fillField("//input[@name='where[oxcontents][oxloadid]']", $loadId);
-        $I->submitForm('#search', []);
-
-        $I->selectListFrame();
-        $I->click($loadId);
-
-        $I->selectEditFrame();
-        $I->waitForDocumentReadyState();
-        $I->waitForElement('.note-editable', 15);
+        $this->openCmsContentInEditor($I, $loadId);
 
         $codeviewButton = '.note-toolbar .btn-codeview';
         $I->waitForElementClickable($codeviewButton);
@@ -202,5 +141,54 @@ final class TextareaCheckCest
 
         $savedContent = $I->grabFromDatabase('oxcontents', 'OXCONTENT', ['OXID' => md5($loadId)]);
         $I->assertStringContainsString($styleTag, $savedContent);
+    }
+
+    public function cmsIdentTwigExpressionIsPreservedUnencoded(AcceptanceTester $I): void
+    {
+        $I->wantToTest('CMS-Ident seo_url expression survives the editor filter unencoded');
+
+        $loadId = 'twig_preserve_test';
+        $content = '<p><a href="{{ seo_url({type: \'oxcontent\', ident: \'oxnewstlerinfo\'}) }}">news</a></p>';
+        $this->haveCmsContent($I, $loadId, $content);
+
+        $this->openCmsContentInEditor($I, $loadId);
+
+        $editorHtml = $I->executeJS("return document.querySelector('.note-editable').innerHTML;");
+        $I->assertStringContainsString('seo_url', $editorHtml);
+        $I->assertStringNotContainsString('%7B', $editorHtml);
+    }
+
+    private function createStyleTag(): string
+    {
+        return '<style>.' . uniqid('class_') . ' { color: red; }</style>';
+    }
+
+    private function haveCmsContent(AcceptanceTester $I, string $loadId, string $content): void
+    {
+        $I->haveInDatabase('oxcontents', [
+            'OXID' => md5($loadId),
+            'OXLOADID' => $loadId,
+            'OXCONTENT' => $content,
+            'OXCONTENT_1' => $content,
+            'OXCONTENT_2' => $content,
+            'OXCONTENT_3' => $content,
+        ]);
+    }
+
+    private function openCmsContentInEditor(AcceptanceTester $I, string $loadId): void
+    {
+        $adminPanel = $I->loginAdmin();
+        $adminPanel->openCMSPages();
+
+        $I->selectListFrame();
+        $I->fillField("//input[@name='where[oxcontents][oxloadid]']", $loadId);
+        $I->submitForm('#search', []);
+
+        $I->selectListFrame();
+        $I->click($loadId);
+
+        $I->selectEditFrame();
+        $I->waitForDocumentReadyState();
+        $I->waitForElement('.note-editable', 15);
     }
 }
