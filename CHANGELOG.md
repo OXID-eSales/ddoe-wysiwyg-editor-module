@@ -16,6 +16,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Bootstrap is imported in `node_build/scss/_bootstrap.scss` through bare package specifiers instead of relative paths
 - Deprecated Sass syntax replaced in the module styles
 
+## [7.1.1] - 2026-10-09
+
+### Added
+- Changes from v6.1.1
+
+### Fixed
+- Leading `<style>` tag was removed by DOMPurify sanitization
+
 ## [7.1.0] - 2026-10-08
 
 - Changes from v6.1.0
@@ -45,6 +53,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Updated to work with OXID eShop 7.5.x
 - Minimum PHP version is now 8.3, tested up to PHP 8.5
 - Replaced Font Awesome with Bootstrap Icons
+
+## [6.1.1] - 2026-10-09
+
+### Fixed
+- `<style>` tag was removed by the editor when leaving code view or pasting HTML
 
 ## [6.1.0] - 2026-10-08
 
@@ -248,10 +261,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Correct protocol usage for image urls
 
 [8.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v7.1.0...v8.0.0
+[7.1.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v7.1.0...v7.1.1
 [7.1.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v7.0.2...v7.1.0
 [7.0.2]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v7.0.1...v7.0.2
 [7.0.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v7.0.0...v7.0.1
 [7.0.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.3...v7.0.0
+[6.1.1]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.1.0...v6.1.1
 [6.1.0]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.4...v6.1.0
 [6.0.4]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.3...v6.0.4
 [6.0.3]: https://github.com/OXID-eSales/ddoe-wysiwyg-editor-module/compare/v6.0.2...v6.0.3
