@@ -7,10 +7,6 @@
 
 namespace OxidEsales\WysiwygModule\Core;
 
-use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
-use OxidEsales\WysiwygModule\Module;
-use Symfony\Component\Console\Output\BufferedOutput;
-
 /**
  * Class defines what module does on Shop events.
  */
@@ -21,21 +17,7 @@ class Events
      */
     public static function onActivate()
     {
-//        self::executeMigrations();
-    }
-
-    private static function executeMigrations(): void
-    {
-        // @todo-high: migrations should not be running here at all
-        $migrations = (new MigrationsBuilder())->build();
-
-        $output = new BufferedOutput();
-        $migrations->setOutput($output);
-        $needsUpdate = $migrations->execute('migrations:up-to-date', Module::MODULE_ID);
-
-        if ($needsUpdate) {
-            $migrations->execute('migrations:migrate', Module::MODULE_ID);
-        }
+        // Migrations are no longer executed on activation, use oe:database:migrate
     }
 
     /**
