@@ -21,7 +21,7 @@ class Events
      */
     public static function onActivate()
     {
-        self::executeMigrations();
+//        self::executeMigrations();
     }
 
     private static function executeMigrations(): void

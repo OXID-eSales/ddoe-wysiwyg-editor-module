@@ -51,7 +51,7 @@ make up
 $SCRIPT_PATH/parts/shared/setup_database.sh -n
 
 docker compose exec -T php vendor/bin/oe-console oe:module:install ./
-docker compose exec -T php vendor/bin/oe-eshop-doctrine_migration migrations:migrate
+docker compose exec -T php vendor/bin/oe-console oe:database:migrate
 docker compose exec -T php vendor/bin/oe-eshop-db_views_generate
 
 docker compose exec -T php vendor/bin/oe-console oe:module:activate ddoemedialibrary
