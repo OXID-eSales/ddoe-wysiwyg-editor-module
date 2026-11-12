@@ -20,6 +20,8 @@ class CsvFileMigrationReporter implements MigrationReporterInterface
 {
     private const HEADER = ['table', 'field', 'key', 'attribute', 'path', 'outcome', 'media_id', 'detail'];
 
+    private const CSV_ESCAPE = '';
+
     public function __construct(
         private readonly MediaMigrationResultFilterInterface $resultFilter,
         private readonly string $path,
@@ -35,7 +37,7 @@ class CsvFileMigrationReporter implements MigrationReporterInterface
         }
 
         try {
-            fputcsv($handle, self::HEADER);
+            fputcsv($handle, self::HEADER, escape: self::CSV_ESCAPE);
 
             foreach ($report->getEntries() as $entry) {
                 fputcsv($handle, [
@@ -47,7 +49,7 @@ class CsvFileMigrationReporter implements MigrationReporterInterface
                     $entry->getOutcome()->value,
                     $entry->getMediaId(),
                     $entry->getDetail(),
-                ]);
+                ], escape: self::CSV_ESCAPE);
             }
         } finally {
             fclose($handle);

@@ -13,6 +13,7 @@ use org\bovigo\vfs\vfsStream;
 use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\TableFieldInterface;
 use OxidEsales\WysiwygModule\Migration\Reporter\CsvFileMigrationReporter;
 use OxidEsales\WysiwygModule\Migration\Reporter\MigrationReporterInterface;
 use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
@@ -70,7 +71,10 @@ class CsvFileMigrationReporterTest extends TestCase
         );
         $sut->report($reportStub);
 
-        $rows = array_map('str_getcsv', file(self::PATH, FILE_IGNORE_NEW_LINES));
+        $rows = array_map(
+            static fn(string $line): array => str_getcsv($line, escape: ''),
+            file(self::PATH, FILE_IGNORE_NEW_LINES),
+        );
 
         $this->assertCount(3, $rows, 'header + two entries');
         $this->assertSame(
