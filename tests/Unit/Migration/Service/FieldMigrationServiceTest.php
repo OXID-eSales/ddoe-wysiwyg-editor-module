@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\WysiwygModule\Tests\Unit\Migration\Service;
 
 use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\TableFieldInterface;
 use OxidEsales\WysiwygModule\Migration\Repository\FieldMigrationRepositoryInterface;
 use OxidEsales\WysiwygModule\Migration\Service\FieldMigrationService;
 use OxidEsales\WysiwygModule\Migration\Service\FieldMigrationServiceInterface;
@@ -18,22 +19,20 @@ use PHPUnit\Framework\TestCase;
 
 class FieldMigrationServiceTest extends TestCase
 {
-    private const TABLE = 'oxcontents';
-    private const FIELD = 'OXCONTENT';
-    private const TABLE_KEY = 'OXID';
-
     #[Test]
     public function migrateRunsTheMigrationOnTheRequestedTableField(): void
     {
-        $repositorySpy = $this->createMock(FieldMigrationRepositoryInterface::class);
-        $repositorySpy->expects($this->once())
+        $tableFieldStub = $this->createStub(TableFieldInterface::class);
+
+        $repositoryMock = $this->createMock(FieldMigrationRepositoryInterface::class);
+        $repositoryMock->expects($this->once())
             ->method('migrateTableField')
-            ->with(self::TABLE, self::FIELD, self::TABLE_KEY)
+            ->with($tableFieldStub)
             ->willReturn([]);
 
-        $sut = $this->getSut($repositorySpy);
+        $sut = $this->getSut(fieldMigrationRepository: $repositoryMock);
 
-        $sut->migrate(self::TABLE, self::FIELD, self::TABLE_KEY);
+        $sut->migrate($tableFieldStub);
     }
 
     #[Test]
@@ -49,13 +48,13 @@ class FieldMigrationServiceTest extends TestCase
             ['migrateTableField' => $entries]
         );
 
-        $sut = $this->getSut($repositoryStub);
+        $tableFieldStub = $this->createStub(TableFieldInterface::class);
 
-        $report = $sut->migrate(self::TABLE, self::FIELD, self::TABLE_KEY);
+        $sut = $this->getSut(fieldMigrationRepository: $repositoryStub);
 
-        $this->assertSame(self::TABLE, $report->getTable());
-        $this->assertSame(self::FIELD, $report->getField());
-        $this->assertSame(self::TABLE_KEY, $report->getTableKey());
+        $report = $sut->migrate($tableFieldStub);
+
+        $this->assertSame($tableFieldStub, $report->getTableField());
         $this->assertSame($entries, $report->getEntries());
     }
 
@@ -67,9 +66,9 @@ class FieldMigrationServiceTest extends TestCase
             ['migrateTableField' => []]
         );
 
-        $sut = $this->getSut($repositoryStub);
+        $sut = $this->getSut(fieldMigrationRepository: $repositoryStub);
 
-        $report = $sut->migrate(self::TABLE, self::FIELD, self::TABLE_KEY);
+        $report = $sut->migrate($this->createStub(TableFieldInterface::class));
 
         $this->assertSame([], $report->getEntries());
     }

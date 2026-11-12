@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [9.0.0] - Unreleased
+
+### Changed
+- Media urls migration interfaces use `TableField` DTO instead of separate arguments:
+  - `FieldMigrationServiceInterface::migrate()`
+  - `FieldMigrationRepositoryInterface::migrateTableField()`
+- `MigrationReportInterface::getTableField()` replaces `getTable()`, `getField()` and `getTableKey()`
+
 ## [8.0.1] - 2026-10-09
 
 ### Added

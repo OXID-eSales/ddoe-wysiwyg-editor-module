@@ -12,11 +12,7 @@ namespace OxidEsales\WysiwygModule\Migration\DTO;
  */
 interface MigrationReportInterface
 {
-    public function getTable(): string;
-
-    public function getField(): string;
-
-    public function getTableKey(): string;
+    public function getTableField(): TableFieldInterface;
 
     /**
      * Every media reference the migration came across, converted or not.

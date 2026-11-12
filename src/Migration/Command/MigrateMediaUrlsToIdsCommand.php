@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\WysiwygModule\Migration\Command;
 
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
+use OxidEsales\WysiwygModule\Migration\DTO\TableField;
 use OxidEsales\WysiwygModule\Migration\Factory\MigrationReporterFactoryInterface;
 use OxidEsales\WysiwygModule\Migration\Service\FieldMigrationServiceInterface;
 use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
@@ -64,9 +65,11 @@ class MigrateMediaUrlsToIdsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $report = $this->fieldMigrationService->migrate(
-            (string)$input->getArgument('table'),
-            (string)$input->getArgument('field'),
-            (string)$input->getArgument('tableKey'),
+            new TableField(
+                table: (string)$input->getArgument('table'),
+                field: (string)$input->getArgument('field'),
+                keyField: (string)$input->getArgument('tableKey'),
+            )
         );
 
         $reportFilePath = $input->getOption('report-file');

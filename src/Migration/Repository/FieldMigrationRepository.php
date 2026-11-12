@@ -12,6 +12,7 @@ namespace OxidEsales\WysiwygModule\Migration\Repository;
 use Doctrine\DBAL\ForwardCompatibility\Result;
 use Generator;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\TableFieldInterface;
 use OxidEsales\WysiwygModule\Migration\Service\MigrationServiceInterface;
 
 class FieldMigrationRepository implements FieldMigrationRepositoryInterface
@@ -22,15 +23,15 @@ class FieldMigrationRepository implements FieldMigrationRepositoryInterface
     ) {
     }
 
-    public function migrateTableField(string $tableName, string $fieldName, string $tableKey): array
+    public function migrateTableField(TableFieldInterface $tableField): array
     {
         $entries = [];
 
-        foreach ($this->getOriginalContent($tableName, $fieldName, $tableKey) as $keyValue => $content) {
+        foreach ($this->getOriginalContent($tableField) as $keyValue => $content) {
             $result = $this->migrationService->migrateContent($content, $keyValue);
 
             if ($result->getContent() !== $content) {
-                $this->updateContent($tableName, $fieldName, $tableKey, $keyValue, $result->getContent());
+                $this->updateContent($tableField, $keyValue, $result->getContent());
             }
 
             array_push($entries, ...$result->getReferences());
@@ -42,29 +43,30 @@ class FieldMigrationRepository implements FieldMigrationRepositoryInterface
     /**
      * @return Generator<string, string> key of the row => content of the field to migrate
      */
-    private function getOriginalContent(string $tableName, string $fieldName, string $tableKey): Generator
+    private function getOriginalContent(TableFieldInterface $tableField): Generator
     {
+        $fieldName = $tableField->getField();
+        $keyField = $tableField->getKeyField();
+
         $selectionQueryBuilder = $this->queryBuilderFactory->create();
 
         /** @var Result $originalData */
-        $originalData = $selectionQueryBuilder->select($tableKey, $fieldName)->from($tableName)->execute();
+        $originalData = $selectionQueryBuilder
+            ->select($keyField, $fieldName)
+            ->from($tableField->getTable())
+            ->execute();
 
         foreach ($originalData->iterateAssociative() as $originalRow) {
-            yield (string)$originalRow[$tableKey] => (string)$originalRow[$fieldName];
+            yield (string)$originalRow[$keyField] => (string)$originalRow[$fieldName];
         }
     }
 
-    private function updateContent(
-        string $tableName,
-        string $fieldName,
-        string $tableKey,
-        string $keyValue,
-        string $content
-    ): void {
+    private function updateContent(TableFieldInterface $tableField, string $keyValue, string $content): void
+    {
         $updateQueryBuilder = $this->queryBuilderFactory->create();
-        $updateQueryBuilder->update($tableName)
-            ->set($fieldName, ':newValue')
-            ->where($tableKey . ' = :keyValue')
+        $updateQueryBuilder->update($tableField->getTable())
+            ->set($tableField->getField(), ':newValue')
+            ->where($tableField->getKeyField() . ' = :keyValue')
             ->setParameters([
                 ':newValue' => $content,
                 ':keyValue' => $keyValue,

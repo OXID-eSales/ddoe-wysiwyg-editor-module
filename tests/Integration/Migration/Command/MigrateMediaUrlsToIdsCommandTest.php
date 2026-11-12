@@ -13,6 +13,7 @@ use OxidEsales\WysiwygModule\Migration\Command\MigrateMediaUrlsToIdsCommand;
 use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationSummaryInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\TableField;
 use OxidEsales\WysiwygModule\Migration\Factory\MigrationReporterFactoryInterface;
 use OxidEsales\WysiwygModule\Migration\Reporter\MigrationReporterInterface;
 use OxidEsales\WysiwygModule\Migration\Service\FieldMigrationServiceInterface;
@@ -31,14 +32,14 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
         $field = uniqid();
         $tableKey = uniqid();
 
-        $serviceSpy = $this->createMock(FieldMigrationServiceInterface::class);
-        $serviceSpy->expects($this->once())
+        $serviceMock = $this->createMock(FieldMigrationServiceInterface::class);
+        $serviceMock->expects($this->once())
             ->method('migrate')
-            ->with($table, $field, $tableKey)
+            ->with(new TableField(table: $table, field: $field, keyField: $tableKey))
             ->willReturn($this->createStub(MigrationReportInterface::class));
 
         $sut = $this->getSut(
-            fieldMigrationService: $serviceSpy
+            fieldMigrationService: $serviceMock
         );
         $commandTester = new CommandTester($sut);
         $commandTester->execute(['table' => $table, 'field' => $field, 'tableKey' => $tableKey]);
@@ -52,14 +53,14 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
         $table = uniqid();
         $field = uniqid();
 
-        $serviceSpy = $this->createMock(FieldMigrationServiceInterface::class);
-        $serviceSpy->expects($this->once())
+        $serviceMock = $this->createMock(FieldMigrationServiceInterface::class);
+        $serviceMock->expects($this->once())
             ->method('migrate')
-            ->with($table, $field, 'OXID')
+            ->with(new TableField(table: $table, field: $field, keyField: 'OXID'))
             ->willReturn($this->createStub(MigrationReportInterface::class));
 
         $sut = $this->getSut(
-            fieldMigrationService: $serviceSpy
+            fieldMigrationService: $serviceMock
         );
         $commandTester = new CommandTester($sut);
         $commandTester->execute(['table' => $table, 'field' => $field]);
@@ -97,14 +98,14 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
     #[Test]
     public function reporterIsBuiltForTheScreenWhenNoReportFileIsRequested(): void
     {
-        $factorySpy = $this->createMock(MigrationReporterFactoryInterface::class);
-        $factorySpy->expects($this->once())
+        $factoryMock = $this->createMock(MigrationReporterFactoryInterface::class);
+        $factoryMock->expects($this->once())
             ->method('create')
             ->with(null)
             ->willReturn($this->createStub(MigrationReporterInterface::class));
 
         $sut = $this->getSut(
-            reporterFactory: $factorySpy
+            reporterFactory: $factoryMock
         );
         $commandTester = new CommandTester($sut);
         $commandTester->execute(['table' => uniqid(), 'field' => uniqid()]);
@@ -118,14 +119,14 @@ class MigrateMediaUrlsToIdsCommandTest extends TestCase
     {
         $reportFilePath = uniqid() . '.csv';
 
-        $factorySpy = $this->createMock(MigrationReporterFactoryInterface::class);
-        $factorySpy->expects($this->once())
+        $factoryMock = $this->createMock(MigrationReporterFactoryInterface::class);
+        $factoryMock->expects($this->once())
             ->method('create')
             ->with($reportFilePath)
             ->willReturn($this->createStub(MigrationReporterInterface::class));
 
         $sut = $this->getSut(
-            reporterFactory: $factorySpy
+            reporterFactory: $factoryMock
         );
         $commandTester = new CommandTester($sut);
         $commandTester->execute([

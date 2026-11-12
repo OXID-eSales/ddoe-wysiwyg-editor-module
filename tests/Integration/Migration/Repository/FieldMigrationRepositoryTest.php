@@ -13,6 +13,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\WysiwygModule\Migration\DTO\ContentMigrationResultInterface;
 use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\TableFieldInterface;
 use OxidEsales\WysiwygModule\Migration\Repository\FieldMigrationRepository;
 use OxidEsales\WysiwygModule\Migration\Service\MigrationServiceInterface;
 
@@ -51,7 +52,7 @@ class FieldMigrationRepositoryTest extends IntegrationTestCase
             migrationService: $migrationServiceMock,
             queryBuilderFactory: $queryBuilderFactory,
         );
-        $sut->migrateTableField(self::TABLE, self::FIELD, 'OXID');
+        $sut->migrateTableField($this->createTableFieldStub());
 
         $selectQueryBuilder = $queryBuilderFactory->create();
         $actualValue = $selectQueryBuilder->select(self::FIELD)->from(self::TABLE)
@@ -95,7 +96,7 @@ class FieldMigrationRepositoryTest extends IntegrationTestCase
             queryBuilderFactory: $queryBuilderFactory,
         );
 
-        $entries = $sut->migrateTableField(self::TABLE, self::FIELD, 'OXID');
+        $entries = $sut->migrateTableField($this->createTableFieldStub());
 
         $this->assertSame([$failedReferenceStub], $entries);
     }
@@ -131,8 +132,17 @@ class FieldMigrationRepositoryTest extends IntegrationTestCase
             queryBuilderFactory: $queryBuilderFactory,
         );
 
-        $entries = $sut->migrateTableField(self::TABLE, self::FIELD, 'OXID');
+        $entries = $sut->migrateTableField($this->createTableFieldStub());
 
         $this->assertSame([$referenceStub], $entries);
+    }
+
+    private function createTableFieldStub(): TableFieldInterface
+    {
+        return $this->createConfiguredStub(TableFieldInterface::class, [
+            'getTable' => self::TABLE,
+            'getField' => self::FIELD,
+            'getKeyField' => 'OXID',
+        ]);
     }
 }

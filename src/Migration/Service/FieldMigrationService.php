@@ -11,6 +11,7 @@ namespace OxidEsales\WysiwygModule\Migration\Service;
 
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReport;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\TableFieldInterface;
 use OxidEsales\WysiwygModule\Migration\Repository\FieldMigrationRepositoryInterface;
 
 class FieldMigrationService implements FieldMigrationServiceInterface
@@ -20,13 +21,11 @@ class FieldMigrationService implements FieldMigrationServiceInterface
     ) {
     }
 
-    public function migrate(string $tableName, string $fieldName, string $tableKey): MigrationReportInterface
+    public function migrate(TableFieldInterface $tableField): MigrationReportInterface
     {
         return new MigrationReport(
-            table: $tableName,
-            field: $fieldName,
-            tableKey: $tableKey,
-            entries: $this->fieldMigrationRepository->migrateTableField($tableName, $fieldName, $tableKey),
+            tableField: $tableField,
+            entries: $this->fieldMigrationRepository->migrateTableField($tableField),
         );
     }
 }

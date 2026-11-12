@@ -29,6 +29,7 @@ class ScreenMigrationReporter implements MigrationReporterInterface
 
     public function report(MigrationReportInterface $report): MigrationSummaryInterface
     {
+        $tableField = $report->getTableField();
         $entries = $report->getEntries();
         $converted = $this->resultFilter->filterByOutcome($entries, MigrationOutcome::Converted);
         $failures = $this->resultFilter->filterByOutcome($entries, MigrationOutcome::Failed);
@@ -37,14 +38,14 @@ class ScreenMigrationReporter implements MigrationReporterInterface
             lines: [
                 sprintf(
                     '<info>%s::%s (key %s)</info>',
-                    $report->getTable(),
-                    $report->getField(),
-                    $report->getTableKey()
+                    $tableField->getTable(),
+                    $tableField->getField(),
+                    $tableField->getKeyField()
                 ),
                 sprintf('Media references found: %d', count($entries)),
                 sprintf('Converted:              %d', count($converted)),
                 sprintf('Failed:                 %d', count($failures)),
-                ...$this->failureLines($report->getTableKey(), $failures),
+                ...$this->failureLines($tableField->getKeyField(), $failures),
             ],
         );
     }
@@ -54,7 +55,7 @@ class ScreenMigrationReporter implements MigrationReporterInterface
      *
      * @return string[]
      */
-    private function failureLines(string $tableKey, array $failures): array
+    private function failureLines(string $keyField, array $failures): array
     {
         if (!$failures) {
             return [];
@@ -65,7 +66,7 @@ class ScreenMigrationReporter implements MigrationReporterInterface
         foreach ($failures as $failure) {
             $lines[] = sprintf(
                 '  [%s=%s] %s="%s": %s',
-                $tableKey,
+                $keyField,
                 $failure->getKey(),
                 $failure->getAttribute(),
                 $failure->getPath(),

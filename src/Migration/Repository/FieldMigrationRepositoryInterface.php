@@ -8,6 +8,7 @@
 namespace OxidEsales\WysiwygModule\Migration\Repository;
 
 use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\TableFieldInterface;
 
 interface FieldMigrationRepositoryInterface
 {
@@ -17,5 +18,5 @@ interface FieldMigrationRepositoryInterface
      *
      * @return MediaMigrationResultInterface[]
      */
-    public function migrateTableField(string $tableName, string $fieldName, string $tableKey): array;
+    public function migrateTableField(TableFieldInterface $tableField): array;
 }

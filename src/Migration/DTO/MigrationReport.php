@@ -15,26 +15,14 @@ class MigrationReport implements MigrationReportInterface
      * @param MediaMigrationResultInterface[] $entries
      */
     public function __construct(
-        private readonly string $table,
-        private readonly string $field,
-        private readonly string $tableKey,
+        private readonly TableFieldInterface $tableField,
         private readonly array $entries,
     ) {
     }
 
-    public function getTable(): string
+    public function getTableField(): TableFieldInterface
     {
-        return $this->table;
-    }
-
-    public function getField(): string
-    {
-        return $this->field;
-    }
-
-    public function getTableKey(): string
-    {
-        return $this->tableKey;
+        return $this->tableField;
     }
 
     public function getEntries(): array

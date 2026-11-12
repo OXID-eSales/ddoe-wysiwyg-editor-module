@@ -56,8 +56,10 @@ class CsvFileMigrationReporterTest extends TestCase
         ]);
 
         $reportStub = $this->createConfiguredStub(MigrationReportInterface::class, [
-            'getTable' => self::TABLE,
-            'getField' => self::FIELD,
+            'getTableField' => $this->createConfiguredStub(TableFieldInterface::class, [
+                'getTable' => self::TABLE,
+                'getField' => self::FIELD,
+            ]),
             'getEntries' => [$convertedEntry, $failedEntry],
         ]);
 

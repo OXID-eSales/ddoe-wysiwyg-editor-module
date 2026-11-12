@@ -39,10 +39,11 @@ class CsvFileMigrationReporter implements MigrationReporterInterface
         try {
             fputcsv($handle, self::HEADER, escape: self::CSV_ESCAPE);
 
+            $tableField = $report->getTableField();
             foreach ($report->getEntries() as $entry) {
                 fputcsv($handle, [
-                    $report->getTable(),
-                    $report->getField(),
+                    $tableField->getTable(),
+                    $tableField->getField(),
                     $entry->getKey(),
                     $entry->getAttribute(),
                     $entry->getPath(),

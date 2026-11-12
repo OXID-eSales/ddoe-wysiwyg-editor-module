@@ -12,6 +12,7 @@ namespace OxidEsales\WysiwygModule\Tests\Unit\Migration\Reporter;
 use OxidEsales\WysiwygModule\Migration\DTO\MediaMigrationResultInterface;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationOutcome;
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\TableFieldInterface;
 use OxidEsales\WysiwygModule\Migration\Reporter\MigrationReporterInterface;
 use OxidEsales\WysiwygModule\Migration\Reporter\ScreenMigrationReporter;
 use OxidEsales\WysiwygModule\Migration\Service\MediaMigrationResultFilterInterface;
@@ -22,7 +23,7 @@ class ScreenMigrationReporterTest extends TestCase
 {
     private const TABLE = 'oxcontents';
     private const FIELD = 'OXCONTENT';
-    private const TABLE_KEY = 'OXID';
+    private const KEY_FIELD = 'OXID';
 
     #[Test]
     public function reportPrintsTheSummaryOfTheRun(): void
@@ -33,9 +34,7 @@ class ScreenMigrationReporterTest extends TestCase
         ];
 
         $reportStub = $this->createConfiguredStub(MigrationReportInterface::class, [
-            'getTable' => self::TABLE,
-            'getField' => self::FIELD,
-            'getTableKey' => self::TABLE_KEY,
+            'getTableField' => $this->createTableFieldStub(),
             'getEntries' => $converted,
         ]);
 
@@ -83,9 +82,7 @@ class ScreenMigrationReporterTest extends TestCase
         $entries = [...$converted, ...$failures];
 
         $reportStub = $this->createConfiguredStub(MigrationReportInterface::class, [
-            'getTable' => self::TABLE,
-            'getField' => self::FIELD,
-            'getTableKey' => self::TABLE_KEY,
+            'getTableField' => $this->createTableFieldStub(),
             'getEntries' => $entries,
         ]);
 
@@ -117,6 +114,15 @@ class ScreenMigrationReporterTest extends TestCase
             ],
             $summary->getLines()
         );
+    }
+
+    private function createTableFieldStub(): TableFieldInterface
+    {
+        return $this->createConfiguredStub(TableFieldInterface::class, [
+            'getTable' => self::TABLE,
+            'getField' => self::FIELD,
+            'getKeyField' => self::KEY_FIELD,
+        ]);
     }
 
     private function getSut(
