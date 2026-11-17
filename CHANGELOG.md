@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Media urls migration interfaces use `TableField` DTO instead of separate arguments:
   - `FieldMigrationServiceInterface::migrate()`
   - `FieldMigrationRepositoryInterface::migrateTableField()`
+- Alt texts migration `AltTextMigrationRepositoryInterface::migrateTableField()` uses `TableField` DTO instead of separate arguments
+- Alt texts migration reports custom alt texts as `CustomAltTextTag` DTOs instead of arrays, the row key is passed to `AltTextMigrationServiceInterface::migrateAltTexts()`
 - `MigrationReportInterface::getTableField()` replaces `getTable()`, `getField()` and `getTableKey()`
 
 ### Fixed

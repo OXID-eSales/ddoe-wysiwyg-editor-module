@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Migration\Command;
 
+use OxidEsales\WysiwygModule\Migration\DTO\TableField;
 use OxidEsales\WysiwygModule\Migration\Repository\AltTextMigrationRepositoryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -50,14 +51,16 @@ class MigrateMediaAltTextsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $tableName = $input->getArgument('table');
-        $fieldName = $input->getArgument('field');
-        $tableKey = $input->getArgument('tableKey');
+        $tableName = (string)$input->getArgument('table');
+        $fieldName = (string)$input->getArgument('field');
+        $tableKey = (string)$input->getArgument('tableKey');
 
         $customAltTextTags = $this->altTextMigrationRepository->migrateTableField(
-            $tableName,
-            $fieldName,
-            $tableKey
+            new TableField(
+                table: $tableName,
+                field: $fieldName,
+                keyField: $tableKey,
+            )
         );
 
         if (count($customAltTextTags) > 0) {
@@ -70,9 +73,9 @@ class MigrateMediaAltTextsCommand extends Command
                 $output->writeln(sprintf(
                     '  [%s=%s] media-id="%s" alt="%s"',
                     $tableKey,
-                    $entry['key'],
-                    $entry['mediaId'],
-                    $entry['altText']
+                    $entry->getKey(),
+                    $entry->getMediaId(),
+                    $entry->getAltText()
                 ));
             }
 

@@ -11,6 +11,7 @@ namespace OxidEsales\WysiwygModule\Tests\Unit\Migration\DTO;
 
 use OxidEsales\WysiwygModule\Migration\DTO\AltTextMigrationResult;
 use OxidEsales\WysiwygModule\Migration\DTO\AltTextMigrationResultInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\CustomAltTextTagInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -39,13 +40,7 @@ class AltTextMigrationResultTest extends TestCase
     #[Test]
     public function getCustomAltTextTagsReturnsConstructorValue(): void
     {
-        $tags = [
-            [
-                'tag' => uniqid(),
-                'mediaId' => uniqid(),
-                'altText' => uniqid(),
-            ],
-        ];
+        $tags = [$this->createStub(CustomAltTextTagInterface::class)];
 
         $this->assertSame($tags, $this->getSut(customAltTextTags: $tags)->getCustomAltTextTags());
     }

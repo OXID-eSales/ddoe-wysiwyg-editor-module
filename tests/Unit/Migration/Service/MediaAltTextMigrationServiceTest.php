@@ -111,12 +111,14 @@ class MediaAltTextMigrationServiceTest extends TestCase
             . ' class="dd-wysiwyg-media-image"'
             . ' alt="' . $altText . '">';
 
-        $result = $sut->migrateAltTexts($content);
+        $result = $sut->migrateAltTexts($content, $key = uniqid());
 
         $this->assertSame($content, $result->getContent());
         $this->assertCount(1, $result->getCustomAltTextTags());
-        $this->assertSame($mediaId, $result->getCustomAltTextTags()[0]['mediaId']);
-        $this->assertSame($altText, $result->getCustomAltTextTags()[0]['altText']);
+        $this->assertSame($key, $result->getCustomAltTextTags()[0]->getKey());
+        $this->assertSame($content, $result->getCustomAltTextTags()[0]->getTag());
+        $this->assertSame($mediaId, $result->getCustomAltTextTags()[0]->getMediaId());
+        $this->assertSame($altText, $result->getCustomAltTextTags()[0]->getAltText());
     }
 
     #[Test]
@@ -167,8 +169,8 @@ class MediaAltTextMigrationServiceTest extends TestCase
 
         $this->assertSame($expected, $result->getContent());
         $this->assertCount(1, $result->getCustomAltTextTags());
-        $this->assertSame($id2, $result->getCustomAltTextTags()[0]['mediaId']);
-        $this->assertSame($customAlt, $result->getCustomAltTextTags()[0]['altText']);
+        $this->assertSame($id2, $result->getCustomAltTextTags()[0]->getMediaId());
+        $this->assertSame($customAlt, $result->getCustomAltTextTags()[0]->getAltText());
     }
 
     #[Test]

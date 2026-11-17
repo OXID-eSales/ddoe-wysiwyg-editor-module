@@ -13,5 +13,11 @@ use OxidEsales\WysiwygModule\Migration\DTO\AltTextMigrationResultInterface;
 
 interface AltTextMigrationServiceInterface
 {
-    public function migrateAltTexts(string $content): AltTextMigrationResultInterface;
+    /**
+     * Adds alt text placeholders to the media images of the given content, reporting the images
+     * with a custom alt text it left untouched.
+     *
+     * @param string $key Key of the row the content belongs to, carried into the reported tags
+     */
+    public function migrateAltTexts(string $content, string $key = ''): AltTextMigrationResultInterface;
 }

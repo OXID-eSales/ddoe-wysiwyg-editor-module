@@ -9,10 +9,15 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Migration\Repository;
 
+use OxidEsales\WysiwygModule\Migration\DTO\CustomAltTextTagInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\TableFieldInterface;
+
 interface AltTextMigrationRepositoryInterface
 {
     /**
-     * @return array<int, array{key: string, tag: string, mediaId: string, altText: string}>
+     * Migrates the alt texts of one table field.
+     *
+     * @return CustomAltTextTagInterface[] media images with a custom alt text, which were left untouched
      */
-    public function migrateTableField(string $tableName, string $fieldName, string $tableKey): array;
+    public function migrateTableField(TableFieldInterface $tableField): array;
 }

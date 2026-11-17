@@ -9,14 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\WysiwygModule\Migration\DTO;
 
-/**
- * @phpstan-import-type CustomAltTextTag from AltTextMigrationResultInterface
- */
 class AltTextMigrationResult implements AltTextMigrationResultInterface
 {
     /**
      * @param string $content The modified content
-     * @param array<int, CustomAltTextTag> $customAltTextTags
+     * @param CustomAltTextTagInterface[] $customAltTextTags
      */
     public function __construct(
         private readonly string $content,
@@ -29,7 +26,7 @@ class AltTextMigrationResult implements AltTextMigrationResultInterface
         return $this->content;
     }
 
-    /** @return array<int, CustomAltTextTag> */
+    /** @return CustomAltTextTagInterface[] */
     public function getCustomAltTextTags(): array
     {
         return $this->customAltTextTags;

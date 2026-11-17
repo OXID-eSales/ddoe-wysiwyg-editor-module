@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\WysiwygModule\Migration\Repository;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\TableFieldInterface;
 use OxidEsales\WysiwygModule\Migration\Service\AltTextMigrationServiceInterface;
 
 class AltTextMigrationRepository implements AltTextMigrationRepositoryInterface
@@ -20,31 +21,32 @@ class AltTextMigrationRepository implements AltTextMigrationRepositoryInterface
     ) {
     }
 
-    public function migrateTableField(string $tableName, string $fieldName, string $tableKey): array
+    public function migrateTableField(TableFieldInterface $tableField): array
     {
+        $tableName = $tableField->getTable();
+        $fieldName = $tableField->getField();
+        $keyField = $tableField->getKeyField();
+
         $selectionQueryBuilder = $this->queryBuilderFactory->create();
-        $originalData = $selectionQueryBuilder->select($tableKey, $fieldName)->from($tableName)->execute();
+        $originalData = $selectionQueryBuilder->select($keyField, $fieldName)->from($tableName)->execute();
 
         $updateQueryBuilder = $this->queryBuilderFactory->create();
         $updateQueryBuilder->update($tableName)
             ->set($fieldName, ':newValue')
-            ->where($tableKey . ' = :keyValue');
+            ->where($keyField . ' = :keyValue');
 
         $allCustomAltTextTags = [];
 
         while ($originalRow = $originalData->fetchAssociative()) {
-            $result = $this->altTextMigrationService->migrateAltTexts($originalRow[$fieldName]);
+            $keyValue = (string)$originalRow[$keyField];
+            $result = $this->altTextMigrationService->migrateAltTexts((string)$originalRow[$fieldName], $keyValue);
 
             $updateQueryBuilder->setParameters([
                 ':newValue' => $result->getContent(),
-                ':keyValue' => $originalRow[$tableKey],
+                ':keyValue' => $keyValue,
             ])->execute();
 
-            foreach ($result->getCustomAltTextTags() as $customTag) {
-                $allCustomAltTextTags[] = array_merge($customTag, [
-                    'key' => $originalRow[$tableKey],
-                ]);
-            }
+            array_push($allCustomAltTextTags, ...$result->getCustomAltTextTags());
         }
 
         return $allCustomAltTextTags;

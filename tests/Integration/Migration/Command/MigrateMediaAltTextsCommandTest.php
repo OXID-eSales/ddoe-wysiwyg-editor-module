@@ -11,6 +11,8 @@ namespace OxidEsales\WysiwygModule\Tests\Integration\Migration\Command;
 
 use Composer\Console\Application;
 use OxidEsales\WysiwygModule\Migration\Command\MigrateMediaAltTextsCommand;
+use OxidEsales\WysiwygModule\Migration\DTO\CustomAltTextTagInterface;
+use OxidEsales\WysiwygModule\Migration\DTO\TableField;
 use OxidEsales\WysiwygModule\Migration\Repository\AltTextMigrationRepositoryInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -29,10 +31,10 @@ class MigrateMediaAltTextsCommandTest extends TestCase
         $repositoryMock = $this->createMock(AltTextMigrationRepositoryInterface::class);
         $repositoryMock->expects($this->once())
             ->method('migrateTableField')
-            ->with($table, $field, $tableKey)
+            ->with(new TableField(table: $table, field: $field, keyField: $tableKey))
             ->willReturn([]);
 
-        $commandTester = new CommandTester($this->getSut($repositoryMock));
+        $commandTester = new CommandTester($this->getSut(altTextMigrationRepository: $repositoryMock));
         $result = $commandTester->execute([
             'table' => $table,
             'field' => $field,
@@ -53,10 +55,10 @@ class MigrateMediaAltTextsCommandTest extends TestCase
         $repositoryMock = $this->createMock(AltTextMigrationRepositoryInterface::class);
         $repositoryMock->expects($this->once())
             ->method('migrateTableField')
-            ->with($table, $field, $tableKey)
+            ->with(new TableField(table: $table, field: $field, keyField: $tableKey))
             ->willReturn([]);
 
-        $commandTester = new CommandTester($this->getSut($repositoryMock));
+        $commandTester = new CommandTester($this->getSut(altTextMigrationRepository: $repositoryMock));
         $result = $commandTester->execute([
             'table' => $table,
             'field' => $field,
@@ -71,22 +73,18 @@ class MigrateMediaAltTextsCommandTest extends TestCase
     {
         $table = uniqid();
         $field = uniqid();
-        $key = uniqid();
-        $mediaId = uniqid();
-        $altText = uniqid();
 
-        $repositoryStub = $this->createMock(AltTextMigrationRepositoryInterface::class);
-        $repositoryStub->method('migrateTableField')
-            ->willReturn([
-                [
-                    'key' => $key,
-                    'tag' => '<img>',
-                    'mediaId' => $mediaId,
-                    'altText' => $altText,
-                ],
-            ]);
+        $customAltTextTagStub = $this->createConfiguredStub(CustomAltTextTagInterface::class, [
+            'getKey' => $key = uniqid(),
+            'getMediaId' => $mediaId = uniqid(),
+            'getAltText' => $altText = uniqid(),
+        ]);
 
-        $commandTester = new CommandTester($this->getSut($repositoryStub));
+        $repositoryStub = $this->createConfiguredStub(AltTextMigrationRepositoryInterface::class, [
+            'migrateTableField' => [$customAltTextTagStub],
+        ]);
+
+        $commandTester = new CommandTester($this->getSut(altTextMigrationRepository: $repositoryStub));
         $commandTester->execute([
             'table' => $table,
             'field' => $field,
@@ -99,10 +97,13 @@ class MigrateMediaAltTextsCommandTest extends TestCase
         $this->assertStringContainsString("alt=\"$altText\"", $display);
     }
 
-    private function getSut(AltTextMigrationRepositoryInterface $repository): MigrateMediaAltTextsCommand
-    {
+    private function getSut(
+        ?AltTextMigrationRepositoryInterface $altTextMigrationRepository = null,
+    ): MigrateMediaAltTextsCommand {
+        $altTextMigrationRepository ??= $this->createStub(AltTextMigrationRepositoryInterface::class);
+
         $sut = new MigrateMediaAltTextsCommand(
-            altTextMigrationRepository: $repository,
+            altTextMigrationRepository: $altTextMigrationRepository,
         );
 
         $application = new Application();
