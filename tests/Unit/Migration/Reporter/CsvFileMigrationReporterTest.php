@@ -112,6 +112,37 @@ class CsvFileMigrationReporterTest extends TestCase
     }
 
     #[Test]
+    public function reportDoublesQuotesEvenWhenTheyFollowABackslash(): void
+    {
+        $entryStub = $this->createConfiguredStub(MediaMigrationResultInterface::class, [
+            'getKey' => $key = uniqid(),
+            'getAttribute' => $attribute = uniqid(),
+            'getPath' => $path = uniqid(),
+            'getOutcome' => MigrationOutcome::Failed,
+            'getMediaId' => $mediaId = uniqid(),
+            'getDetail' => 'broken \"quote\"',
+        ]);
+
+        $reportStub = $this->createConfiguredStub(MigrationReportInterface::class, [
+            'getTableField' => $this->createConfiguredStub(TableFieldInterface::class, [
+                'getTable' => $table = uniqid(),
+                'getField' => $field = uniqid(),
+            ]),
+            'getEntries' => [$entryStub],
+        ]);
+
+        $sut = $this->getSut();
+        $sut->report($reportStub);
+
+        $lines = file(self::PATH, FILE_IGNORE_NEW_LINES);
+
+        $this->assertSame(
+            "$table,$field,$key,$attribute,$path,failed,$mediaId," . '"broken \""quote\"""',
+            $lines[1]
+        );
+    }
+
+    #[Test]
     public function reportWritesTheHeaderOnlyWhenThereIsNothingToReport(): void
     {
         $sut = $this->getSut();

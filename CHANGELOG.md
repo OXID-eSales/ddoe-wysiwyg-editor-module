@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - `FieldMigrationRepositoryInterface::migrateTableField()`
 - `MigrationReportInterface::getTableField()` replaces `getTable()`, `getField()` and `getTableKey()`
 
+### Fixed
+- Media urls migration CSV report escapes quotes by doubling them only, so a backslash followed by a quote in a value no longer breaks the columns
+
 ## [8.0.1] - 2026-10-09
 
 ### Added
