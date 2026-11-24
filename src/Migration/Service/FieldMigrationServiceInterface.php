@@ -5,8 +5,6 @@
  * See LICENSE file for license details.
  */
 
-declare(strict_types=1);
-
 namespace OxidEsales\WysiwygModule\Migration\Service;
 
 use OxidEsales\WysiwygModule\Migration\DTO\MigrationReportInterface;
