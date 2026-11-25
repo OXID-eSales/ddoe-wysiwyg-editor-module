@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Media urls migration CSV report escapes quotes by doubling them only, so a backslash followed by a quote in a value no longer breaks the columns
+- Long text without spaces in the editor wraps instead of widening the editor and the admin frame
 
 ## [8.0.1] - 2026-10-09
 
